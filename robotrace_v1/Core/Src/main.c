@@ -22,6 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "adc.h"
+#include "io.h"
+#include "timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,14 +34,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-#define UP		0x1
-#define PUSH 	0x2
-#define	LEFT	0x3
-#define RIGHT	0x4
-#define DOWN	0x5
-
-
 
 /* USER CODE END PD */
 
@@ -65,10 +60,7 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN PV */
-uint32_t 	cnt1 = 0;
-uint8_t 	led = 0;
 
-uint16_t analog[14];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -86,9 +78,6 @@ static void MX_TIM4_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
-void ledOut( uint8_t rgb );
-uint8_t getSWrotary();
-uint8_t getSWtact();
 uint8_t read_byte( uint8_t reg );
 /* USER CODE END PFP */
 
@@ -157,19 +146,15 @@ int main(void)
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)			Error_Handler();
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
 
-  /*
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
-
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
-*/
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
+
+  intiLcd();  // LCD init
+
+  lcdRowPrintf(UPROW, "Hello   ");
+	lcdRowPrintf(LOWROW, "   STM32");
 
   // printf("who am i = 0x%x\n",read_byte(0x75));
   // printf("who am i = 0x%x\n",read_byte(0x6b));
@@ -427,14 +412,14 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
   hi2c1.Init.OwnAddress2 = 0;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_ENABLE;
   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
     Error_Handler();
@@ -898,59 +883,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
-
-}
-
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-
-	cnt1++;
-
-	/*if (cnt1 % 500 == 0) {
-		ledOut(led);
-		led++;
-		if (led > 0x7) led = 0;
-	}*/
-
-	if (getSWtact() == 0) {
-		 __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
-		 __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
-		 __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
- 		 __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
-	} else if (getSWtact() == RIGHT) {
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 100);
-	} else if (getSWtact() == LEFT) {
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 100);
-		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
-	}
-	if (cnt1 % 500 == 0) {
-		//printf("AD15: %5d, HEX: 0x%x,  AD10: %5d, HEX: 0x%x\n",analog[13], getSWrotary(), analog[12], getSWtact());
-		//__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
-		//__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 600);
-	}
-
-
-}
-
-void ledOut ( uint8_t rgb )
-{
-	if ( (rgb & 0x4) == 0x4 ) HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
-	else HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
-
-	if ( (rgb & 0x2) == 0x2 ) HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-	else HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-
-	if ( (rgb & 0x1) == 0x1 ) HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
-	else HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
-}
-
 uint8_t read_byte( uint8_t reg ) {
 	uint8_t ret,val=0;
 
