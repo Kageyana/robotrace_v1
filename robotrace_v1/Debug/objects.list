@@ -1,4 +1,6 @@
 "./Core/Src/AQM0802A.o"
+"./Core/Src/BNO055.o"
+"./Core/Src/ICM20608.o"
 "./Core/Src/adc.o"
 "./Core/Src/io.o"
 "./Core/Src/main.o"

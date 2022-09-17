@@ -180,7 +180,7 @@ void lcdPosition(uint8_t x ,uint8_t y)
 // 引数         printfと同じ
 // 戻り値       正常時：出力した文字列 異常時：負の数
 //////////////////////////////////////////////////////////////////////////
-int lcdRowPrintf(uint8_t step, uint8_t *format, ...)
+int lcdRowPrintf(uint8_t step, char *format, ...)
 {
     volatile va_list argptr;
     volatile uint8_t    *p;

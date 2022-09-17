@@ -26,21 +26,21 @@ uint8_t getSWrotary() {
 	uint16_t ad = analog[13];
 	uint8_t ret = 0;
 	if ( ad > 3900 ) ret = 0x0;
-	if ( ad < 3671 && ad > 3663 ) ret = 0x1;
-	if ( ad < 2774 && ad > 2756 ) ret = 0x2;
-	if ( ad < 2572 && ad > 2553 ) ret = 0x3;
-	if ( ad < 2340 && ad > 2320 ) ret = 0x4;
-	if ( ad < 2195 && ad > 2174 ) ret = 0x5;
-	if ( ad < 1839 && ad > 1819 ) ret = 0x6;
-	if ( ad < 1748 && ad > 1728 ) ret = 0x7;
-	if ( ad < 1606 && ad > 1586 ) ret = 0x8;
-	if ( ad < 1536 && ad > 1517 ) ret = 0x9;
-	if ( ad < 1353 && ad > 1335 ) ret = 0xa;
-	if ( ad < 1303 && ad > 1285 ) ret = 0xb;
-	if ( ad < 1241 && ad > 1223 ) ret = 0xc;
-	if ( ad < 1199 && ad > 1182 ) ret = 0xd;
-	if ( ad < 1084 && ad > 1068 ) ret = 0xe;
-	if ( ad < 1052 && ad > 1036 ) ret = 0xf;
+	if ( ad < 3681 && ad > 3653 ) ret = 0x1;
+	if ( ad < 2784 && ad > 2746 ) ret = 0x2;
+	if ( ad < 2582 && ad > 2543 ) ret = 0x3;
+	if ( ad < 2350 && ad > 2310 ) ret = 0x4;
+	if ( ad < 2205 && ad > 2164 ) ret = 0x5;
+	if ( ad < 1849 && ad > 1809 ) ret = 0x6;
+	if ( ad < 1758 && ad > 1718 ) ret = 0x7;
+	if ( ad < 1616 && ad > 1576 ) ret = 0x8;
+	if ( ad < 1546 && ad > 1507 ) ret = 0x9;
+	if ( ad < 1363 && ad > 1325 ) ret = 0xa;
+	if ( ad < 1313 && ad > 1275 ) ret = 0xb;
+	if ( ad < 1251 && ad > 1213 ) ret = 0xc;
+	if ( ad < 1209 && ad > 1172 ) ret = 0xd;
+	if ( ad < 1094 && ad > 1058 ) ret = 0xe;
+	if ( ad < 1057 && ad > 1026 ) ret = 0xf;
 
 	return ret;
 }
@@ -55,11 +55,11 @@ uint8_t getSWtact() {
 	uint8_t ret = 0;
 
 	if ( ad > 3900 ) ret = 0x0;
-	if ( ad < 10 && ad >= 0 ) 		ret = UP;
-	if ( ad < 1240 && ad > 1206 ) 	ret = PUSH;
-	if ( ad < 2191 && ad > 2150 ) 	ret = LEFT;
-	if ( ad < 2838 && ad > 2803 ) 	ret = RIGHT;
-	if ( ad < 3341 && ad > 3316 ) 	ret = DOWN;
+	if ( ad < 50 && ad >= 0 ) 		ret = UP;
+	if ( ad < 1340 && ad > 1106 ) 	ret = PUSH;
+	if ( ad < 2291 && ad > 2050 ) 	ret = LEFT;
+	if ( ad < 2938 && ad > 2703 ) 	ret = RIGHT;
+	if ( ad < 3441 && ad > 3216 ) 	ret = DOWN;
 
 
 	return ret;

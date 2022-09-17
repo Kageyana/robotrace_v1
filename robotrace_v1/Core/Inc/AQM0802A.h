@@ -22,7 +22,7 @@
 /******************************** 自動生成関数 *********************************/
 #define 	I2C_LCD_SEND	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,word,2,100);
 #define	    I2C_LCD_READ	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,command,2,100);
-/***************************************************************************/
+/******************************************************************************/
 //====================================//
 // グローバル変数の宣言
 //====================================//
@@ -38,6 +38,6 @@ void lcdCMD ( uint8_t cmd );
 void lcdPut ( uint8_t data );
 int lcdPrintf ( uint8_t *format, ... );
 void lcdcursol (void);
-int lcdRowPrintf (uint8_t step, uint8_t *format, ...);
+int lcdRowPrintf (uint8_t step, char *format, ...);
 
 #endif // AQM0802_H_

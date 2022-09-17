@@ -25,6 +25,9 @@
 #include "adc.h"
 #include "io.h"
 #include "timer.h"
+#include "AQM0802A.h"
+#include "ICM20608.h"
+#include "BNO055.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -128,33 +131,40 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
-  // Timer interrupt
-  HAL_TIM_Base_Start_IT(&htim6);
+  
+  // Encoder count
+  HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
-  // LED
-  HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
-
-  // CS
-  HAL_GPIO_WritePin(CS_IMU_GPIO_Port, CS_IMU_Pin, GPIO_PIN_SET);
-
-  // PWM
+  // ADC
   if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *) analog, 14) != HAL_OK)	Error_Handler();
+  // PWM
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK)			Error_Handler();
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)			Error_Handler();
   if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
+  if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
 
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
 
-  intiLcd();  // LCD init
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 
-  lcdRowPrintf(UPROW, "Hello   ");
-	lcdRowPrintf(LOWROW, "   STM32");
+  HAL_Delay(500);
+
+  //initIMU();	// IMU initialize
+
+  // lcdRowPrintf(UPROW, "who am i");
+  // lcdRowPrintf(LOWROW, "   0x%2x",initBNO055());
+
+  printf("ID: 0x%x\n", initBNO055());
+  HAL_Delay(1000);
+
+  intiLcd();  	// LCD initialize
+  // Timer interrupt
+  HAL_TIM_Base_Start_IT(&htim6);
 
   // printf("who am i = 0x%x\n",read_byte(0x75));
   // printf("who am i = 0x%x\n",read_byte(0x6b));
@@ -168,7 +178,39 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	// switch (getSWtact()) {
+	// 	case UP:
+	// 	  lcdRowPrintf(UPROW, "5ax   UP");
+	// 	  break;
+	// 	case PUSH:
+	// 	  lcdRowPrintf(UPROW, "5ax PUSH");
+	// 	  break;
+	// 	case LEFT:
+	// 	  lcdRowPrintf(UPROW, "5ax LEFT");
+	// 	  break;
+	// 	case RIGHT:
+	// 	  lcdRowPrintf(UPROW, "5axRIGHT");
+	// 	  break;
+	// 	case DOWN:
+	// 	  lcdRowPrintf(UPROW, "5ax DOWN");
+	// 	  break;
 
+	// 	default:
+	// 	lcdRowPrintf(UPROW, "5ax none");
+	// 	  break;
+	//   }
+    // lcdRowPrintf(UPROW, "%5.0frpm",(double)abs(encR)/2048*1000*60);
+    // lcdRowPrintf(LOWROW, "%5.0frpm",(double)abs(encL)/2048*1000*60);
+    // lcdRowPrintf(UPROW, "R      %d",HAL_GPIO_ReadPin(Sidesensor1_GPIO_Port,Sidesensor1_Pin));
+    // lcdRowPrintf(LOWROW, "L      %d",HAL_GPIO_ReadPin(Sidesensor2_GPIO_Port,Sidesensor2_Pin));
+
+    if (getSWtact() == 0) {
+      motorPwmOut(0,0);
+    } else if (getSWtact() == RIGHT) {
+      motorPwmOut(300,300);
+    } else if (getSWtact() == LEFT) {
+      motorPwmOut(-300,-300);
+    }
   }
   /* USER CODE END 3 */
 }
@@ -267,7 +309,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -376,7 +418,6 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = 13;
-  sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -453,7 +494,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi2.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -604,9 +645,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 11;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 1499;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
@@ -658,12 +699,12 @@ static void MX_TIM3_Init(void)
   htim3.Init.Period = 65535;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
   sConfig.IC1Filter = 0;
-  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_FALLING;
   sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
   sConfig.IC2Filter = 0;
@@ -707,7 +748,7 @@ static void MX_TIM4_Init(void)
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
@@ -839,19 +880,16 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, Output1_Pin|Output2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, CS_IMU_Pin|CS_MSD_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, CS_IMU_Pin|CS_MSD_Pin|LED_G_Pin|LED_B_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_G_Pin|LED_B_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : Sidesensor1_Pin Input1_Pin SW_MSD_Pin */
-  GPIO_InitStruct.Pin = Sidesensor1_Pin|Input1_Pin|SW_MSD_Pin;
+  /*Configure GPIO pin : Sidesensor1_Pin */
+  GPIO_InitStruct.Pin = Sidesensor1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(Sidesensor1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Output1_Pin Output2_Pin */
   GPIO_InitStruct.Pin = Output1_Pin|Output2_Pin;
@@ -860,11 +898,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Sidesensor2_Pin Input2_Pin */
-  GPIO_InitStruct.Pin = Sidesensor2_Pin|Input2_Pin;
+  /*Configure GPIO pin : Sidesensor2_Pin */
+  GPIO_InitStruct.Pin = Sidesensor2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(Sidesensor2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Input2_Pin */
+  GPIO_InitStruct.Pin = Input2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(Input2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CS_IMU_Pin CS_MSD_Pin LED_G_Pin LED_B_Pin */
   GPIO_InitStruct.Pin = CS_IMU_Pin|CS_MSD_Pin|LED_G_Pin|LED_B_Pin;
@@ -872,6 +916,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Input1_Pin SW_MSD_Pin */
+  GPIO_InitStruct.Pin = Input1_Pin|SW_MSD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_R_Pin */
   GPIO_InitStruct.Pin = LED_R_Pin;

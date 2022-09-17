@@ -1,10 +1,29 @@
-21:55:42 **** Incremental Build of configuration Debug for project robotrace_v1 ****
+10:23:34 **** Incremental Build of configuration Debug for project robotrace_v1 ****
 make -j16 all 
+arm-none-eabi-gcc "../Core/Src/timer.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/timer.d" -MT"Core/Src/timer.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/timer.o"
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:403,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/timer.h:7,
+                 from ../Core/Src/timer.c:4:
+../Core/Src/timer.c: In function 'motorPwmOut':
+../Core/Src/timer.c:87:54: warning: implicit declaration of function 'abs' [-Wimplicit-function-declaration]
+   87 |         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, abs(pwmL));
+      |                                                      ^~~
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:1396:72: note: in definition of macro '__HAL_TIM_SET_COMPARE'
+ 1396 |   (((__CHANNEL__) == TIM_CHANNEL_1) ? ((__HANDLE__)->Instance->CCR1 = (__COMPARE__)) :\
+      |                                                                        ^~~~~~~~~~~
+arm-none-eabi-gcc -o "robotrace_v1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\robotrace_v1\robotrace_v1\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="robotrace_v1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: robotrace_v1.elf
+ 
 arm-none-eabi-size   robotrace_v1.elf 
+arm-none-eabi-objdump -h -S  robotrace_v1.elf  > "robotrace_v1.list"
    text	   data	    bss	    dec	    hex	filename
-  47016	    492	   2508	  50016	   c360	robotrace_v1.elf
+  49776	    492	   2532	  52800	   ce40	robotrace_v1.elf
 Finished building: default.size.stdout
  
+Finished building: robotrace_v1.list
+ 
 
-21:55:42 Build Finished. 0 errors, 0 warnings. (took 245ms)
+10:23:37 Build Finished. 0 errors, 1 warnings. (took 3s.7ms)
 
