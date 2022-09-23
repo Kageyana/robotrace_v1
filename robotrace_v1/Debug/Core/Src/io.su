@@ -1,1 +1,2 @@
 ../Core/Src/io.c:15:6:ledOut	16	static
+../Core/Src/io.c:31:9:getMarksensor	16	static

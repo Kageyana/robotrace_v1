@@ -1,0 +1,5 @@
+../Core/Src/setup.c:63:6:setup	24	static
+../Core/Src/setup.c:361:6:data_select	16	static
+../Core/Src/setup.c:381:6:data_tuningUD	24	static
+../Core/Src/setup.c:418:6:data_tuningLR	24	static
+../Core/Src/setup.c:455:9:fixSpeedSetting	16	static

@@ -17,5 +17,6 @@
 // プロトタイプ宣言
 //====================================//
 void ledOut( uint8_t rgb );
+uint8_t getMarksensor ( void );
 
 #endif // IO_H_

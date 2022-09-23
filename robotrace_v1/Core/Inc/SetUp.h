@@ -1,21 +1,12 @@
-#ifndef SETUP_H_
+ï»¿#ifndef SETUP_H_
 #define SETUP_H_
 //======================================//
-// ƒCƒ“ƒNƒ‹[ƒh
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 //======================================//
-#include "io.h"
-#include "mtu.h"
-#include "ADconverter.h"
-#include "control.h"
-#include "E2dataFlash.h"
-#include "AQM0802A.h"
-#include "MicroSD.h"
-#include "sci.h"
-#include "ICM20648.h"
-#include "MemorryTrace.h"
+#include "main.h"
 #include <stdio.h>
 //======================================//
-// ƒOƒ[ƒoƒ‹•Ï”‚ÌéŒ¾
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®£è¨€
 //======================================//
 #define UD	0
 #define LR	1
@@ -24,25 +15,25 @@
 #define START_GATE		2
 
 //======================================//
-// ƒOƒ[ƒoƒ‹•Ï”‚ÌéŒ¾
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®£è¨€
 //======================================//
-// ƒpƒ^[ƒ“ŠÖ˜A
-extern char		start;
+// ãƒ‘ã‚¿ãƒ¼ãƒ³é–¢é€£
+extern uint8_t		start;
 
-// ƒ^ƒCƒ}ŠÖ˜A
-extern unsigned short 	cntSetup1;
-extern unsigned short 	cntSetup2;
-extern unsigned short 	cntSetup3;	
-extern short		cntSwitchUD;	// ƒXƒCƒbƒ`’·‰Ÿ‚µ”»’è—p‰E
-extern short		cntSwitchLR;	// ƒXƒCƒbƒ`’·‰Ÿ‚µ”»’è—p¶
+// ã‚¿ã‚¤ãƒé–¢é€£
+extern uint16_t 	cntSetup1;
+extern uint16_t 	cntSetup2;
+extern uint16_t 	cntSetup3;	
+extern uint16_t		cntSwitchUD;	// ã‚¹ã‚¤ãƒƒãƒé•·æŠ¼ã—åˆ¤å®šç”¨å³
+extern uint16_t		cntSwitchLR;	// ã‚¹ã‚¤ãƒƒãƒé•·æŠ¼ã—åˆ¤å®šç”¨å·¦
 
-// ƒpƒ‰ƒ[ƒ^ŠÖ˜A
-extern char fixSpeed;
+// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿é–¢é€£
+extern uint8_t      fixSpeed;
 
 //======================================//
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
 //======================================//
 void setup(void);
-char fixSpeedSetting ( void );
+uint8_t fixSpeedSetting ( void );
 
-#endif /* SCI_H_ */
+#endif /* SETUP_H_ */

@@ -32,7 +32,10 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/io.h \
+ ../Core/Inc/timer.h ../Core/Inc/AQM0802A.h ../Core/Inc/ICM20608.h \
+ ../Core/Inc/BNO055.h ../Core/Inc/setup.h ../Core/Inc/control.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -68,3 +71,12 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+../Core/Inc/adc.h:
+../Core/Inc/main.h:
+../Core/Inc/io.h:
+../Core/Inc/timer.h:
+../Core/Inc/AQM0802A.h:
+../Core/Inc/ICM20608.h:
+../Core/Inc/BNO055.h:
+../Core/Inc/setup.h:
+../Core/Inc/control.h:

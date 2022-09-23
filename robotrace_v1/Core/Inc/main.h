@@ -31,7 +31,15 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "adc.h"
+#include "io.h"
+#include "timer.h"
+#include "AQM0802A.h"
+#include "ICM20608.h"
+#include "BNO055.h"
+#include "setup.h"
+#include "control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

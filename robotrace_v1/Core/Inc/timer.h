@@ -8,6 +8,7 @@
 #include "io.h"
 #include "adc.h"
 #include "AQM0802A.h"
+#include <stdlib.h>
 //====================================//
 // シンボル定義
 //====================================//
@@ -15,12 +16,15 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
+extern uint16_t		cntSW;
 extern uint32_t 	cnt1;
 
-extern uint32_t     encR;
-extern uint32_t     encL;
-extern uint32_t     encTotalR;
-extern uint32_t     encTotalL;
+extern int16_t      encR;
+extern int16_t      encL;
+extern int16_t      encN;
+extern int32_t     encTotalR;
+extern int32_t     encTotalL;
+extern int32_t     encTotalN;
 
 //====================================//
 // プロトタイプ宣言
