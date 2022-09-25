@@ -57,7 +57,7 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN PV */
-uint32_t i;
+uint16_t 		analogVal[14];		// ADCçµæžœæ ¼ç´é?å??
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -124,48 +124,7 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-
-  
-  // Encoder count
-  HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
-  HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
-
-  // ADC
-  if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *) analog, 14) != HAL_OK)	Error_Handler();
-  // PWM
-  if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
-  if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK)			Error_Handler();
-  if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)			Error_Handler();
-  if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
-  if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
-
-  // MAX22201 sleepmode ON
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
-  // Line sensor OFF
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-
-  HAL_Delay(500);
-
-  intiLcd();  	// LCD initialize
-  //initIMU();	// IMU initialize
-
-  // Timer interrupt
-  HAL_TIM_Base_Start_IT(&htim6);
-
-  // while(1) {
-  //   lcdRowPrintf(UPROW, "5ax %4d",analog[12]);
-  //   lcdRowPrintf(LOWROW, "dip %4d",analog[13]);
-  // }
-
-  lcdRowPrintf(UPROW, "who am i");
-  lcdRowPrintf(LOWROW, "    %#x",initBNO055());
-  HAL_Delay(700);
-
-
-
+  systemInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -175,48 +134,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // lcdRowPrintf(UPROW, "%5.0frpm",(double)abs(encR)/2048*1000*60);
-    // lcdRowPrintf(LOWROW, "%5.0frpm",(double)abs(encL)/2048*1000*60);
-    //  lcdRowPrintf(UPROW, "R      %d",HAL_GPIO_ReadPin(Sidesensor1_GPIO_Port,Sidesensor1_Pin));
-    //  lcdRowPrintf(LOWROW, "L      %d",HAL_GPIO_ReadPin(Sidesensor2_GPIO_Port,Sidesensor2_Pin));
-    
-    switch (pattern)
-    {
-      case 0:
-        setup();
-        if (start) {
-          lcdRowPrintf(UPROW, "        ");
-          lcdRowPrintf(LOWROW, "   ready");
-
-          HAL_Delay(2000);
-          encTotalN = 0;
-          cnt1 = 0;
-          pattern = 1;
-        }
-        break;
-
-      case 1:
-        targetSpeed = 0.4*PALSE_MILLIMETER;
-        motorPwmOutSynth( tracePwm, speedPwm );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
-        lcdRowPrintf(UPROW, "    %4d", encN);
-
-        if (encTotalN >= encMM(4000)) {
-          i = cnt1;
-          pattern = 2;
-        }
-        break;
-
-      case 2:
-        motorPwmOutSynth( 0, 0 );
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-        lcdRowPrintf(UPROW, "    %4d",i);
-        lcdRowPrintf(LOWROW, "     End");
-        break;
-    
-      default:
-        break;
-    } // switch case
+    systemLoop();
   }
   /* USER CODE END 3 */
 }
@@ -313,7 +231,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_14;
+  sConfig.Channel = ADC_CHANNEL_11;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -323,7 +241,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_7;
+  sConfig.Channel = ADC_CHANNEL_12;
   sConfig.Rank = 2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -332,7 +250,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Channel = ADC_CHANNEL_13;
   sConfig.Rank = 3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -341,7 +259,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 4;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -350,7 +268,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = 5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -359,7 +277,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Channel = ADC_CHANNEL_2;
   sConfig.Rank = 6;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -368,7 +286,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = 7;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -377,7 +295,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = 8;
   sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -387,7 +305,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_0;
+  sConfig.Channel = ADC_CHANNEL_5;
   sConfig.Rank = 9;
   sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -397,7 +315,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_13;
+  sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = 10;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -406,7 +324,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_12;
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = 11;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -415,7 +333,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_11;
+  sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = 12;
   sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -942,6 +860,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
+  getLineSensor();
+}
 uint8_t read_byte( uint8_t reg ) {
 	uint8_t ret,val=0;
 

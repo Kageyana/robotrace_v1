@@ -1,44 +1,16 @@
 //====================================//
 // インクルード
 //====================================//
-#include "adc.h"
+#include "switch.h"
 //====================================//
 // グローバル変数の宣言
 //====================================//
-uint16_t 		analog[14];		// ADC結果格納配列
-
-// ラインセンサ関連
-uint32_t		lsensorInt[12] = {0};	// ラインセンサのAD値積算用
-uint16_t		lsensor[12] = {0};	// ラインセンサのAD値積算用
-
 // スイッチ関連
 uint8_t			swValTact;
 uint8_t			swValRotary;
 
 // タイマ関連
 uint16_t		cntSW = 0;		// 5方向タクトスイッチのチャタリング防止用
-uint16_t		cntls = 0;		// ラインセンサの積算回数カウント用
-/////////////////////////////////////////////////////////////////////
-// モジュール名 HAL_ADC_ConvCpltCallback
-// 処理概要  AD変換後の割り込み
-// 引数     なし
-// 戻り値    なしト
-/////////////////////////////////////////////////////////////////////
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
-	uint8_t i;
-	cntls++;
-	for ( i=0;i<=11;i++) {
-		lsensorInt[i] += analog[i];
-	}
-
-	if (cntls > 10) {
-		for ( i=0;i<=11;i++) {
-			lsensor[i] = lsensorInt[i]/10;
-			lsensorInt[i] = 0;
-		}
-		cntls = 0;
-	}
-}
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getSWrotary
 // 処理概要  ロータリスイッチのアナログ入力から2進数への変換
@@ -46,7 +18,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
 // 戻り値    ロータリスイッチのカウント
 /////////////////////////////////////////////////////////////////////
 uint8_t getSWrotary() {
-	uint16_t ad = analog[13];
+	uint16_t ad = analogVal[13];
 	uint8_t ret = 0;
 
 	if ( ad > 3900 ) 					ret = 0x0;
@@ -75,7 +47,7 @@ uint8_t getSWrotary() {
 // 戻り値     スイッチの方向
 /////////////////////////////////////////////////////////////////////
 uint8_t getSWtact() {
-	uint16_t ad = analog[12];
+	uint16_t ad = analogVal[12];
 	uint8_t ret = SW_NONE;
 
 	if ( ad > 3900 ) 					ret = 0x0;

@@ -22,7 +22,7 @@ int8_t pushUD = 0;
 uint8_t push = 0;
 uint8_t push1 = 0;
 uint8_t pattern_sensor = 1;
-uint8_t pattern_parameter = 1;
+uint8_t pattern_parameter1 = 1;
 uint8_t pattern_parameter2 = 1;
 uint8_t pattern_parameter3 = 1;
 uint8_t pattern_parameter4 = 1;
@@ -80,9 +80,36 @@ void setup( void )
 		//------------------------------------------------------------------
 		// パラメータ調整(通常トレース)
 		//------------------------------------------------------------------
-		// case 0x1:
+		case 0x1:
+			data_tuningLR( &pattern_parameter1, 1 );
 			
-		// 	break;
+			if ( pattern_parameter1 == 6 ) pattern_parameter1 = 1;
+			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 5;
+			
+			switch( pattern_parameter1 ) {
+				case 1:
+					// 通常走行速度
+					lcdRowPrintf(UPROW, "STRAIGHT");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_straight / 10 );
+					
+					data_tuningUD ( &speed_straight, 1 );
+					break;
+				case 2:
+					// カーブブレーキ
+					lcdRowPrintf(UPROW, "BRAKE   ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_curve_brake / 10 );
+					
+					data_tuningUD ( &speed_curve_brake, 1 );
+					break;
+				case 3:
+					// 停止速度
+					lcdRowPrintf(UPROW, "R600    ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_curve_r600 / 10  );
+					
+					data_tuningUD ( &speed_curve_r600, 1 );
+					break;
+			}
+			break;
 			
 		//------------------------------------------------------------------
 		// パラメータ調整(クランク)
@@ -253,7 +280,7 @@ void setup( void )
 				case 2:
 					// エンコーダ
 					lcdRowPrintf(UPROW, "R %6d",encTotalR);
-					lcdRowPrintf(LOWROW, "L %6d",encN);
+					lcdRowPrintf(LOWROW, "L %6d",encTotalN);
 					break;
 							
 				case 3:
@@ -273,7 +300,7 @@ void setup( void )
 				case 4:
 					// マーカーセンサ
 					lcdRowPrintf(UPROW, "Marker  ");
-					lcdRowPrintf(LOWROW, "     0x%x", getMarksensor());
+					lcdRowPrintf(LOWROW, "     0x%x", getMarkersensor());
 					break;
 
 				case 5:

@@ -1,3 +1,1 @@
-../Core/Src/timer.c:24:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/timer.c:71:6:getEncoder	16	static
-../Core/Src/timer.c:98:6:motorPwmOut	16	static
+../Core/Src/timer.c:16:6:HAL_TIM_PeriodElapsedCallback	16	static

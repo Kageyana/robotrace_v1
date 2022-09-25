@@ -1,22 +1,30 @@
-#ifndef IO_H_
-#define IO_H_
-
+#ifndef VELOCITYCTRL_H_
+#define VELOCITYCTRL_H_
 //====================================//
 // インクルード
 //====================================//
 #include "main.h"
+#include <math.h>
+#include <stdint.h>
+#include <stdbool.h>
 //====================================//
 // シンボル定義
 //====================================//
+#define KP2		20
+#define KI2		4
+#define KD2		0
 
 //====================================//
 // グローバル変数の宣言
 //====================================//
+extern bool     demo;
+extern int16_t  speedPwm;	    // モーター制御PWM
+extern double	targetSpeed;	// 目標速度
+extern uint8_t  kp2_buff, ki2_buff, kd2_buff;
 
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void ledOut( uint8_t rgb );
-uint8_t getMarksensor ( void );
+void motorControlspeed( void );
 
-#endif // IO_H_
+#endif // VELOCITYCTRL_H_

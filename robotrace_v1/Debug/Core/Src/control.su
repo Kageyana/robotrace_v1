@@ -1,7 +1,2 @@
-../Core/Src/control.c:48:6:checkCrossLine	8	static
-../Core/Src/control.c:59:6:checkRightLine	8	static
-../Core/Src/control.c:70:6:checkLeftLine	8	static
-../Core/Src/control.c:81:10:encMM	16	static
-../Core/Src/control.c:91:6:motorControlTrace	32	static
-../Core/Src/control.c:126:6:motorControlSpeed	48	static
-../Core/Src/control.c:174:6:motorPwmOutSynth	24	static
+../Core/Src/control.c:19:6:systemInit	8	static
+../Core/Src/control.c:64:6:systemLoop	16	static

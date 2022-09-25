@@ -1,3 +1,1 @@
-../Core/Src/adc.c:27:6:HAL_ADC_ConvCpltCallback	24	static
-../Core/Src/adc.c:48:9:getSWrotary	16	static
-../Core/Src/adc.c:77:9:getSWtact	16	static
+../Core/Src/adc.c:20:6:HAL_ADC_ConvCpltCallback	24	static

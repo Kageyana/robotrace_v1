@@ -32,14 +32,22 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include "adc.h"
-#include "io.h"
+// #include "adc.h"
+// #include "io.h"
 #include "timer.h"
 #include "AQM0802A.h"
-#include "ICM20608.h"
+// #include "ICM20608.h"
 #include "BNO055.h"
 #include "setup.h"
 #include "control.h"
+#include "encoder.h"
+#include "switch.h"
+#include "led.h"
+#include "markerSensor.h"
+#include "lineSensor.h"
+#include "lineTrace.h""
+#include "velocityctrl.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -100,6 +108,8 @@ void Error_Handler(void);
 #define LED_B_Pin GPIO_PIN_5
 #define LED_B_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+extern uint16_t 		analogVal[14];		// ADCÁµêÊûúÊ†ºÁ¥çÈ?çÂ??
+
 extern ADC_HandleTypeDef hadc1;
 extern DMA_HandleTypeDef hdma_adc1;
 

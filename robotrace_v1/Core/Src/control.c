@@ -6,180 +6,139 @@
 // グローバル変数の宣言
 //====================================//
 // モード関連
-uint8_t		pattern = 0;
-uint8_t 	modeLCD = 1;		// LCD表示可否		1:表示		0:消灯		
-uint8_t 	modeSlope;			// 坂チェック		0:上り坂始め	1:上り坂終わり	2:下り坂始め
-uint8_t 	modeAngle;			// サーボPWM変更	0:白線トレース	1:角度制御
-uint8_t		modePushcart;		// 手押しモード可否	0:自動走行	1:手押し
-uint8_t		msdset;				// MicroSDが初期化されたか	0:初期化失敗	1:初期化成功
-uint8_t		IMUSet = 0;			// IMUが初期化されたか		0: 初期化失敗	1:初期化成功
+uint8_t	pattern = 0;
+uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
+uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
 
-// パラメータ関連
-// 距離
-int16_t	stopping_meter;			// 停止距離
-
-// デモ関連
-bool 	demo;
-
-// サーボ関連
-// 白線トレース
-int16_t		tracePwm;		// 白線トレースサーボPWM
-int16_t 	traceBefore;	// 1ms前のセンサ値
-int16_t		devBefore;		// I成分リセット用
-double		Int;			// I成分積算値(白線トレース)
-
-// モーター関連
-int16_t 	speedPwm;			// モーター制御PWM
-double		targetSpeed;		// 目標速度
-int16_t		encoderBefore;		// 1ms前の速度
-double 		targetSpeedBefore;	// 1ms前の目標速度	
-double 		Int2;				// I成分積算値(速度制御)
-
-// ゲイン関連
-uint8_t	kp1_buff = KP1, ki1_buff = KI1, kd1_buff = KD1;
-uint8_t	kp2_buff = KP2, ki2_buff = KI2, kd2_buff = KD2;
+// 速度パラメータ関連
+double parameterSpeed[10];
 
 ///////////////////////////////////////////////////////////////////////////
-// モジュール名 checkCrossLine
-// 処理概要     クロスライン検知
-// 引数         なし
-// 戻り値       0:クロスラインなし 1:あり
-///////////////////////////////////////////////////////////////////////////
-bool checkCrossLine( void )
-{
-	if ( sensor_inp() == 0x7 ) return true;
-	else return false;
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 checkRightLine
-// 処理概要     右ハーフライン検出処理
-// 引数         なし
-// 戻り値       0:右ハーフラインなし 1:あり
-///////////////////////////////////////////////////////////////////////////
-bool checkRightLine( void )
-{
-	if ( sensor_inp() == 0x3 ) return true;
-	else return false;
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 checkLeftLine
-// 処理概要     左ハーフライン検出処理
-// 引数         なし
-// 戻り値       0:左ハーフラインなし 1:あり
-///////////////////////////////////////////////////////////////////////////
-bool checkLeftLine( void )
-{
-	if ( sensor_inp() == 0x6 ) return true;
-	else return false;
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 encMM
-// 処理概要     mmをエンコーダのパルス数に変換して返す
-// 引数         mm:変換する長さ[mm]
-// 戻り値       変換したパルス数
-///////////////////////////////////////////////////////////////////////////
-uint32_t encMM( int16_t mm )
-{
-	return PALSE_MILLIMETER * abs(mm);
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 motorControlTrace
-// 処理概要     ライントレース時サーボのPWMの計算
+// モジュール名 systemInit
+// 処理概要     初期化処理
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void motorControlTrace( void )
-{
-	int32_t iP, iD, iI, iRet;
-	int32_t Dev, Dif;
-	
-	//サーボモータ用PWM値計算
-	// Dev = (lsensor[4]+lsensor[5]) - (lsensor[6]+lsensor[7]);
-	Dev = (lsensor[5]) - (lsensor[6]);
-	// I成分積算
-	Int += (double)Dev * 0.001;
-	if ( Int > 10000 ) Int = 10000;		// I成分リミット
-	else if ( Int < -10000 ) Int = -10000;
-	Dif = ( Dev - traceBefore ) * 1;	// dゲイン1/1000倍
+void systemInit (void) {
+	// Encoder count
+	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
+	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
-	iP = (int32_t)kp1_buff * Dev;		// 比例
-	iI = (double)ki1_buff * Int;	// 積分
-	iD = (int32_t)kd1_buff * Dif;		// 微分
-	iRet = iP + iI + iD;
-	iRet = iRet >> 6;				// PWMを0～100近傍に収める
+	// ADC
+	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *) analogVal, 14) != HAL_OK)	Error_Handler();
+	// PWM
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK)			Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)			Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
 
-	// PWMの上限の設定
-	if ( iRet >  1000 ) iRet =  1000;
-	if ( iRet <  -1000 ) iRet = -1000;
-	
-	if ( Dev >= 0 )	devBefore = 0;
-	else			devBefore = 1;
-	tracePwm = iRet;
-	traceBefore = Dev;				// 次回はこの値が1ms前の値となる
+	// MAX22201 sleepmode ON
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
+	// Line sensor OFF
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+
+	HAL_Delay(500);
+
+	intiLcd();  	// LCD initialize
+	//initIMU();	// IMU initialize
+
+	// Timer interrupt
+	HAL_TIM_Base_Start_IT(&htim6);
+
+	// while(1) {
+	//   lcdRowPrintf(UPROW, "5ax %4d",analogVal[12]);
+	//   lcdRowPrintf(LOWROW, "dip %4d",analogVal[13]);
+	// }
+
+	lcdRowPrintf(UPROW, "who am i");
+	lcdRowPrintf(LOWROW, "    %#x",initBNO055());
+	HAL_Delay(700);
 }
 ///////////////////////////////////////////////////////////////////////////
-// モジュール名 motorControlSpeed
-// 処理概要     モーターのPWM計算
+// モジュール名 systemLoop
+// 処理概要     メインループ
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void motorControlSpeed( void )
-{
-	int32_t i, j, iRet, Dif, iP, iI, iD, Dev;
-	int8_t kp2, ki2, kd2;
-	
-	i = (int32_t)targetSpeed;		// 目標値
-	j = encN;			// 現在値 targetSpeedはエンコーダのパルス数*10のため
-							// 現在位置も10倍する
+void systemLoop (void) {
+	uint32_t    i = 0;
 
-	// デモモードのときゲイン変更
-	if ( demo ) {
-		kp2 = kp2_buff;
-		ki2 = ki2_buff;
-		kd2 = kd2_buff;
-	} else {
-		kp2 = kp2_buff;
-		ki2 = ki2_buff;
-		kd2 = kd2_buff;
-	}
-	
-	// 駆動モーター用PWM値計算
-	Dev = i - j;	// 偏差
-	// 目標値を変更したらI成分リセット
-	if ( i != targetSpeedBefore ) Int2 = 0;
-	
-	Int2 += (double)Dev * 0.001;	// 時間積分
-	Dif = Dev - encoderBefore;		// 微分　dゲイン1/1000倍
-	
-	iP = (int32_t)kp2 * Dev;			// 比例
-	iI = (double)ki2 * Int2;		// 積分
-	iD = (int32_t)kd2 * Dif;			// 微分
-	iRet = iP + iI + iD;
-	iRet = iRet >> 1;
-	
-	// PWMの上限の設定
-	if ( iRet >  1000 ) iRet = 1000;
-	if ( iRet <  -1000 ) iRet = -1000;
-	
-	speedPwm = iRet;
-	encoderBefore = Dev;
-	targetSpeedBefore = i;
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 motorPwmOutSynth
-// 処理概要     トレースと速度制御のPID制御量をPWMとしてモータに出力する
-// 引数         tPwm: トレースのPID制御量 sPwm: 速度のPID制御量
-// 戻り値       なし
-///////////////////////////////////////////////////////////////////////////
-void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
-	int16_t pwmR, pwmL;
+	switch (pattern) {
+      	case 0:
+			setup();
 
-	if (tPwm > 0) {
-		pwmR = sPwm - abs(tPwm);
-		pwmL = sPwm + abs(tPwm);
-	} else {
-		pwmR = sPwm + abs(tPwm);
-		pwmL = sPwm - abs(tPwm);
-	}
-	motorPwmOut(pwmL, pwmR);
+			if (start) {
+				lcdRowPrintf(UPROW, "ready   ");
+				lcdRowPrintf(LOWROW, "        ");
+
+				HAL_Delay(2000);
+				lcdRowPrintf(LOWROW, "      Go");
+				encTotalN = 0;
+				cnt1 = 0;
+				pattern = 1;
+			}
+			break;
+
+      	case 1:
+			if (!modeCurve) {
+				targetSpeed = 1.0*PALSE_MILLIMETER;
+			} else {
+				targetSpeed = 0.4*PALSE_MILLIMETER;
+			}
+			
+			motorPwmOutSynth( tracePwm, speedPwm );
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
+			// lcdRowPrintf(LOWROW, "    %4d", SGmarker);
+
+			// マーカー処理
+			if (checkmarker() == RIGHTMARKER) {
+				// ゴールマーカー処理
+				if (SGmarker == 0) {
+					SGmarker = STARTMARKER;
+				} else if (SGmarker == STARTMARKER && encTotalN > encMM(1000)) {
+					SGmarker = GOALMARKER;
+				}
+			} else if (checkmarker() == LEFTMARKER) {
+				// カーブマーカー処理
+				enc1 = 0;
+				modeCurve = 1;
+			}
+
+			if (modeCurve == 1 && enc1 >= encMM(60)) modeCurve = 0;
+
+			// ゴール
+			if (SGmarker == GOALMARKER) {
+				i = cnt1;
+				enc1 = 0;
+				pattern = 2;
+			}
+			break;
+
+      	case 2:
+			targetSpeed = 0.4*PALSE_MILLIMETER;
+			motorPwmOutSynth( tracePwm, speedPwm );
+
+			if (enc1 >= encMM(500)) {
+				pattern = 3;
+			}
+			break;
+
+      	case 3:
+			targetSpeed = 0;
+			if (encCurrentN == 0) motorPwmOutSynth( 0, 0 );
+			else                  motorPwmOutSynth( 0, speedPwm );
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+
+			lcdRowPrintf(UPROW, "   %5d",i);
+			lcdRowPrintf(LOWROW, "     End");
+			break;
+    
+      	default:
+        	break;
+    } // switch case
 }
