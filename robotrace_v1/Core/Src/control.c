@@ -11,7 +11,13 @@ uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
 uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
 
 // 速度パラメータ関連
-double parameterSpeed[10];
+uint8_t parameterSpeed[10] = {	PARAM_STRAIGHT, 
+								PARAM_CURVEBREAK,
+								PARAM_CURVEBREAK,
+								PARAM_CURVE
+							};
+
+uint16_t analogVal[14];		// ADC結果格納配列
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemInit
@@ -54,9 +60,11 @@ void systemInit (void) {
 	//   lcdRowPrintf(LOWROW, "dip %4d",analogVal[13]);
 	// }
 
-	lcdRowPrintf(UPROW, "who am i");
-	lcdRowPrintf(LOWROW, "    %#x",initBNO055());
-	HAL_Delay(700);
+	for (int i = 0; i < NUM_SENSORS; i ++) lSensors_list[i].index = i;
+
+	// lcdRowPrintf(UPROW, "who am i");
+	// lcdRowPrintf(LOWROW, "    %#x",initBNO055());
+	// HAL_Delay(700);
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemLoop
@@ -85,15 +93,15 @@ void systemLoop (void) {
 
       	case 1:
 			if (!modeCurve) {
-				targetSpeed = 1.0*PALSE_MILLIMETER;
+				targetSpeed = parameterSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
 			} else {
-				targetSpeed = 0.4*PALSE_MILLIMETER;
+				targetSpeed = parameterSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
 			}
 			
 			motorPwmOutSynth( tracePwm, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
-			// lcdRowPrintf(LOWROW, "    %4d", SGmarker);
+			lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
 
 			// マーカー処理
 			if (checkmarker() == RIGHTMARKER) {
@@ -103,13 +111,20 @@ void systemLoop (void) {
 				} else if (SGmarker == STARTMARKER && encTotalN > encMM(1000)) {
 					SGmarker = GOALMARKER;
 				}
-			} else if (checkmarker() == LEFTMARKER) {
-				// カーブマーカー処理
-				enc1 = 0;
-				modeCurve = 1;
-			}
+			} 
+			// else if (checkmarker() == LEFTMARKER) {
+			// 	// カーブマーカー処理
+			// 	enc1 = 0;
+			// 	modeCurve = 1;
+			// }
 
-			if (modeCurve == 1 && enc1 >= encMM(60)) modeCurve = 0;
+			// if (modeCurve == 1 && enc1 >= encMM(60)) modeCurve = 0;
+
+			if (angleSensor > 11 || angleSensor < -11) {
+				modeCurve = 1;
+			} else if (angleSensor < 11 && angleSensor > -11) {
+				modeCurve = 0;
+			}
 
 			// ゴール
 			if (SGmarker == GOALMARKER) {
@@ -120,7 +135,7 @@ void systemLoop (void) {
 			break;
 
       	case 2:
-			targetSpeed = 0.4*PALSE_MILLIMETER;
+			targetSpeed = parameterSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
 			motorPwmOutSynth( tracePwm, speedPwm );
 
 			if (enc1 >= encMM(500)) {

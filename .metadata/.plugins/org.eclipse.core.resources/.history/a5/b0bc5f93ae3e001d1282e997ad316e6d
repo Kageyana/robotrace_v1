@@ -1,0 +1,31 @@
+#ifndef LINESENSOR_H_
+#define LINESENSOR_H_
+
+//====================================//
+// インクルード
+//====================================//
+#include "main.h"
+//====================================//
+// シンボル定義
+//====================================//
+#define NUMSENSORS      12
+
+typedef struct {
+    uint16_t index;      // ソート前のインデックス（要素番号）
+    uint16_t value; // ソート対象の値
+} lSensors;
+//====================================//
+// グローバル変数の宣言
+//====================================//
+extern uint16_t		lSensor[12];
+extern lSensors     lSensors_list;
+//====================================//
+// プロトタイプ宣言
+//====================================//
+void getLineSensor(void);
+void initLsensors(void);
+int cmpare_lSensors(const void *n1, const void *n2);
+void getAngleSensor(void);
+void print_lSensors_list(const lSensors *lSensors_list, const int n);
+
+#endif // LINESENSOR_H_

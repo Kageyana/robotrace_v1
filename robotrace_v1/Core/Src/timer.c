@@ -28,6 +28,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         cntSW = 0;
     }
 
+    if (cnt1 % 800 == 0) {
+        // printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
+    }
+    
+    // 仮想センサステア計算
+    getAngleSensor();
     // LCD
     lcdShowProcess();
     // Encoder

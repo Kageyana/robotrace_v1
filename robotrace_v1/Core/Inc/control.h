@@ -4,9 +4,6 @@
 // インクルード
 //====================================//
 #include "main.h"
-#include <math.h>
-#include <stdint.h>
-#include <stdbool.h>
 //====================================//
 // シンボル定義
 //====================================//
@@ -21,9 +18,17 @@
 #define M_PI                3.141592
 
 // 速度パラメータ関連
-#define STRAIGHT            0
-#define CURVEBREAK          1
-#define STOP                2
+// 配列インデックス
+#define INDEX_STRAIGHT            0
+#define INDEX_CURVEBREAK          1
+#define INDEX_STOP                2
+#define INDEX_CURVE               3
+
+// パラメータ
+#define PARAM_STRAIGHT            10
+#define PARAM_CURVE               4
+#define PARAM_CURVEBREAK          4
+#define PARAM_STOP                4
 
 // 緊急停止関連
 #define STOP_SENSOR1	60		// センサ全灯
@@ -37,10 +42,12 @@
 // パターン、モード関連
 extern uint8_t pattern;		// パターン番号
 extern uint8_t modeLCD;		// LCD表示選択
-extern uint8_t modeCurve;		// カーブ判断 0:直線 1:カーブ進入
+extern uint8_t modeCurve;	// カーブ判断 0:直線 1:カーブ進入
 
 // 速度パラメータ関連
-extern double parameterSpeed[10];
+extern uint8_t parameterSpeed[10];
+
+extern uint16_t     analogVal[14];         // ADC結果格納配列
 
 //====================================//
 // プロトタイプ宣言

@@ -1,1 +1,4 @@
-../Core/Src/lineSensor.c:20:6:getLineSensor	16	static
+../Core/Src/lineSensor.c:23:6:getLineSensor	16	static
+../Core/Src/lineSensor.c:40:5:cmpare_lSensors	16	static
+../Core/Src/lineSensor.c:54:6:getAngleSensor	72	static
+../Core/Src/lineSensor.c:91:6:print_lSensors_list	24	static

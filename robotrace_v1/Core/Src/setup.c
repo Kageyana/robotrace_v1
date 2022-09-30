@@ -50,8 +50,8 @@ int16_t motorTestPwm = 200;
 // プロトタイプ宣言
 //====================================//
 void data_select ( uint8_t *data , uint8_t button );
-void data_tuningUD ( void *data, uint8_t add );
-void data_tuningLR ( void *data, uint8_t add );
+void dataTuningUD ( void *data, uint8_t add );
+void dataTuningLR ( void *data, uint8_t add );
 
 int16_t cnttest = 0;
 ///////////////////////////////////////////////////////////////
@@ -81,33 +81,41 @@ void setup( void )
 		// パラメータ調整(通常トレース)
 		//------------------------------------------------------------------
 		case 0x1:
-			data_tuningLR( &pattern_parameter1, 1 );
+			dataTuningLR( &pattern_parameter1, 1 );
 			
-			if ( pattern_parameter1 == 6 ) pattern_parameter1 = 1;
-			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 5;
+			if ( pattern_parameter1 == 5 ) pattern_parameter1 = 1;
+			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 4;
 			
 			switch( pattern_parameter1 ) {
 				case 1:
 					// 通常走行速度
 					lcdRowPrintf(UPROW, "STRAIGHT");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_straight / 10 );
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_STRAIGHT] / 10);
 					
-					data_tuningUD ( &speed_straight, 1 );
+					dataTuningUD( &parameterSpeed[INDEX_STRAIGHT], 1 );
 					break;
 				case 2:
-					// カーブブレーキ
-					lcdRowPrintf(UPROW, "BRAKE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_curve_brake / 10 );
+					// 停止速度
+					lcdRowPrintf(UPROW, "CURVE   ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_CURVE] / 10);
 					
-					data_tuningUD ( &speed_curve_brake, 1 );
+					dataTuningUD( &parameterSpeed[INDEX_CURVE], 1 );
 					break;
 				case 3:
-					// 停止速度
-					lcdRowPrintf(UPROW, "R600    ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)speed_curve_r600 / 10  );
+					// カーブブレーキ
+					lcdRowPrintf(UPROW, "BRAKE   ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_CURVEBREAK] / 10);
 					
-					data_tuningUD ( &speed_curve_r600, 1 );
+					dataTuningUD( &parameterSpeed[INDEX_CURVEBREAK], 1 );
 					break;
+				case 4:
+					// 停止速度
+					lcdRowPrintf(UPROW, "STOP    ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_STOP] / 10);
+					
+					dataTuningUD( &parameterSpeed[INDEX_STOP], 1 );
+					break;
+				
 			}
 			break;
 			
@@ -145,7 +153,7 @@ void setup( void )
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 			}
 			
-			data_tuningLR( &pattern_gain, 1 );
+			dataTuningLR( &pattern_gain, 1 );
 			if ( pattern_gain == 4 ) pattern_gain = 1;
 			else if ( pattern_gain == 0 ) pattern_gain = 3;
 			
@@ -160,7 +168,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
 					}
 					
-					data_tuningUD ( &kp1_buff, 1 );
+					dataTuningUD ( &kp1_buff, 1 );
 					break;
 				case 2:
 					// ki
@@ -172,7 +180,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
 					}
 					
-					data_tuningUD ( &ki1_buff, 1 );
+					dataTuningUD ( &ki1_buff, 1 );
 					break;
 				case 3:
 					// kd
@@ -184,7 +192,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
 					}
 					
-					data_tuningUD ( &kd1_buff, 1 );
+					dataTuningUD ( &kd1_buff, 1 );
 					break;
 			}
 			break;
@@ -196,7 +204,7 @@ void setup( void )
 			
 			// data_select( &trace_test, SW_PUSH );
 			
-			data_tuningLR( &pattern_gain, 1 );
+			dataTuningLR( &pattern_gain, 1 );
 			if ( pattern_gain == 4 ) pattern_gain = 1;
 			else if ( pattern_gain == 0 ) pattern_gain = 3;
 			
@@ -211,7 +219,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
 					}
 					
-					data_tuningUD ( &kp2_buff, 1 );
+					dataTuningUD ( &kp2_buff, 1 );
 					break;
 				case 2:
 					// ki
@@ -223,7 +231,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
 					}
 					
-					data_tuningUD ( &ki2_buff, 1 );
+					dataTuningUD ( &ki2_buff, 1 );
 					break;
 				case 3:
 					// kd
@@ -235,7 +243,7 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
 					}
 					
-					data_tuningUD ( &kd2_buff, 1 );
+					dataTuningUD ( &kd2_buff, 1 );
 					break;
 			}
 			break;
@@ -255,10 +263,10 @@ void setup( void )
 		// Motor_test
 		//------------------------------------------------------------------
 		case 0x9:
-			data_tuningLR( &pattern_sensor, 1 );
+			dataTuningLR( &pattern_sensor, 1 );
 			
-			if ( pattern_sensor == 12 ) pattern_sensor = 1;
-			else if ( pattern_sensor == 0 ) pattern_sensor = 11;
+			if ( pattern_sensor == 13 ) pattern_sensor = 1;
+			else if ( pattern_sensor == 0 ) pattern_sensor = 12;
 
 			switch( pattern_sensor ) {
 				case 1:
@@ -287,7 +295,7 @@ void setup( void )
 					// モーターテスト
 					lcdRowPrintf(UPROW, "Motor   ");
 					lcdRowPrintf(LOWROW, "   %4d%%",motorTestPwm);
-					data_tuningUD ( &motorTestPwm, 100 );
+					dataTuningUD ( &motorTestPwm, 100 );
 					if ( motor_test == 1 ) {
 						motorPwmOut(motorTestPwm,motorTestPwm);
 					} else {
@@ -304,38 +312,38 @@ void setup( void )
 					break;
 
 				case 5:
-					lcdRowPrintf(UPROW, "L1  %4d",lsensor[0]);
-					lcdRowPrintf(LOWROW, "L2  %4d",lsensor[1]);
+					lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
+					lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 
 				case 6:
-					lcdRowPrintf(UPROW, "L3  %4d",lsensor[2]);
-					lcdRowPrintf(LOWROW, "L4  %4d",lsensor[3]);
+					lcdRowPrintf(UPROW, "L3  %4d",lSensor[2]);
+					lcdRowPrintf(LOWROW, "L4  %4d",lSensor[3]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 
 				case 7:
-					lcdRowPrintf(UPROW, "L5  %4d",lsensor[4]);
-					lcdRowPrintf(LOWROW, "L6  %4d",lsensor[5]);
+					lcdRowPrintf(UPROW, "L5  %4d",lSensor[4]);
+					lcdRowPrintf(LOWROW, "L6  %4d",lSensor[5]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 				
 				case 8:
-					lcdRowPrintf(UPROW, "R1  %4d",lsensor[11]);
-					lcdRowPrintf(LOWROW, "R2  %4d",lsensor[10]);
+					lcdRowPrintf(UPROW, "R1  %4d",lSensor[11]);
+					lcdRowPrintf(LOWROW, "R2  %4d",lSensor[10]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 
 				case 9:
-					lcdRowPrintf(UPROW, "R3  %4d",lsensor[9]);
-					lcdRowPrintf(LOWROW, "R4  %4d",lsensor[8]);
+					lcdRowPrintf(UPROW, "R3  %4d",lSensor[9]);
+					lcdRowPrintf(LOWROW, "R4  %4d",lSensor[8]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 
 				case 10:
-					lcdRowPrintf(UPROW, "R5  %4d",lsensor[7]);
-					lcdRowPrintf(LOWROW, "R6  %4d",lsensor[6]);
+					lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
+					lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 				
@@ -343,6 +351,13 @@ void setup( void )
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "tra%5d",tracePwm);
 					lcdRowPrintf(LOWROW, "vel%5d",speedPwm);
+					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+					break;
+				case 12:
+					targetSpeed = 120;
+					lcdRowPrintf(UPROW, "Anglesen");
+					lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
+					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
 					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 			} // switch
@@ -400,12 +415,12 @@ void data_select ( uint8_t *data , uint8_t button )
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////
-// モジュール名 data_tuningUD
+// モジュール名 dataTuningUD
 // 処理概要     タクトスイッチでdataを加減する
 // 引数         data: 加減させる変数 add: 0: 変化量 dir: 0:上下 1:左右
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////////////////
-void data_tuningUD ( void *data, uint8_t add )
+void dataTuningUD ( void *data, uint8_t add )
 {
 	int16_t *data2 = (int16_t*)data;	// short型ポインタにキャスト
 	
@@ -437,12 +452,12 @@ void data_tuningUD ( void *data, uint8_t add )
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////
-// モジュール名 data_tuningLR
+// モジュール名 dataTuningLR
 // 処理概要     タクトスイッチでdataを加減する
 // 引数         data: 加減させる変数 add: 0: 変化量 dir: 0:上下 1:左右
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////////////////
-void data_tuningLR ( void *data, uint8_t add )
+void dataTuningLR ( void *data, uint8_t add )
 {
 	int16_t *data2 = (int16_t*)data;	// short型ポインタにキャスト
 

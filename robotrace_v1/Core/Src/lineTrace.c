@@ -7,7 +7,6 @@
 //====================================//
 int16_t		tracePwm;		// 白線トレースサーボPWM
 int16_t 	traceBefore;	// 1ms前のセンサ値
-int16_t		devBefore;		// I成分リセット用
 double		Int;			// I成分積算値(白線トレース)
 uint8_t		kp1_buff = KP1, ki1_buff = KI1, kd1_buff = KD1;
 
@@ -22,8 +21,14 @@ void motorControlTrace( void ) {
 	int32_t Dev, Dif;
 	
 	//サーボモータ用PWM値計算
-	// Dev = (lsensor[4]+lsensor[5]) - (lsensor[6]+lsensor[7]);
-	Dev = (lsensor[5]) - (lsensor[6]);
+	// if (angleSensor > 11) {
+	// 	Dev = lSensor[6] - lSensor[8];
+	// } else if (angleSensor < -11) {
+	// 	Dev = lSensor[3] - lSensor[5];
+	// } else {
+	// 	Dev = lSensor[4] - lSensor[7];
+	// }
+	Dev = lSensor[4] - lSensor[7];
 	// I成分積算
 	Int += (double)Dev * 0.001;
 	if ( Int > 10000 ) Int = 10000;		// I成分リミット
@@ -40,8 +45,6 @@ void motorControlTrace( void ) {
 	if ( iRet >  1000 ) iRet =  1000;
 	if ( iRet <  -1000 ) iRet = -1000;
 	
-	if ( Dev >= 0 )	devBefore = 0;
-	else			devBefore = 1;
 	tracePwm = iRet;
 	traceBefore = Dev;				// 次回はこの値が1ms前の値となる
 }
