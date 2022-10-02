@@ -18,10 +18,11 @@
 // グローバル変数の宣言
 //====================================//
 extern  uint8_t     SGmarker;
+extern  int32_t		encMarker;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-uint8_t getMarkersensor ( void );
-uint8_t checkmarker( void );
+uint8_t getMarkerSensor ( void );
+uint8_t checkMarker( void );
 
 #endif // MARKERSENSOR_H_

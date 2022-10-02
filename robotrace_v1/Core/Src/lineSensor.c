@@ -11,7 +11,7 @@ uint32_t		lSensorInt[12] = {0};	// ラインセンサのAD値積算用
 uint16_t		lSensor[12] = {0};	// ラインセンサのAD値積算用
 // lSensors 		*lSensors_list = (lSensors *)malloc(NUM_SENSORS * sizeof(lSensors));
 lSensors     	lSensors_list[12];
-double        angleSensor;
+double        	angleSensor;
 
 uint16_t		cntls = 0;		// ラインセンサの積算回数カウント用
 /////////////////////////////////////////////////////////////////////

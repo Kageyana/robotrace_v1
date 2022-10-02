@@ -46,9 +46,9 @@ void motorControlSpeed( void ) {
 	Int2 += (double)Dev * 0.001;	// 時間積分
 	Dif = Dev - encoderBefore;		// 微分　dゲイン1/1000倍
 	
-	iP = (int32_t)kp2 * Dev;			// 比例
+	iP = (int32_t)kp2 * Dev;		// 比例
 	iI = (double)ki2 * Int2;		// 積分
-	iD = (int32_t)kd2 * Dif;			// 微分
+	iD = (int32_t)kd2 * Dif;		// 微分
 	iRet = iP + iI + iD;
 	iRet = iRet >> 1;
 	

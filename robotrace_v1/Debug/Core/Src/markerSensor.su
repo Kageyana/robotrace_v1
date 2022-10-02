@@ -1,2 +1,2 @@
-../Core/Src/markerSensor.c:16:9:getMarkersensor	16	static
-../Core/Src/markerSensor.c:33:9:checkmarker	24	static
+../Core/Src/markerSensor.c:16:9:getMarkerSensor	16	static
+../Core/Src/markerSensor.c:33:9:checkMarker	24	static

@@ -90,30 +90,30 @@ void setup( void )
 				case 1:
 					// 通常走行速度
 					lcdRowPrintf(UPROW, "STRAIGHT");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_STRAIGHT] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_STRAIGHT] / 10);
 					
-					dataTuningUD( &parameterSpeed[INDEX_STRAIGHT], 1 );
+					dataTuningUD( &paramSpeed[INDEX_STRAIGHT], 1 );
 					break;
 				case 2:
 					// 停止速度
 					lcdRowPrintf(UPROW, "CURVE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_CURVE] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_CURVE] / 10);
 					
-					dataTuningUD( &parameterSpeed[INDEX_CURVE], 1 );
+					dataTuningUD( &paramSpeed[INDEX_CURVE], 1 );
 					break;
 				case 3:
 					// カーブブレーキ
 					lcdRowPrintf(UPROW, "BRAKE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_CURVEBREAK] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_CURVEBREAK] / 10);
 					
-					dataTuningUD( &parameterSpeed[INDEX_CURVEBREAK], 1 );
+					dataTuningUD( &paramSpeed[INDEX_CURVEBREAK], 1 );
 					break;
 				case 4:
 					// 停止速度
 					lcdRowPrintf(UPROW, "STOP    ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)parameterSpeed[INDEX_STOP] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_STOP] / 10);
 					
-					dataTuningUD( &parameterSpeed[INDEX_STOP], 1 );
+					dataTuningUD( &paramSpeed[INDEX_STOP], 1 );
 					break;
 				
 			}
@@ -138,7 +138,7 @@ void setup( void )
 			
 		// 	break;
 		//------------------------------------------------------------------
-		// ゲイン調整(トレース)
+		// ゲイン調整(直線トレース)
 		//------------------------------------------------------------------
 		case 0x5:
 			lcdRowPrintf(UPROW, "kp ki kd");
@@ -197,9 +197,68 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// ゲイン調整(速度)
+		// ゲイン調整(カーブトレース)
 		//------------------------------------------------------------------
 		case 0x6:
+			lcdRowPrintf(UPROW, "kp ki kd");
+			
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+			if ( trace_test == 1 ) {
+				motorPwmOutSynth( tracePwm, 0 );
+				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+			} else {
+				motorPwmOutSynth( 0, 0 );
+				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+			}
+			
+			dataTuningLR( &pattern_gain, 1 );
+			if ( pattern_gain == 4 ) pattern_gain = 1;
+			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			
+			switch( pattern_gain ) {
+				case 1:
+					// kp
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 ) {
+						lcdRowPrintf(LOWROW, "   %2d %2d", ki1Curve_buff, kd1Curve_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
+					}
+					
+					dataTuningUD ( &kp1Curve_buff, 1 );
+					break;
+				case 2:
+					// ki
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 ) {
+						lcdRowPrintf(LOWROW, "%2d    %2d", kp1Curve_buff, kd1Curve_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
+					}
+					
+					dataTuningUD ( &ki1Curve_buff, 1 );
+					break;
+				case 3:
+					// kd
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 ) {
+						lcdRowPrintf(LOWROW, "%2d %2d   ", kp1Curve_buff, ki1Curve_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
+					}
+					
+					dataTuningUD ( &kd1Curve_buff, 1 );
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// ゲイン調整(速度)
+		//------------------------------------------------------------------
+		case 0x7:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
 			// data_select( &trace_test, SW_PUSH );
@@ -248,12 +307,6 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 
-		//------------------------------------------------------------------
-		// case 0x7:
-			
-		// 	break;
-		//------------------------------------------------------------------
 		// プリセットパラメータ
 		//------------------------------------------------------------------
 		// case 0x8:
@@ -289,6 +342,8 @@ void setup( void )
 					// エンコーダ
 					lcdRowPrintf(UPROW, "R %6d",encTotalR);
 					lcdRowPrintf(LOWROW, "L %6d",encTotalN);
+
+					if(swValTact == SW_PUSH) encTotalN = 0;
 					break;
 							
 				case 3:
@@ -308,7 +363,7 @@ void setup( void )
 				case 4:
 					// マーカーセンサ
 					lcdRowPrintf(UPROW, "Marker  ");
-					lcdRowPrintf(LOWROW, "     0x%x", getMarkersensor());
+					lcdRowPrintf(LOWROW, "     0x%x", getMarkerSensor());
 					break;
 
 				case 5:
@@ -332,19 +387,19 @@ void setup( void )
 				case 8:
 					lcdRowPrintf(UPROW, "R1  %4d",lSensor[11]);
 					lcdRowPrintf(LOWROW, "R2  %4d",lSensor[10]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
 					break;
 
 				case 9:
 					lcdRowPrintf(UPROW, "R3  %4d",lSensor[9]);
 					lcdRowPrintf(LOWROW, "R4  %4d",lSensor[8]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
 					break;
 
 				case 10:
 					lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
 					lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
 					break;
 				
 				case 11:

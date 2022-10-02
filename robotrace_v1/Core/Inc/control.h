@@ -12,8 +12,6 @@
 #define TREAD               143
 #define SENSORBAR           307
 #define MAXDEG              42
-#define PALSE_METER         60074
-#define PALSE_MILLIMETER    60.07F
 
 #define M_PI                3.141592
 
@@ -45,9 +43,13 @@ extern uint8_t modeLCD;		// LCD表示選択
 extern uint8_t modeCurve;	// カーブ判断 0:直線 1:カーブ進入
 
 // 速度パラメータ関連
-extern uint8_t parameterSpeed[10];
+extern uint8_t paramSpeed[10];
 
 extern uint16_t     analogVal[14];         // ADC結果格納配列
+
+// ログ関連
+extern uint16_t     logMarker[10000];
+extern uint16_t     logEncoder[10000];
 
 //====================================//
 // プロトタイプ宣言

@@ -28,9 +28,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         cntSW = 0;
     }
 
-    if (cnt1 % 800 == 0) {
-        // printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
-    }
+    // if (cnt1 % 800 == 0) {
+    //     // printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
+    // }
+
+    // if (pattern > 0 && pattern < 100) {
+    //     logMarker[cnt1] = getMarkerSensor();
+    //     logEncoder[cnt1] = encTotalN - encMarker;
+    // }
     
     // 仮想センサステア計算
     getAngleSensor();

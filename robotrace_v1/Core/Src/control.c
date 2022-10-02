@@ -11,13 +11,19 @@ uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
 uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
 
 // 速度パラメータ関連
-uint8_t parameterSpeed[10] = {	PARAM_STRAIGHT, 
+uint8_t paramSpeed[10] = {	PARAM_STRAIGHT, 
 								PARAM_CURVEBREAK,
 								PARAM_CURVEBREAK,
 								PARAM_CURVE
 							};
 
 uint16_t analogVal[14];		// ADC結果格納配列
+
+// ログ関連
+uint16_t    logMarker[10000];
+uint16_t    logEncoder[10000];
+uint32_t	goalTime = 0;
+uint32_t	j=0;
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemInit
@@ -73,8 +79,8 @@ void systemInit (void) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void systemLoop (void) {
-	uint32_t    i = 0;
 
+	// if (pattern > 0 )
 	switch (pattern) {
       	case 0:
 			setup();
@@ -93,18 +99,18 @@ void systemLoop (void) {
 
       	case 1:
 			if (!modeCurve) {
-				targetSpeed = parameterSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
+				targetSpeed = paramSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
 			} else {
-				targetSpeed = parameterSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
+				targetSpeed = paramSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
 			}
 			
 			motorPwmOutSynth( tracePwm, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
-			lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
+			// lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
 
 			// マーカー処理
-			if (checkmarker() == RIGHTMARKER) {
+			if (checkMarker() == RIGHTMARKER) {
 				// ゴールマーカー処理
 				if (SGmarker == 0) {
 					SGmarker = STARTMARKER;
@@ -112,14 +118,13 @@ void systemLoop (void) {
 					SGmarker = GOALMARKER;
 				}
 			} 
-			// else if (checkmarker() == LEFTMARKER) {
+			// else if (checkMarker() == LEFTMARKER) {
 			// 	// カーブマーカー処理
 			// 	enc1 = 0;
 			// 	modeCurve = 1;
 			// }
 
-			// if (modeCurve == 1 && enc1 >= encMM(60)) modeCurve = 0;
-
+			// カーブ処理
 			if (angleSensor > 11 || angleSensor < -11) {
 				modeCurve = 1;
 			} else if (angleSensor < 11 && angleSensor > -11) {
@@ -128,29 +133,36 @@ void systemLoop (void) {
 
 			// ゴール
 			if (SGmarker == GOALMARKER) {
-				i = cnt1;
+				goalTime = cnt1;
 				enc1 = 0;
-				pattern = 2;
+				pattern = 101;
 			}
 			break;
 
-      	case 2:
-			targetSpeed = parameterSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
+      	case 101:
+			targetSpeed = paramSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
 			motorPwmOutSynth( tracePwm, speedPwm );
 
 			if (enc1 >= encMM(500)) {
-				pattern = 3;
+				pattern = 102;
 			}
 			break;
 
-      	case 3:
+      	case 102:
 			targetSpeed = 0;
 			if (encCurrentN == 0) motorPwmOutSynth( 0, 0 );
 			else                  motorPwmOutSynth( 0, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
-			lcdRowPrintf(UPROW, "   %5d",i);
-			lcdRowPrintf(LOWROW, "     End");
+			lcdRowPrintf(UPROW, "   %5d",encTotalN);
+			lcdRowPrintf(LOWROW, "   %5d",encMarker);
+
+			// if(swValTact == SW_PUSH) {
+			// 	printf("cnt\tmarker\tencoder");
+			// 	for (j=0;j<goalTime;j++) {
+			// 		printf("%4d\t%d\t%d",j,logMarker[j],logEncoder[j]);
+			// 	}
+			// }
 			break;
     
       	default:
