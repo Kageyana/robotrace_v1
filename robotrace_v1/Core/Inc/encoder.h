@@ -9,7 +9,7 @@
 // シンボル定義
 //====================================//
 #define PALSE_METER         60074
-#define PALSE_MILLIMETER    60.07F
+#define PALSE_MILLIMETER    60
 //====================================//
 // グローバル変数の宣言
 //====================================//
@@ -22,6 +22,6 @@ extern int32_t      enc1;
 // プロトタイプ宣言
 //====================================//
 void getEncoder(void);
-int32_t encMM( short mm );
+int32_t encMM( int16_t mm );
 
 #endif // ENCODER_H_

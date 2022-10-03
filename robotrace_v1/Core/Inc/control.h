@@ -8,10 +8,6 @@
 // シンボル定義
 //====================================//
 // 機体諸元
-#define WHELLBASE           149
-#define TREAD               143
-#define SENSORBAR           307
-#define MAXDEG              42
 
 #define M_PI                3.141592
 
@@ -23,7 +19,7 @@
 #define INDEX_CURVE               3
 
 // パラメータ
-#define PARAM_STRAIGHT            10
+#define PARAM_STRAIGHT            6
 #define PARAM_CURVE               4
 #define PARAM_CURVEBREAK          4
 #define PARAM_STOP                4

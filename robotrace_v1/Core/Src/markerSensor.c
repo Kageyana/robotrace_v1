@@ -7,6 +7,13 @@
 //====================================//
 uint8_t     SGmarker = 0;
 int32_t		encMarker = 0;
+int32_t		encMarker2 = 0;
+int32_t		encMarker3 = 0;
+int32_t		cntmark = 0;
+int32_t     encth = 900;
+int32_t 	mark = 0;
+int32_t		encCross = 0;
+int32_t 	encCross2 = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
 // 処理概要     マーカーセンサの値を取得
@@ -19,8 +26,8 @@ uint8_t getMarkerSensor ( void ) {
 	r = HAL_GPIO_ReadPin(Sidesensor1_GPIO_Port,Sidesensor1_Pin);
 	l = HAL_GPIO_ReadPin(Sidesensor2_GPIO_Port,Sidesensor2_Pin);
 
-	if (r == 0) ret += 0x01;
-	if (l == 0) ret += 0x02;
+	if (r == 0) ret += RIGHTMARKER;
+	if (l == 0) ret += LEFTMARKER;
 
 	return ret;
 }
@@ -33,12 +40,27 @@ uint8_t getMarkerSensor ( void ) {
 uint8_t checkMarker( void ) {
 	uint8_t ret = 0;
 
-	if ( getMarkerSensor() ) {
+	if (encTotalN - encCross >= encMM(40)) encCross = 0;
+
+	if ( getMarkerSensor() != 0) {
 		if (encMarker == 0) {
+			mark = getMarkerSensor();
 			encMarker = encTotalN;
-		} else if (encTotalN - encMarker >= encMM(35)) {
-			encMarker = 0;
+		} else if (encTotalN - encMarker <= encth && encTotalN - encCross <= encMM(40)) {
+			// encMarker2 = encTotalN
+			// encMarker3 = encMarker;
+			// cntmark++;
+			// encMarker = 0;
+			
+			// if (mark != getMarkerSensor()) {
+			// 	ret = 0;
+			// 	encMarker = 0;
+			// 	encCross = encTotalN;
+			// }
+		} else if (encTotalN - encMarker >= encth) {
 			ret = getMarkerSensor();
+			encMarker = 0;
+			mark = 0;
 		}
 	}
 

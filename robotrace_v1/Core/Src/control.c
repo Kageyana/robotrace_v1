@@ -107,17 +107,23 @@ void systemLoop (void) {
 			motorPwmOutSynth( tracePwm, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
-			// lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
+			lcdRowPrintf(LOWROW, "   %d", SGmarker);
 
 			// マーカー処理
-			if (checkMarker() == RIGHTMARKER) {
-				// ゴールマーカー処理
-				if (SGmarker == 0) {
-					SGmarker = STARTMARKER;
-				} else if (SGmarker == STARTMARKER && encTotalN > encMM(1000)) {
-					SGmarker = GOALMARKER;
+			if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 11000) {
+				encCross2 = encTotalN;
+			}
+			if (encTotalN - encCross2 >= encMM (200) ) {
+				if (checkMarker() == RIGHTMARKER) {
+					// ゴールマーカー処理
+					if (SGmarker == 0) {
+						SGmarker = STARTMARKER;
+					} else if (SGmarker == STARTMARKER && encTotalN > encMM(500)) {
+						SGmarker = GOALMARKER;
+					}
 				}
-			} 
+			}
+			 
 			// else if (checkMarker() == LEFTMARKER) {
 			// 	// カーブマーカー処理
 			// 	enc1 = 0;
@@ -154,8 +160,8 @@ void systemLoop (void) {
 			else                  motorPwmOutSynth( 0, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
-			lcdRowPrintf(UPROW, "   %5d",encTotalN);
-			lcdRowPrintf(LOWROW, "   %5d",encMarker);
+			lcdRowPrintf(UPROW, " %7d",encMarker2);
+			lcdRowPrintf(LOWROW, " %7d",cntmark);
 
 			// if(swValTact == SW_PUSH) {
 			// 	printf("cnt\tmarker\tencoder");

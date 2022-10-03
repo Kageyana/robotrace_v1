@@ -83,8 +83,8 @@ void setup( void )
 		case 0x1:
 			dataTuningLR( &pattern_parameter1, 1 );
 			
-			if ( pattern_parameter1 == 5 ) pattern_parameter1 = 1;
-			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 4;
+			if ( pattern_parameter1 == 6 ) pattern_parameter1 = 1;
+			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 5;
 			
 			switch( pattern_parameter1 ) {
 				case 1:
@@ -114,6 +114,13 @@ void setup( void )
 					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_STOP] / 10);
 					
 					dataTuningUD( &paramSpeed[INDEX_STOP], 1 );
+					break;
+				case 5:
+					// 停止速度
+					lcdRowPrintf(UPROW, "enc     ");
+					lcdRowPrintf(LOWROW, "  %4d", encth);
+					
+					dataTuningUD( &encth, 100 );
 					break;
 				
 			}
