@@ -23,7 +23,7 @@ extern  int32_t		encMarker;
 extern int32_t		encMarker2;
 extern int32_t		encMarker3;
 extern int32_t		cntmark;
-extern int32_t     encth;
+extern int32_t      encth;
 extern int32_t      encCross2;
 
 //====================================//

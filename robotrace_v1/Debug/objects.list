@@ -1,6 +1,7 @@
 "./Core/Src/AQM0802A.o"
 "./Core/Src/BNO055.o"
 "./Core/Src/ICM20608.o"
+"./Core/Src/INA260.o"
 "./Core/Src/control.o"
 "./Core/Src/encoder.o"
 "./Core/Src/led.o"

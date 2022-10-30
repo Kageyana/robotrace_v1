@@ -53,7 +53,7 @@ void writeByte( uint8_t reg, uint8_t val )  {
 // 戻り値       なし
 ////////////////////////////////////////////////////////////////////
 void readArry( uint8_t reg, uint8_t *val2 ) {
-	uint8_t ret, val;
+	uint16_t ret, val;
 	
 	ret = reg | 0x80;
 	CS_RESET;

@@ -10,13 +10,13 @@
 //====================================//
 // シンボル定義
 //====================================//
-#define KP1		5
+#define KP1		19
 #define KI1		0
-#define KD1		10
+#define KD1		97
 
-#define KP1CURVE		3
+#define KP1CURVE		8
 #define KI1CURVE		0
-#define KD1CURVE		14
+#define KD1CURVE		40
 
 //====================================//
 // グローバル変数の宣言

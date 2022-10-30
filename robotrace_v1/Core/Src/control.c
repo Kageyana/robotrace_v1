@@ -12,18 +12,21 @@ uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
 
 // 速度パラメータ関連
 uint8_t paramSpeed[10] = {	PARAM_STRAIGHT, 
-								PARAM_CURVEBREAK,
-								PARAM_CURVEBREAK,
-								PARAM_CURVE
+							PARAM_CURVEBREAK,
+							PARAM_STOP,
+							PARAM_CURVE
 							};
 
-uint16_t analogVal[14];		// ADC結果格納配列
+uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
+							};
+
+uint16_t analogVal[12];		// ADC結果格納配列
 
 // ログ関連
-uint16_t    logMarker[10000];
-uint16_t    logEncoder[10000];
-uint32_t	goalTime = 0;
-uint32_t	j=0;
+uint16_t logMarker[10000];
+uint16_t logEncoder[10000];
+uint32_t goalTime = 0;
+uint32_t j=0;
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemInit
@@ -33,11 +36,14 @@ uint32_t	j=0;
 ///////////////////////////////////////////////////////////////////////////
 void systemInit (void) {
 	// Encoder count
+	int16_t val;
+
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
 	// ADC
-	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *) analogVal, 14) != HAL_OK)	Error_Handler();
+	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK)	Error_Handler();
+
 	// PWM
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK)			Error_Handler();
@@ -45,7 +51,7 @@ void systemInit (void) {
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
 	if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
 
-	// MAX22201 sleepmode ON
+	// MAX22201 sleep mode ON
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 500);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
@@ -62,11 +68,12 @@ void systemInit (void) {
 	HAL_TIM_Base_Start_IT(&htim6);
 
 	// while(1) {
-	//   lcdRowPrintf(UPROW, "5ax %4d",analogVal[12]);
-	//   lcdRowPrintf(LOWROW, "dip %4d",analogVal[13]);
+	// 	// lcdRowPrintf(UPROW, "   %5d",lSensorBright[0]);
+	// 	val = readINA260(0x01);
+	// 	if (val > 32767) val = ~val+0x8000;
+	// 	lcdRowPrintf(LOWROW, "   %5d",val);
+	// 	HAL_Delay(500);
 	// }
-
-	for (int i = 0; i < NUM_SENSORS; i ++) lSensors_list[i].index = i;
 
 	// lcdRowPrintf(UPROW, "who am i");
 	// lcdRowPrintf(LOWROW, "    %#x",initBNO055());
@@ -89,7 +96,7 @@ void systemLoop (void) {
 				lcdRowPrintf(UPROW, "ready   ");
 				lcdRowPrintf(LOWROW, "        ");
 
-				HAL_Delay(2000);
+				HAL_Delay(5000);
 				lcdRowPrintf(LOWROW, "      Go");
 				encTotalN = 0;
 				cnt1 = 0;
@@ -105,12 +112,12 @@ void systemLoop (void) {
 			}
 			
 			motorPwmOutSynth( tracePwm, speedPwm );
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
-			lcdRowPrintf(LOWROW, "   %d", SGmarker);
+			// lcdRowPrintf(LOWROW, "   %d", SGmarker);
 
 			// マーカー処理
-			if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 11000) {
+			if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 6000) {
 				encCross2 = encTotalN;
 			}
 			if (encTotalN - encCross2 >= encMM (200) ) {
@@ -124,17 +131,11 @@ void systemLoop (void) {
 				}
 			}
 			 
-			// else if (checkMarker() == LEFTMARKER) {
-			// 	// カーブマーカー処理
-			// 	enc1 = 0;
-			// 	modeCurve = 1;
-			// }
-
 			// カーブ処理
-			if (angleSensor > 11 || angleSensor < -11) {
-				modeCurve = 1;
-			} else if (angleSensor < 11 && angleSensor > -11) {
+			if (angleSensor < paramAngle[INDEX_ANGLE_CURVE] && angleSensor > -paramAngle[INDEX_ANGLE_CURVE]) {
 				modeCurve = 0;
+			} else {
+				modeCurve = 1;
 			}
 
 			// ゴール
@@ -160,8 +161,8 @@ void systemLoop (void) {
 			else                  motorPwmOutSynth( 0, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
-			lcdRowPrintf(UPROW, " %7d",encMarker2);
-			lcdRowPrintf(LOWROW, " %7d",cntmark);
+			lcdRowPrintf(UPROW, "TIME    ");
+			lcdRowPrintf(LOWROW, "  %5ds",goalTime);
 
 			// if(swValTact == SW_PUSH) {
 			// 	printf("cnt\tmarker\tencoder");

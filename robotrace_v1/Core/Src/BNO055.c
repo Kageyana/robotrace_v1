@@ -13,10 +13,10 @@
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 uint8_t initBNO055(void) {
-    uint8_t Rx_buf[1], Tx_buf[1] = {0x00};
+    uint8_t rx_buf[1], tx_buf[1] = {0x00};
 
-    HAL_I2C_Master_Transmit(&hi2c1,BNO055_SLAVEADDRESS,Tx_buf,1,1000);
-    HAL_I2C_Master_Receive(&hi2c1,BNO055_SLAVEADDRESS|0x01,Rx_buf,1,1000);
+    HAL_I2C_Master_Transmit(&hi2c1,BNO055_SLAVEADDRESS,tx_buf,1,1000);
+    HAL_I2C_Master_Receive(&hi2c1,BNO055_SLAVEADDRESS|0x0001,rx_buf,1,1000);
 
-    return Rx_buf[0];
+    return rx_buf[0];
 }

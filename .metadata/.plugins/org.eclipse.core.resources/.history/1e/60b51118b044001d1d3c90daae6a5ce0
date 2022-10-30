@@ -1,0 +1,62 @@
+//====================================//
+// インクルード
+//====================================//
+#include "timer.h"
+//====================================//
+// グローバル変数の宣
+//====================================//
+uint32_t    cnt1 = 0;
+
+/////////////////////////////////////////////////////////////////////
+// モジュール名 HAL_TIM_PeriodElapsedCallback
+// 処理概要     タイマー割り込み(1ms)
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	cnt1++;
+    cntSW++;
+    cntSetup1++;
+    cntSetup2++;
+    cntSetup3++;
+
+    // スイッチの入力を取得
+    // if () {
+        
+        
+    // }
+
+    
+
+    if (cnt1 % 800 == 0) {
+        // printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
+    	HAL_ADC_Start(&hadc2);
+        if( HAL_ADC_PollForConversion(&hadc2, 10) == HAL_OK ) printf("%d\n",HAL_ADC_GetValue(&hadc2));
+        HAL_ADC_Stop(&hadc2);
+        printf("test\n");
+        // if( cntSW >= 100 && HAL_ADC_PollForConversion(&hadc1, 1) == HAL_OK ) {
+            
+
+        //     // swValTact = getSWtact();
+        //     // swValRotary = getSWrotary();
+        //     cntSW = 0;
+        // }
+    }
+
+    // if (pattern > 0 && pattern < 100) {
+    //     logMarker[cnt1] = getMarkerSensor();
+    //     logEncoder[cnt1] = encTotalN - encMarker;
+    // }
+    
+    // 仮想センサステア計算
+    getAngleSensor();
+    // LCD
+    lcdShowProcess();
+    // Encoder
+    getEncoder();
+    // PWM
+    motorControlTrace();
+    motorControlSpeed();
+
+}

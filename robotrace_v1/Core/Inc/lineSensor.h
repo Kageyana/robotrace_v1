@@ -19,14 +19,13 @@ typedef struct {
 // グローバル変数の宣言
 //====================================//
 extern uint16_t		lSensor[12];
-extern lSensors     lSensors_list[12];
+extern lSensors     lSensorsList[12];
 extern double       angleSensor;
+
 //====================================//
 // プロトタイプ宣言
 //====================================//
 void getLineSensor(void);
-int cmpare_lSensors(const void *n1, const void *n2);
 void getAngleSensor(void);
-void print_lSensors_list(const lSensors *list, const uint16_t n);
 
 #endif // LINESENSOR_H_

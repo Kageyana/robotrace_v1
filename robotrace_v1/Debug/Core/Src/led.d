@@ -34,10 +34,10 @@ Core/Src/led.o: ../Core/Src/led.c ../Core/Inc/led.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/timer.h ../Core/Inc/AQM0802A.h ../Core/Inc/BNO055.h \
- ../Core/Inc/setup.h ../Core/Inc/control.h ../Core/Inc/encoder.h \
- ../Core/Inc/switch.h ../Core/Inc/led.h ../Core/Inc/markerSensor.h \
- ../Core/Inc/lineSensor.h ../Core/Inc/lineTrace.h \
- ../Core/Inc/velocityctrl.h
+ ../Core/Inc/setup.h ../Core/Inc/encoder.h ../Core/Inc/switch.h \
+ ../Core/Inc/led.h ../Core/Inc/markerSensor.h ../Core/Inc/lineSensor.h \
+ ../Core/Inc/lineTrace.h ../Core/Inc/velocityctrl.h ../Core/Inc/control.h \
+ ../Core/Inc/INA260.h
 ../Core/Inc/led.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -78,7 +78,6 @@ Core/Src/led.o: ../Core/Src/led.c ../Core/Inc/led.h ../Core/Inc/main.h \
 ../Core/Inc/AQM0802A.h:
 ../Core/Inc/BNO055.h:
 ../Core/Inc/setup.h:
-../Core/Inc/control.h:
 ../Core/Inc/encoder.h:
 ../Core/Inc/switch.h:
 ../Core/Inc/led.h:
@@ -86,3 +85,5 @@ Core/Src/led.o: ../Core/Src/led.c ../Core/Inc/led.h ../Core/Inc/main.h \
 ../Core/Inc/lineSensor.h:
 ../Core/Inc/lineTrace.h:
 ../Core/Inc/velocityctrl.h:
+../Core/Inc/control.h:
+../Core/Inc/INA260.h:

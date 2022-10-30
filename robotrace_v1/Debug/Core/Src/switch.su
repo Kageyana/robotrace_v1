@@ -1,2 +1,2 @@
-../Core/Src/switch.c:20:9:getSWrotary	16	static
-../Core/Src/switch.c:49:9:getSWtact	16	static
+../Core/Src/switch.c:20:9:getSWrotary	24	static
+../Core/Src/switch.c:48:9:getSWtact	24	static

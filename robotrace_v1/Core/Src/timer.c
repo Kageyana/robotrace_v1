@@ -22,14 +22,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     cntSetup3++;
 
     // スイッチの入力を取得
-    if (cntSW >= 100) {
-        swValTact = getSWtact();
-        swValRotary = getSWrotary();
+    if( cntSW >= 100 ) {
+        HAL_ADC_Start(&hadc2);
+        HAL_ADC_PollForConversion(&hadc2, 1);
+        swValTact = getSWtact(HAL_ADC_GetValue(&hadc2));
+
+        HAL_ADC_Start(&hadc2);
+		HAL_ADC_PollForConversion(&hadc2, 1);
+        swValRotary = getSWrotary(HAL_ADC_GetValue(&hadc2));
+        // HAL_ADC_Stop(&hadc2);
         cntSW = 0;
     }
+    
 
     // if (cnt1 % 800 == 0) {
-    //     // printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
+    //     printf("trace %d\t sen5 %d\t sen6 %d\n",tracePwm, lSensor[5], lSensor[6]);
+    	
+        
     // }
 
     // if (pattern > 0 && pattern < 100) {
@@ -46,5 +55,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // PWM
     motorControlTrace();
     motorControlSpeed();
+    // 電流計測
+    readCurrent();
 
 }

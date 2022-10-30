@@ -1,0 +1,2 @@
+../Core/Src/INA260.c:16:10:readINA260	32	static
+../Core/Src/INA260.c:30:6:readCurrent	16	static

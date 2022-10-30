@@ -22,26 +22,26 @@ void motorControlTrace( void ) {
 	int32_t Dev, Dif, kp, ki, kd;
 	
 	//サーボモータ用PWM値計算
-	// if (angleSensor > 27.5) {
-	// 	kp = kp1Curve_buff;
-	// 	ki = ki1Curve_buff;
-	// 	kd = kd1Curve_buff;
-	// 	Dev = lSensor[5] - lSensor[8];
-	// } else if (angleSensor < -27.5) {
-	// 	kp = kp1Curve_buff;
-	// 	ki = ki1Curve_buff;
-	// 	kd = kd1Curve_buff;
-	// 	Dev = lSensor[3] - lSensor[6];
-	// } else {
-	// 	kp = kp1_buff;
-	// 	ki = ki1_buff;
-	// 	kd = kd1_buff;
-	// 	Dev = lSensor[4] - lSensor[7];
-	// }
-	kp = kp1_buff;
-	ki = ki1_buff;
-	kd = kd1_buff;
-	Dev = lSensor[4] - lSensor[7];
+	if (angleSensor > paramAngle[INDEX_ANGLE_CURVE]) {
+		kp = kp1Curve_buff;
+		ki = ki1Curve_buff;
+		kd = kd1Curve_buff;
+		Dev = lSensor[5] - lSensor[8];
+	} else if (angleSensor < -paramAngle[INDEX_ANGLE_CURVE]) {
+		kp = kp1Curve_buff;
+		ki = ki1Curve_buff;
+		kd = kd1Curve_buff;
+		Dev = lSensor[3] - lSensor[6];
+	} else {
+		kp = kp1_buff;
+		ki = ki1_buff;
+		kd = kd1_buff;
+		Dev = lSensor[4] - lSensor[7];
+	}
+	// kp = kp1_buff;
+	// ki = ki1_buff;
+	// kd = kd1_buff;
+	// Dev = lSensor[4] - lSensor[7];
 	// I成分積算
 	Int += (double)Dev * 0.001;
 	if ( Int > 10000 ) Int = 10000;		// I成分リミット

@@ -9,8 +9,6 @@
 //====================================//
 // 機体諸元
 
-#define M_PI                3.141592
-
 // 速度パラメータ関連
 // 配列インデックス
 #define INDEX_STRAIGHT            0
@@ -19,10 +17,13 @@
 #define INDEX_CURVE               3
 
 // パラメータ
-#define PARAM_STRAIGHT            6
-#define PARAM_CURVE               4
+#define PARAM_STRAIGHT            15
 #define PARAM_CURVEBREAK          4
 #define PARAM_STOP                4
+#define PARAM_CURVE               6
+
+#define PARAM_ANGLE_CURVE         17
+#define INDEX_ANGLE_CURVE         0
 
 // 緊急停止関連
 #define STOP_SENSOR1	60		// センサ全灯
@@ -38,10 +39,11 @@ extern uint8_t pattern;		// パターン番号
 extern uint8_t modeLCD;		// LCD表示選択
 extern uint8_t modeCurve;	// カーブ判断 0:直線 1:カーブ進入
 
-// 速度パラメータ関連
+// パラメータ関連
 extern uint8_t paramSpeed[10];
+extern uint8_t paramAngle[10];
 
-extern uint16_t     analogVal[14];         // ADC結果格納配列
+extern uint16_t     analogVal[12];         // ADC結果格納配列
 
 // ログ関連
 extern uint16_t     logMarker[10000];

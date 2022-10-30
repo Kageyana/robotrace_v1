@@ -25,7 +25,6 @@ void motorControlSpeed( void ) {
 	
 	i = (int32_t)targetSpeed;		// 目標値
 	j = encCurrentN;				// 現在値 targetSpeedはエンコーダのパルス数*10のため
-									// 現在位置も10倍する
 
 	// デモモードのときゲイン変更
 	if ( demo ) {

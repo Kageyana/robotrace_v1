@@ -41,7 +41,6 @@ extern "C" {
 // #include "ICM20608.h"
 #include "BNO055.h"
 #include "setup.h"
-#include "control.h"
 #include "encoder.h"
 #include "switch.h"
 #include "led.h"
@@ -49,6 +48,8 @@ extern "C" {
 #include "lineSensor.h"
 #include "lineTrace.h"
 #include "velocityctrl.h"
+#include "control.h"
+#include "INA260.h"
 
 /* USER CODE END Includes */
 
@@ -83,8 +84,6 @@ void Error_Handler(void);
 #define Output1_GPIO_Port GPIOC
 #define Output2_Pin GPIO_PIN_15
 #define Output2_GPIO_Port GPIOC
-#define SW_5xis_Pin GPIO_PIN_0
-#define SW_5xis_GPIO_Port GPIOC
 #define Sidesensor2_Pin GPIO_PIN_1
 #define Sidesensor2_GPIO_Port GPIOB
 #define Input2_Pin GPIO_PIN_2
@@ -112,6 +111,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 
 extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
 extern DMA_HandleTypeDef hdma_adc1;
 
 extern I2C_HandleTypeDef hi2c1;

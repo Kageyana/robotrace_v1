@@ -22,6 +22,7 @@ int8_t pushUD = 0;
 uint8_t push = 0;
 uint8_t push1 = 0;
 uint8_t pattern_sensor = 1;
+uint8_t pattern_sensor_line = 1;
 uint8_t pattern_parameter1 = 1;
 uint8_t pattern_parameter2 = 1;
 uint8_t pattern_parameter3 = 1;
@@ -66,8 +67,6 @@ void setup( void )
 	int16_t i, j, k;
 	
 	// ディップスイッチで項目選択
-	// if ( cntSW >= 100 ) {
-//	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 	switch ( swValRotary ) {
 		//------------------------------------------------------------------
 		// スタート待ち
@@ -116,45 +115,25 @@ void setup( void )
 					dataTuningUD( &paramSpeed[INDEX_STOP], 1 );
 					break;
 				case 5:
-					// 停止速度
-					lcdRowPrintf(UPROW, "enc     ");
-					lcdRowPrintf(LOWROW, "  %4d", encth);
+					lcdRowPrintf(UPROW, "ANGLECUR");
+					lcdRowPrintf(LOWROW, "    %4d", paramAngle[INDEX_ANGLE_CURVE]);
 					
-					dataTuningUD( &encth, 100 );
+					dataTuningUD( &paramAngle[INDEX_ANGLE_CURVE], 1 );
 					break;
 				
 			}
 			break;
-			
-		//------------------------------------------------------------------
-		// パラメータ調整(クランク)
-		//------------------------------------------------------------------
-		// case 0x2:
-			
-		// 	break;
-		//------------------------------------------------------------------
-		// パラメータ調整(レーンチェンジ)
-		//------------------------------------------------------------------
-		// case 0x3:
-			
-		// 	break;
-		//------------------------------------------------------------------
-		// パラメータ調整(坂道、角度)
-		//------------------------------------------------------------------
-		// case 0x4:
-			
-		// 	break;
 		//------------------------------------------------------------------
 		// ゲイン調整(直線トレース)
 		//------------------------------------------------------------------
-		case 0x5:
+		case 0x2:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
 				motorPwmOutSynth( tracePwm, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 			} else {
 				motorPwmOutSynth( 0, 0 );
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
@@ -206,14 +185,14 @@ void setup( void )
 		//------------------------------------------------------------------
 		// ゲイン調整(カーブトレース)
 		//------------------------------------------------------------------
-		case 0x6:
+		case 0x3:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
 				motorPwmOutSynth( tracePwm, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 			} else {
 				motorPwmOutSynth( 0, 0 );
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
@@ -265,7 +244,7 @@ void setup( void )
 		//------------------------------------------------------------------
 		// ゲイン調整(速度)
 		//------------------------------------------------------------------
-		case 0x7:
+		case 0x4:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
 			// data_select( &trace_test, SW_PUSH );
@@ -314,19 +293,14 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// プリセットパラメータ
-		//------------------------------------------------------------------
-		// case 0x8:
-			
-		// 	break;
-		//------------------------------------------------------------------
 		// Motor_test
 		//------------------------------------------------------------------
-		case 0x9:
+		case 0x5:
 			dataTuningLR( &pattern_sensor, 1 );
 			
-			if ( pattern_sensor == 13 ) pattern_sensor = 1;
-			else if ( pattern_sensor == 0 ) pattern_sensor = 12;
+			if ( pattern_sensor == 9 ) pattern_sensor = 1;
+			else if ( pattern_sensor == 0 ) pattern_sensor = 8;
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 
 			switch( pattern_sensor ) {
 				case 1:
@@ -357,13 +331,11 @@ void setup( void )
 					// モーターテスト
 					lcdRowPrintf(UPROW, "Motor   ");
 					lcdRowPrintf(LOWROW, "   %4d%%",motorTestPwm);
+					// モータ回転
 					dataTuningUD ( &motorTestPwm, 100 );
-					if ( motor_test == 1 ) {
-						motorPwmOut(motorTestPwm,motorTestPwm);
-					} else {
-						motorPwmOut(0, 0);
-					}
-					
+					if ( motor_test == 1 ) motorPwmOut(motorTestPwm,motorTestPwm);
+					else motorPwmOut(0, 0);
+										
 					data_select( &motor_test, SW_PUSH );
 					break;
 
@@ -374,83 +346,71 @@ void setup( void )
 					break;
 
 				case 5:
-					lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
-					lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
+					// 電流センサ
+					lcdRowPrintf(UPROW, " %3.1lfmA", CurrntR);
+					lcdRowPrintf(LOWROW, " %3.1lfmA", CurrntL);
+
+					motorTestPwm = 80;
+					data_select( &motor_test, SW_PUSH );
+					if ( motor_test == 1 ) motorPwmOut(motorTestPwm,motorTestPwm);
+					else motorPwmOut(0, 0);
 					break;
 
 				case 6:
-					lcdRowPrintf(UPROW, "L3  %4d",lSensor[2]);
-					lcdRowPrintf(LOWROW, "L4  %4d",lSensor[3]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
-					break;
+					// ラインセンサ
+					dataTuningUD( &pattern_sensor_line, 1 );
+					if ( pattern_sensor == 7 ) pattern_sensor = 1;
+					else if ( pattern_sensor == 0 ) pattern_sensor = 6;
+
+					switch( pattern_sensor_line ) {
+						case 1:
+							lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
+							lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
+							break;
+
+						case 2:
+							lcdRowPrintf(UPROW, "L3  %4d",lSensor[2]);
+							lcdRowPrintf(LOWROW, "L4  %4d",lSensor[3]);
+							break;
+						case 3:
+							lcdRowPrintf(UPROW, "L5  %4d",lSensor[4]);
+							lcdRowPrintf(LOWROW, "L6  %4d",lSensor[5]);
+							break;
+						
+						case 4:
+							lcdRowPrintf(UPROW, "R1  %4d",lSensor[11]);
+							lcdRowPrintf(LOWROW, "R2  %4d",lSensor[10]);
+							break;
+
+						case 5:
+							lcdRowPrintf(UPROW, "R3  %4d",lSensor[9]);
+							lcdRowPrintf(LOWROW, "R4  %4d",lSensor[8]);
+							break;
+
+						case 6:
+							lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
+							lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
+							break;
+					}
 
 				case 7:
-					lcdRowPrintf(UPROW, "L5  %4d",lSensor[4]);
-					lcdRowPrintf(LOWROW, "L6  %4d",lSensor[5]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
-					break;
-				
-				case 8:
-					lcdRowPrintf(UPROW, "R1  %4d",lSensor[11]);
-					lcdRowPrintf(LOWROW, "R2  %4d",lSensor[10]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
-					break;
-
-				case 9:
-					lcdRowPrintf(UPROW, "R3  %4d",lSensor[9]);
-					lcdRowPrintf(LOWROW, "R4  %4d",lSensor[8]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
-					break;
-
-				case 10:
-					lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
-					lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
-					break;
-				
-				case 11:
+					// PID出力のPWM
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "tra%5d",tracePwm);
 					lcdRowPrintf(LOWROW, "vel%5d",speedPwm);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
-				case 12:
+				case 8:
+					// 仮想センサ角度
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "Anglesen");
 					lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
 					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
-					__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 1000);
 					break;
 			} // switch
 			break;
-		//------------------------------------------------------------------
-		// 位置固定デモ
-		//------------------------------------------------------------------
-		// case 0xa:
-			
-		// 	break;
-		//------------------------------------------------------------------
-		// MicroSD
-		//------------------------------------------------------------------
-		// case 0xb:
-			
-		// 	break;
-		//------------------------------------------------------------------
-		// キャリブレーション
-		//------------------------------------------------------------------
-		// case 0xc:
-			
-		// 	break;
-		//------------------------------------------------------------------
-		// フラッシュ
-		//------------------------------------------------------------------
-		// case 0xd:
-			
-		// 	break;
 
 	default:
-		lcdRowPrintf(UPROW, "%#x     ", getSWrotary());
+		lcdRowPrintf(UPROW, "%#x     ", swValRotary);
 		lcdRowPrintf(LOWROW, "none    ");
 		break;
 	} // switch

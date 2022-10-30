@@ -17,8 +17,7 @@ uint16_t		cntSW = 0;		// 5方向タクトスイッチのチャタリング防止
 // 引数     なし
 // 戻り値    ロータリスイッチのカウント
 /////////////////////////////////////////////////////////////////////
-uint8_t getSWrotary() {
-	uint16_t ad = analogVal[13];
+uint8_t getSWrotary( uint16_t ad ) {
 	uint8_t ret = 0;
 
 	if ( ad > 3900 ) 					ret = 0x0;
@@ -46,8 +45,7 @@ uint8_t getSWrotary() {
 // 引数      なし
 // 戻り値     スイッチの方向
 /////////////////////////////////////////////////////////////////////
-uint8_t getSWtact() {
-	uint16_t ad = analogVal[12];
+uint8_t getSWtact( uint16_t ad ) {
 	uint8_t ret = SW_NONE;
 
 	if ( ad > 3900 ) 					ret = 0x0;
