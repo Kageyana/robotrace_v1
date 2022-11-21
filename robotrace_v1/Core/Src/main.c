@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,6 +59,14 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN PV */
+FATFS fs;
+FIL fil;
+FRESULT fresult;
+char buffer[1024];
+UINT br, bw;
+FATFS *pfs;
+DWORD fre_clust;
+uint32_t total, free_space;
 
 /* USER CODE END PV */
 
@@ -126,8 +135,10 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM6_Init();
   MX_ADC2_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   systemInit();
+  initMicroSD();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -464,7 +475,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi2.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -502,7 +513,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -905,6 +916,33 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
   getLineSensor();
+}
+
+void initMicroSD(void) {
+  fresult = f_mount(&fs, "", 0);    // SDカードのマウント(ディレクトリは/)
+	if (fresult != FR_OK) printf ("error in mounting SD CARD...\r\n");
+	else printf("SD CARD mounted successfully...\r\n");
+
+	f_getfree("", &fre_clust, &pfs); // クラスタサイズ取得
+	total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // SDカード容量計算
+	printf("SD_SIZE: \t%lu\r\n", total);
+
+	free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // 空き容量計算
+	printf("SD free space: \t%lu\r\n", free_space);
+
+  // ファイルオープン 同名ファイルを上書き なければ新規作成
+	fresult = f_open(&fil, "test_file1.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
+	// 書き込み sprintfが応用できそう
+  fresult = f_puts("TEST!!!\r\n", &fil);
+  // ファイル操作終了
+	fresult = f_close(&fil);
+
+  // ファイルオープン
+	fresult = f_open(&fil, "file1.txt", FA_READ);
+  // データ取得
+	f_gets(buffer, sizeof(buffer), &fil);
+  // ファイル操作終了
+	f_close(&fil);
 }
 /* USER CODE END 4 */
 

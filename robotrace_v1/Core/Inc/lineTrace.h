@@ -22,7 +22,6 @@
 // グローバル変数の宣言
 //====================================//
 extern int16_t 	tracePwm;	// 白線トレースサーボPWM
-extern double	Int;		// I成分積算値(白線トレース)
 extern uint8_t  kp1_buff, ki1_buff, kd1_buff;
 extern uint8_t	kp1Curve_buff, ki1Curve_buff, kd1Curve_buff;
 

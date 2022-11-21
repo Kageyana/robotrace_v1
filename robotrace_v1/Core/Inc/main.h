@@ -36,6 +36,9 @@ extern "C" {
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
+#include "control.h"
 #include "timer.h"
 #include "AQM0802A.h"
 // #include "ICM20608.h"
@@ -47,9 +50,10 @@ extern "C" {
 #include "markerSensor.h"
 #include "lineSensor.h"
 #include "lineTrace.h"
-#include "velocityctrl.h"
-#include "control.h"
+#include "velocityCtrl.h"
 #include "INA260.h"
+#include "yawRateCtrl.h"
+#include "fatfs_sd.h"
 
 /* USER CODE END Includes */
 
@@ -74,7 +78,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void initMicroSD(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -124,6 +128,7 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -1,2 +1,2 @@
 ../Core/Src/control.c:37:6:systemInit	8	static
-../Core/Src/control.c:88:6:systemLoop	16	static
+../Core/Src/control.c:86:6:systemLoop	16	static

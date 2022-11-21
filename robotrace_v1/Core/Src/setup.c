@@ -21,8 +21,10 @@ int8_t pushUD = 0;
 // パターン関連
 uint8_t push = 0;
 uint8_t push1 = 0;
-uint8_t pattern_sensor = 1;
+uint8_t pattern_sensors = 1;
 uint8_t pattern_sensor_line = 1;
+uint8_t pattern_sensor_accele = 1;
+uint8_t pattern_sensor_gyro = 1;
 uint8_t pattern_parameter1 = 1;
 uint8_t pattern_parameter2 = 1;
 uint8_t pattern_parameter3 = 1;
@@ -288,21 +290,83 @@ void setup( void )
 						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
 					}
 					
-					dataTuningUD ( &kd2_buff, 1 );
+					dataTuningUD ( &kd3_buff, 1 );
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// ゲイン調整(角速度)
+		//------------------------------------------------------------------
+		case 0x5:
+			lcdRowPrintf(UPROW, "kp ki kd");
+			
+			anglevelocity = 0;
+			targetSpeed = 0;
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+//			if ( cntEmc1 > 500 ) {
+//				motorPwmOutSynth( 0, 0 );
+//			} else
+			if ( trace_test == 1 ) {
+				motorPwmOutSynth( yawPwm, speedPwm );
+			} else {
+				motorPwmOutSynth( 0, 0 );
+			}
+			
+			dataTuningLR( &pattern_gain, 1 );
+			if ( pattern_gain == 4 ) pattern_gain = 1;
+			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			
+			switch( pattern_gain ) {
+				case 1:
+					// kp
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "   %2d %2d", ki3_buff, kd3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &kp3_buff, 1 );
+					break;
+				case 2:
+					// ki
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d    %2d", kp3_buff, kd3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &ki3_buff, 1 );
+					break;
+				case 3:
+					// kd
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d %2d   ", kp3_buff, ki3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &kd3_buff, 1 );
 					break;
 			}
 			break;
 		//------------------------------------------------------------------
 		// Motor_test
 		//------------------------------------------------------------------
-		case 0x5:
-			dataTuningLR( &pattern_sensor, 1 );
+		case 0x6:
+			dataTuningLR( &pattern_sensors, 1 );
 			
-			if ( pattern_sensor == 9 ) pattern_sensor = 1;
-			else if ( pattern_sensor == 0 ) pattern_sensor = 8;
+			if ( pattern_sensors == 11 ) pattern_sensors = 1;
+			else if ( pattern_sensors == 0 ) pattern_sensors = 10;
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 
-			switch( pattern_sensor ) {
+			switch( pattern_sensors ) {
 				case 1:
 					// LED
 					lcdRowPrintf(UPROW, "LED     ");
@@ -347,8 +411,8 @@ void setup( void )
 
 				case 5:
 					// 電流センサ
-					lcdRowPrintf(UPROW, " %3.1lfmA", CurrntR);
-					lcdRowPrintf(LOWROW, " %3.1lfmA", CurrntL);
+					lcdRowPrintf(UPROW, "   %3.0fmA", CurrntR);
+					lcdRowPrintf(LOWROW, "   %3.0fmA", CurrntL);
 
 					motorTestPwm = 80;
 					data_select( &motor_test, SW_PUSH );
@@ -359,8 +423,8 @@ void setup( void )
 				case 6:
 					// ラインセンサ
 					dataTuningUD( &pattern_sensor_line, 1 );
-					if ( pattern_sensor == 7 ) pattern_sensor = 1;
-					else if ( pattern_sensor == 0 ) pattern_sensor = 6;
+					if ( pattern_sensor_line == 7 ) pattern_sensor_line = 1;
+					else if ( pattern_sensor_line == 0 ) pattern_sensor_line = 6;
 
 					switch( pattern_sensor_line ) {
 						case 1:
@@ -392,14 +456,68 @@ void setup( void )
 							lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
 							break;
 					}
-
+					break;
 				case 7:
+					// 加速度
+					dataTuningUD( &pattern_sensor_accele, 1 );
+					if ( pattern_sensor_accele == 4 ) pattern_sensor_accele = 1;
+					else if ( pattern_sensor_accele == 0 ) pattern_sensor_accele = 3;
+
+					switch( pattern_sensor_accele ) {
+						case 1:
+							lcdRowPrintf(UPROW, "X accele");
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleValX);
+							break;
+						case 2:
+							lcdRowPrintf(UPROW, "Y accele");
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleValY);
+							break;
+						case 3:
+							lcdRowPrintf(UPROW, "Z accele");
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleValZ);
+							break;
+					}
+					break;
+				case 8:
+					// 角速度
+					dataTuningUD( &pattern_sensor_gyro, 1 );
+					if ( pattern_sensor_gyro == 7 ) pattern_sensor_gyro = 1;
+					else if ( pattern_sensor_gyro == 0 ) pattern_sensor_gyro = 6;
+
+					switch( pattern_sensor_gyro ) {
+						case 1:
+							lcdRowPrintf(UPROW, "X gyro  ");
+							lcdRowPrintf(LOWROW, "    %4.0f",gyroValX);
+							break;
+						case 2:
+							lcdRowPrintf(UPROW, "Y gyro  ");
+							lcdRowPrintf(LOWROW, "    %4.0f",gyroValY);
+							break;
+						case 3:
+							lcdRowPrintf(UPROW, "Z gyro  ");
+							lcdRowPrintf(LOWROW, "    %4.0f",gyroValZ);
+							break;
+						case 4:
+							lcdRowPrintf(UPROW, "X angle ");
+							lcdRowPrintf(LOWROW, "    %4.0f",angleX);
+							break;
+						case 5:
+							lcdRowPrintf(UPROW, "Y angle ");
+							lcdRowPrintf(LOWROW, "    %4.0f",angleY);
+							break;
+						case 6:
+							lcdRowPrintf(UPROW, "Z angle ");
+							lcdRowPrintf(LOWROW, "    %4.0f",angleZ);
+							break;
+					}
+					break;
+				case 9:
 					// PID出力のPWM
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "tra%5d",tracePwm);
-					lcdRowPrintf(LOWROW, "vel%5d",speedPwm);
+					lcdRowPrintf(LOWROW, "vel%5d",yawPwm);
 					break;
-				case 8:
+				case 10:
 					// 仮想センサ角度
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "Anglesen");

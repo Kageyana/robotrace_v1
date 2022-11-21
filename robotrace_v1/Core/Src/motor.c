@@ -14,24 +14,24 @@
 /////////////////////////////////////////////////////////////////////
 void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 
-    if (pwmL > 0) {
+    if (abs(pwmL) < 10) {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 10);
+    } else if (pwmL > 0) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pwmL);
-    } else if (pwmL == 0) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 1000);
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 1000);
-    } else {
+    } else if (pwmL < 0){
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, abs(pwmL));
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);
     }
     
-    if (pwmR > 0) {
+    if (abs(pwmR) < 10) {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 10);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
+    } else if (pwmR > 0) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwmR);
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
-    } else if (pwmR == 0) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 1000);
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 1000);
-    } else {
+    } else if (pwmR < 0) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, abs(pwmR));
     }

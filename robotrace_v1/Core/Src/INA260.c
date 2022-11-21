@@ -19,15 +19,39 @@ uint16_t readINA260( uint16_t addr, uint8_t reg )
 	I2C_INA260_SEND
     I2C_INA260_READ
 
-    return (uint16_t)( (uint8_t)rx_buf[0] * 0x100 + (uint8_t)rx_buf[1] );
+    return (uint16_t)( rx_buf[0] * 0x100 + rx_buf[1] );
 }
 //////////////////////////////////////////////////////////////////////////
-// モジュール名 lcdPut
-// 処理概要     データ送信
-// 引数         data
+// モジュール名 writeINA260
+// 処理概要     データ受信
+// 引数         reg:レジスタのアドレス
+// 戻り値       読み取ったデータ(16bit)
+//////////////////////////////////////////////////////////////////////////
+void writeINA260( uint16_t addr, uint8_t reg, uint16_t data )
+{
+    uint8_t rx_buf[2], tx_buf[2] = { reg, data};
+	I2C_INA260_SEND2
+}
+//////////////////////////////////////////////////////////////////////////
+// モジュール名 initINA260
+// 処理概要     INA260の初期化
+// 引数         なし
 // 戻り値       なし
 //////////////////////////////////////////////////////////////////////////
-void readCurrent( void )
+void initINA260( void ) {
+    // Current  conversion time = 8.244 ms
+    // Vbus     conversion time = 1.1 ms
+    writeINA260( INA260_SLAVEADDRESS_R, 0x00, 0x6b27 );
+    HAL_Delay(50);
+	writeINA260( INA260_SLAVEADDRESS_L, 0x00, 0x6b27 );
+}
+//////////////////////////////////////////////////////////////////////////
+// モジュール名 readCurrent
+// 処理概要     電流値の取得
+// 引数         なし
+// 戻り値       なし
+//////////////////////////////////////////////////////////////////////////
+void getCurrent( void )
 {
     int16_t rawCurrentR, rawCurrentL;
     

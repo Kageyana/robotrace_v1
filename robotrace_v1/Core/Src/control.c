@@ -61,8 +61,10 @@ void systemInit (void) {
 
 	HAL_Delay(500);
 
-	intiLcd();  	// LCD initialize
+	intiLcd();  	// character display initialize
 	//initIMU();	// IMU initialize
+	initINA260();	// Current sensor initialize
+	initBNO055();	// BNO055(IMU) initialize
 
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
@@ -74,10 +76,6 @@ void systemInit (void) {
 	// 	lcdRowPrintf(LOWROW, "   %5d",val);
 	// 	HAL_Delay(500);
 	// }
-
-	// lcdRowPrintf(UPROW, "who am i");
-	// lcdRowPrintf(LOWROW, "    %#x",initBNO055());
-	// HAL_Delay(700);
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemLoop
@@ -87,7 +85,7 @@ void systemInit (void) {
 ///////////////////////////////////////////////////////////////////////////
 void systemLoop (void) {
 
-	// if (pattern > 0 )
+	
 	switch (pattern) {
       	case 0:
 			setup();
@@ -99,12 +97,12 @@ void systemLoop (void) {
 				HAL_Delay(5000);
 				lcdRowPrintf(LOWROW, "      Go");
 				encTotalN = 0;
-				cnt1 = 0;
+				cntRun = 0;
 				pattern = 1;
 			}
 			break;
 
-      	case 1:
+      	case 11:
 			if (!modeCurve) {
 				targetSpeed = paramSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
 			} else {
@@ -140,7 +138,7 @@ void systemLoop (void) {
 
 			// ゴール
 			if (SGmarker == GOALMARKER) {
-				goalTime = cnt1;
+				goalTime = cntRun;
 				enc1 = 0;
 				pattern = 101;
 			}

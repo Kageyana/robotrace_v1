@@ -1,35 +1,568 @@
-21:54:33 **** Incremental Build of configuration Debug for project robotrace_v1 ****
+21:13:58 **** Incremental Build of configuration Debug for project robotrace_v1 ****
 make -j16 all 
-arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
-arm-none-eabi-gcc "../Core/Src/setup.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/setup.d" -MT"Core/Src/setup.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/setup.o"
+arm-none-eabi-gcc "../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Middlewares/Third_Party/FatFs/src/option/ccsbcs.d" -MT"Middlewares/Third_Party/FatFs/src/option/ccsbcs.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Middlewares/Third_Party/FatFs/src/option/ccsbcs.o"
+arm-none-eabi-gcc "../Middlewares/Third_Party/FatFs/src/option/syscall.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Middlewares/Third_Party/FatFs/src/option/syscall.d" -MT"Middlewares/Third_Party/FatFs/src/option/syscall.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Middlewares/Third_Party/FatFs/src/option/syscall.o"
+arm-none-eabi-gcc "../Middlewares/Third_Party/FatFs/src/diskio.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Middlewares/Third_Party/FatFs/src/diskio.d" -MT"Middlewares/Third_Party/FatFs/src/diskio.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Middlewares/Third_Party/FatFs/src/diskio.o"
+arm-none-eabi-gcc "../Middlewares/Third_Party/FatFs/src/ff.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Middlewares/Third_Party/FatFs/src/ff.d" -MT"Middlewares/Third_Party/FatFs/src/ff.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Middlewares/Third_Party/FatFs/src/ff.o"
+arm-none-eabi-gcc "../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Middlewares/Third_Party/FatFs/src/ff_gen_drv.d" -MT"Middlewares/Third_Party/FatFs/src/ff_gen_drv.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Middlewares/Third_Party/FatFs/src/ff_gen_drv.o"
+arm-none-eabi-gcc "../FATFS/Target/user_diskio.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"FATFS/Target/user_diskio.d" -MT"FATFS/Target/user_diskio.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "FATFS/Target/user_diskio.o"
+arm-none-eabi-gcc "../FATFS/App/fatfs.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"FATFS/App/fatfs.d" -MT"FATFS/App/fatfs.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "FATFS/App/fatfs.o"
+arm-none-eabi-gcc "../Core/Src/AQM0802A.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/AQM0802A.d" -MT"Core/Src/AQM0802A.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/AQM0802A.o"
+arm-none-eabi-gcc "../Core/Src/BNO055.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/BNO055.d" -MT"Core/Src/BNO055.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/BNO055.o"
+arm-none-eabi-gcc "../Core/Src/ICM20608.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/ICM20608.d" -MT"Core/Src/ICM20608.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/ICM20608.o"
+arm-none-eabi-gcc "../Core/Src/INA260.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/INA260.d" -MT"Core/Src/INA260.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/INA260.o"
+arm-none-eabi-gcc "../Core/Src/control.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/control.d" -MT"Core/Src/control.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/control.o"
+arm-none-eabi-gcc "../Core/Src/encoder.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/encoder.d" -MT"Core/Src/encoder.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/encoder.o"
+arm-none-eabi-gcc "../Core/Src/fatfs_sd.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/fatfs_sd.d" -MT"Core/Src/fatfs_sd.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/fatfs_sd.o"
+arm-none-eabi-gcc "../Core/Src/led.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/led.d" -MT"Core/Src/led.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/led.o"
+arm-none-eabi-gcc "../Core/Src/lineSensor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/lineSensor.d" -MT"Core/Src/lineSensor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/lineSensor.o"
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../FATFS/Target/user_diskio.c:37:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../FATFS/Target/user_diskio.c:37:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../FATFS/App/fatfs.h:26,
+                 from ../FATFS/App/fatfs.c:19:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../FATFS/App/fatfs.h:26,
+                 from ../FATFS/App/fatfs.c:19:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/control.h:6,
+                 from ../Core/Src/control.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/ICM20608.h:6,
+                 from ../Core/Src/ICM20608.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/control.h:6,
+                 from ../Core/Src/control.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/ICM20608.h:6,
+                 from ../Core/Src/ICM20608.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/option/../ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/option/syscall.c:24:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.c:21:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/lineSensor.h:7,
+                 from ../Core/Src/lineSensor.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/encoder.h:7,
+                 from ../Core/Src/encoder.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/diskio.c:15:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c:19:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/led.h:7,
+                 from ../Core/Src/led.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/BNO055.h:6,
+                 from ../Core/Src/BNO055.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Src/fatfs_sd.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/INA260.h:7,
+                 from ../Core/Src/INA260.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/AQM0802A.h:6,
+                 from ../Core/Src/AQM0802A.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/option/../ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c:24:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Src/ICM20608.c:4:
+../Core/Inc/ICM20608.h:24: warning: "GYROLSB" redefined
+   24 | #define GYROLSB       32.8  // 2000[deg/s]
+      | 
+../Core/Src/control.c: In function 'systemInit':
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/option/../ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/option/syscall.c:24:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.c:21:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/lineSensor.h:7,
+                 from ../Core/Src/lineSensor.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/encoder.h:7,
+                 from ../Core/Src/encoder.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/diskio.c:15:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c:19:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/led.h:7,
+                 from ../Core/Src/led.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/fatfs_sd.h:6,
+                 from ../Core/Src/fatfs_sd.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/BNO055.h:6,
+                 from ../Core/Src/BNO055.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/INA260.h:7,
+                 from ../Core/Src/INA260.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/AQM0802A.h:6,
+                 from ../Core/Src/AQM0802A.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:45,
+                 from ../Core/Inc/ICM20608.h:6,
+                 from ../Core/Src/ICM20608.c:4:
+../Core/Inc/BNO055.h:170: note: this is the location of the previous definition
+  170 | #define GYROLSB         16.0F
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../FATFS/Target/ffconf.h:25,
+                 from ../Middlewares/Third_Party/FatFs/src/option/../ff.h:29,
+                 from ../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c:24:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+../Core/Src/control.c:45:32: warning: passing argument 2 of 'HAL_ADC_Start_DMA' from incompatible pointer type [-Wincompatible-pointer-types]
+   45 |  if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK) Error_Handler();
+      |                                ^~~~~~~~~~~~~~~~~~~~~
+      |                                |
+      |                                uint16_t * {aka short unsigned int *}
+../Core/Src/INA260.c: In function 'writeINA260':
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:295,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/control.h:6,
+                 from ../Core/Src/control.c:4:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h:594:72: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint16_t *' {aka 'short unsigned int *'}
+  594 | HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length);
+      |                                                              ~~~~~~~~~~^~~~~
+../Core/Src/INA260.c:32:13: warning: unused variable 'rx_buf' [-Wunused-variable]
+   32 |     uint8_t rx_buf[2], tx_buf[2] = { reg, data};
+      |             ^~~~~~
+../Core/Src/BNO055.c: In function 'writeBNO055':
+In file included from ../Core/Src/ICM20608.c:4:
+../Core/Src/ICM20608.c: In function 'readArry':
+In file included from ../Core/Inc/AQM0802A.h:8,
+                 from ../Core/Src/AQM0802A.c:4:
+../Core/Src/AQM0802A.c: In function 'lcdPrintf':
+../Core/Src/AQM0802A.c:147:14: warning: passing argument 1 of '__builtin_va_start' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  147 |     va_start(argptr, format);
+      |              ^~~~~~
+../Core/Src/BNO055.c:45:42: warning: excess elements in array initializer
+   45 |     uint8_t rx_buf[1], tx_buf[1] = {reg, data};
+      |                                          ^~~~
+../Core/Inc/ICM20608.h:18:54: warning: passing argument 2 of 'HAL_SPI_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+   18 | #define SPITRANSFER_REGISTER HAL_SPI_Transmit(&hspi2,&ret,1,1000)
+      |                                                      ^~~~
+      |                                                      |
+      |                                                      uint16_t * {aka short unsigned int *}
+../Core/Src/ICM20608.c:60:2: note: in expansion of macro 'SPITRANSFER_REGISTER'
+   60 |  SPITRANSFER_REGISTER;
+      |  ^~~~~~~~~~~~~~~~~~~~
+../Core/Src/control.c:39:10: warning: unused variable 'val' [-Wunused-variable]
+   39 |  int16_t val;
+      |          ^~~
+../Core/Src/BNO055.c:45:42: note: (near initialization for 'tx_buf')
+../Core/Src/AQM0802A.c:147:14: note: expected '__va_list *' but argument is of type 'volatile va_list *'
+../Core/Src/BNO055.c:46:13: warning: unused variable 'rx_num' [-Wunused-variable]
+   46 |     uint8_t rx_num = 1, tx_num = 2;
+      |             ^~~~~~
+../Core/Src/BNO055.c:45:13: warning: unused variable 'rx_buf' [-Wunused-variable]
+   45 |     uint8_t rx_buf[1], tx_buf[1] = {reg, data};
+      |             ^~~~~~
+../Core/Src/AQM0802A.c:148:21: warning: pointer targets in passing argument 1 of 'vsprintf' differ in signedness [-Wpointer-sign]
+  148 |     ret = vsprintf( buffLcdData2, format, argptr );
+      |                     ^~~~~~~~~~~~
+      |                     |
+      |                     uint8_t * {aka unsigned char *}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:399,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/ICM20608.h:6,
+                 from ../Core/Src/ICM20608.c:4:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:670:70: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint16_t *' {aka 'short unsigned int *'}
+  670 | HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                             ~~~~~~~~~^~~~~
+In file included from ../Core/Src/ICM20608.c:4:
+../Core/Inc/ICM20608.h:21:56: warning: passing argument 2 of 'HAL_SPI_Receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   21 | #define SPIRECEIVE_ARRY         HAL_SPI_Receive(&hspi2,&val,6,1000)
+      |                                                        ^~~~
+      |                                                        |
+      |                                                        uint16_t * {aka short unsigned int *}
+../Core/Src/ICM20608.c:61:2: note: in expansion of macro 'SPIRECEIVE_ARRY'
+   61 |  SPIRECEIVE_ARRY;
+      |  ^~~~~~~~~~~~~~~
+In file included from ../Core/Inc/main.h:38,
+                 from ../Core/Inc/AQM0802A.h:6,
+                 from ../Core/Src/AQM0802A.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\include\stdio.h:210:15: note: expected 'char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  210 | int vsprintf (char *__restrict, const char *__restrict, __VALIST)
+      |               ^
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:399,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/ICM20608.h:6,
+                 from ../Core/Src/ICM20608.c:4:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:671:69: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint16_t *' {aka 'short unsigned int *'}
+  671 | HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                            ~~~~~~~~~^~~~~
+../Core/Src/AQM0802A.c:148:35: warning: pointer targets in passing argument 2 of 'vsprintf' differ in signedness [-Wpointer-sign]
+  148 |     ret = vsprintf( buffLcdData2, format, argptr );
+      |                                   ^~~~~~
+      |                                   |
+      |                                   uint8_t * {aka unsigned char *}
+In file included from ../Core/Inc/main.h:38,
+                 from ../Core/Inc/AQM0802A.h:6,
+                 from ../Core/Src/AQM0802A.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\include\stdio.h:210:33: note: expected 'const char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  210 | int vsprintf (char *__restrict, const char *__restrict, __VALIST)
+      |                                 ^
+../Core/Src/ICM20608.c: In function 'getTurningAngleIMU':
+../Core/Src/ICM20608.c:121:6: warning: unused variable 'intzg' [-Wunused-variable]
+  121 |  int intzg;
+      |      ^~~~~
+In file included from ../Core/Inc/AQM0802A.h:8,
+                 from ../Core/Src/AQM0802A.c:4:
+../Core/Src/AQM0802A.c:149:12: warning: passing argument 1 of '__builtin_va_end' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  149 |     va_end(argptr);
+      |            ^~~~~~
+../Core/Src/AQM0802A.c:149:12: note: expected '__va_list *' but argument is of type 'volatile va_list *'
+../Core/Src/ICM20608.c: In function 'getRollAngleIMU':
+../Core/Src/ICM20608.c:137:6: warning: unused variable 'intyg' [-Wunused-variable]
+  137 |  int intyg;
+      |      ^~~~~
+../Core/Src/ICM20608.c: In function 'getPichAngleIMU':
+../Core/Src/ICM20608.c:153:6: warning: unused variable 'intxg' [-Wunused-variable]
+  153 |  int intxg;
+      |      ^~~~~
+../Core/Src/AQM0802A.c: In function 'lcdRowPrintf':
+../Core/Src/AQM0802A.c:195:14: warning: passing argument 1 of '__builtin_va_start' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  195 |     va_start(argptr, format);
+      |              ^~~~~~
+../Core/Src/AQM0802A.c:195:14: note: expected '__va_list *' but argument is of type 'volatile va_list *'
+../Core/Src/AQM0802A.c:196:21: warning: pointer targets in passing argument 1 of 'vsprintf' differ in signedness [-Wpointer-sign]
+  196 |     ret = vsprintf( buffLcdData2, format, argptr );
+      |                     ^~~~~~~~~~~~
+      |                     |
+      |                     uint8_t * {aka unsigned char *}
+In file included from ../Core/Inc/main.h:38,
+                 from ../Core/Inc/AQM0802A.h:6,
+                 from ../Core/Src/AQM0802A.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\include\stdio.h:210:15: note: expected 'char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  210 | int vsprintf (char *__restrict, const char *__restrict, __VALIST)
+      |               ^
+In file included from ../Core/Inc/AQM0802A.h:8,
+                 from ../Core/Src/AQM0802A.c:4:
+../Core/Src/AQM0802A.c:197:12: warning: passing argument 1 of '__builtin_va_end' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  197 |     va_end(argptr);
+      |            ^~~~~~
+../Core/Src/AQM0802A.c:197:12: note: expected '__va_list *' but argument is of type 'volatile va_list *'
+../Core/Src/control.c: In function 'systemLoop':
+../Core/Src/control.c:112:4: warning: implicit declaration of function 'motorPwmOutSynth'; did you mean 'motorPwmOut'? [-Wimplicit-function-declaration]
+  112 |    motorPwmOutSynth( tracePwm, speedPwm );
+      |    ^~~~~~~~~~~~~~~~
+      |    motorPwmOut
+arm-none-eabi-gcc "../Core/Src/lineTrace.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/lineTrace.d" -MT"Core/Src/lineTrace.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/lineTrace.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/markerSensor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/markerSensor.d" -MT"Core/Src/markerSensor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/markerSensor.o"
+arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
+arm-none-eabi-gcc "../Core/Src/setup.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/setup.d" -MT"Core/Src/setup.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/setup.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_hal_msp.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_hal_msp.d" -MT"Core/Src/stm32f4xx_hal_msp.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_it.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_it.d" -MT"Core/Src/stm32f4xx_it.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_it.o"
+arm-none-eabi-gcc "../Core/Src/switch.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/switch.d" -MT"Core/Src/switch.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/switch.o"
+arm-none-eabi-gcc "../Core/Src/timer.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/timer.d" -MT"Core/Src/timer.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/timer.o"
+arm-none-eabi-gcc "../Core/Src/velocityCtrl.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/velocityCtrl.d" -MT"Core/Src/velocityCtrl.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/velocityCtrl.o"
+arm-none-eabi-gcc "../Core/Src/yawRateCtrl.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/yawRateCtrl.d" -MT"Core/Src/yawRateCtrl.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/yawRateCtrl.o"
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/lineTrace.h:6,
+                 from ../Core/Src/lineTrace.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/lineTrace.h:6,
+                 from ../Core/Src/lineTrace.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+../Core/Src/lineTrace.c: In function 'motorControlTrace':
+../Core/Src/lineTrace.c:22:28: warning: variable 'kd' set but not used [-Wunused-but-set-variable]
+   22 |  int32_t Dev, Dif, kp, ki, kd;
+      |                            ^~
+../Core/Src/lineTrace.c:22:24: warning: variable 'ki' set but not used [-Wunused-but-set-variable]
+   22 |  int32_t Dev, Dif, kp, ki, kd;
+      |                        ^~
+../Core/Src/lineTrace.c:22:20: warning: variable 'kp' set but not used [-Wunused-but-set-variable]
+   22 |  int32_t Dev, Dif, kp, ki, kd;
+      |                    ^~
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Src/main.c:20:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Src/main.c:20:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/setup.h:6,
+                 from ../Core/Src/setup.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/setup.h:6,
+                 from ../Core/Src/setup.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/motor.h:7,
+                 from ../Core/Src/motor.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/motor.h:7,
+                 from ../Core/Src/motor.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/markerSensor.h:7,
+                 from ../Core/Src/markerSensor.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/markerSensor.h:7,
+                 from ../Core/Src/markerSensor.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/switch.h:7,
+                 from ../Core/Src/switch.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/switch.h:7,
+                 from ../Core/Src/switch.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Src/stm32f4xx_hal_msp.c:22:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Src/stm32f4xx_it.c:21:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Src/stm32f4xx_hal_msp.c:22:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Src/stm32f4xx_it.c:21:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
 ../Core/Src/setup.c: In function 'setup':
-../Core/Src/setup.c:135:5: warning: implicit declaration of function 'motorPwmOutSynth'; did you mean 'motorPwmOut'? [-Wimplicit-function-declaration]
-  135 |     motorPwmOutSynth( tracePwm, 0 );
+../Core/Src/setup.c:137:5: warning: implicit declaration of function 'motorPwmOutSynth'; did you mean 'motorPwmOut'? [-Wimplicit-function-declaration]
+  137 |     motorPwmOutSynth( tracePwm, 0 );
       |     ^~~~~~~~~~~~~~~~
       |     motorPwmOut
-../Core/Src/setup.c:67:16: warning: unused variable 'k' [-Wunused-variable]
-   67 |  int16_t i, j, k;
+../Core/Src/setup.c:69:16: warning: unused variable 'k' [-Wunused-variable]
+   69 |  int16_t i, j, k;
       |                ^
-../Core/Src/setup.c:67:13: warning: unused variable 'j' [-Wunused-variable]
-   67 |  int16_t i, j, k;
+../Core/Src/setup.c:69:13: warning: unused variable 'j' [-Wunused-variable]
+   69 |  int16_t i, j, k;
       |             ^
-../Core/Src/setup.c:67:10: warning: unused variable 'i' [-Wunused-variable]
-   67 |  int16_t i, j, k;
+../Core/Src/setup.c:69:10: warning: unused variable 'i' [-Wunused-variable]
+   69 |  int16_t i, j, k;
       |          ^
-../Core/Src/setup.c:66:19: warning: unused variable 'sd_sw' [-Wunused-variable]
-   66 |  uint8_t cnt_led, sd_sw;
+../Core/Src/setup.c:68:19: warning: unused variable 'sd_sw' [-Wunused-variable]
+   68 |  uint8_t cnt_led, sd_sw;
       |                   ^~~~~
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/yawRatectrl.h:6,
+                 from ../Core/Src/yawRateCtrl.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/yawRatectrl.h:6,
+                 from ../Core/Src/yawRateCtrl.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/velocityCtrl.h:6,
+                 from ../Core/Src/velocityCtrl.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:56,
+                 from ../Core/Inc/timer.h:7,
+                 from ../Core/Src/timer.c:4:
+../Core/Inc/fatfs_sd.h:39: warning: "bool" redefined
+   39 | #define bool BYTE
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/timer.h:7,
+                 from ../Core/Src/timer.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+In file included from ../Core/Inc/main.h:37,
+                 from ../Core/Inc/velocityCtrl.h:6,
+                 from ../Core/Src/velocityCtrl.c:4:
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h:33: note: this is the location of the previous definition
+   33 | #define bool _Bool
+      | 
+../Core/Src/timer.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/timer.c:81:5: warning: implicit declaration of function 'motorControlTrace'; did you mean 'motorControltrace'? [-Wimplicit-function-declaration]
+   81 |     motorControlTrace();
+      |     ^~~~~~~~~~~~~~~~~
+      |     motorControltrace
+../Core/Src/timer.c:82:5: warning: implicit declaration of function 'motorControlSpeed'; did you mean 'motorControlspeed'? [-Wimplicit-function-declaration]
+   82 |     motorControlSpeed();
+      |     ^~~~~~~~~~~~~~~~~
+      |     motorControlspeed
 arm-none-eabi-gcc -o "robotrace_v1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\robotrace_v1\robotrace_v1\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="robotrace_v1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: robotrace_v1.elf
  
 arm-none-eabi-size   robotrace_v1.elf 
 arm-none-eabi-objdump -h -S  robotrace_v1.elf  > "robotrace_v1.list"
    text	   data	    bss	    dec	    hex	filename
-  59536	    536	   2872	  62944	   f5e0	robotrace_v1.elf
+  82240	    560	  12904	  95704	  175d8	robotrace_v1.elf
 Finished building: default.size.stdout
  
 Finished building: robotrace_v1.list
  
 
-21:54:34 Build Finished. 0 errors, 5 warnings. (took 957ms)
+21:14:00 Build Finished. 0 errors, 57 warnings. (took 2s.708ms)
 
