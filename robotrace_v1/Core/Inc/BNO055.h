@@ -169,6 +169,10 @@
 #define ACCELELSB       100.0F
 #define GYROLSB         16.0F
 #define MAGPLSB         16.0F
+
+#define INDEX_X         0
+#define INDEX_Y         1
+#define INDEX_Z         2
 /******************************** 自動生成関数 *********************************/
 #define I2C_BNO055_SEND HAL_I2C_Master_Transmit(&hi2c1,BNO055_SLAVEADDRESS,tx_buf,tx_num,100);
 #define I2C_BNO055_READ HAL_I2C_Master_Receive(&hi2c1,BNO055_SLAVEADDRESS|0x0001,rx_buf,rx_num,100);
@@ -176,9 +180,10 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern double gyroValX, gyroValY, gyroValZ;
-extern double acceleValX, acceleValY, acceleValZ;
-extern double angleX, angleY, angleZ;
+extern int16_t accelVal[3], gyroVal[3];
+extern double acceleration[3];        // 加速度
+extern double angularVelocity[3];     // 角速度
+extern double angle[3];               // 角度
 //====================================//
 // プロトタイプ宣言
 //====================================//

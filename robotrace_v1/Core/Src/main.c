@@ -63,7 +63,7 @@ FATFS fs;
 FIL fil;
 FRESULT fresult;
 char buffer[1024];
-UINT br, bw;
+// UINT br, bw;
 FATFS *pfs;
 DWORD fre_clust;
 uint32_t total, free_space;
@@ -919,30 +919,106 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
 }
 
 void initMicroSD(void) {
-  fresult = f_mount(&fs, "", 0);    // SDカードのマウント(ディレクトリは/)
-	if (fresult != FR_OK) printf ("error in mounting SD CARD...\r\n");
-	else printf("SD CARD mounted successfully...\r\n");
+  fresult = f_mount(&fs, "", 0);    // SDcard mount
+	// if (fresult != FR_OK) printf ("error in mounting SD CARD...\r\n");
+	// else printf("SD CARD mounted successfully...\r\n");
 
-	f_getfree("", &fre_clust, &pfs); // クラスタサイズ取得
-	total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // SDカード容量計算
-	printf("SD_SIZE: \t%lu\r\n", total);
+	f_getfree("", &fre_clust, &pfs); // cluster size
+	total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
+	// printf("SD_SIZE: \t%lu\r\n", total);
 
-	free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // 空き容量計算
-	printf("SD free space: \t%lu\r\n", free_space);
+	free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
+	// printf("SD free space: \t%lu\r\n", free_space);
 
-  // ファイルオープン 同名ファイルを上書き なければ新規作成
-	fresult = f_open(&fil, "test_file1.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
-	// 書き込み sprintfが応用できそう
-  fresult = f_puts("TEST!!!\r\n", &fil);
-  // ファイル操作終了
-	fresult = f_close(&fil);
+}
 
-  // ファイルオープン
-	fresult = f_open(&fil, "file1.txt", FA_READ);
-  // データ取得
-	f_gets(buffer, sizeof(buffer), &fil);
-  // ファイル操作終了
-	f_close(&fil);
+void initLog(void) {
+  DIR dir;                    // Directory
+  FILINFO fno;                // File Info
+  uint8_t fileName[10], columnTitle[256] = "";
+  uint8_t *tp;
+  uint16_t fileNumber = 0;
+
+  f_opendir(&dir,"/");  // directory open
+  do {
+    f_readdir(&dir,&fno);
+    if(fno.fname[0] != 0) {           // file exit
+      tp = strtok(fno.fname,".");     // delete file extension
+      if ( atoi(tp) > fileNumber ) {  // compare number
+        fileNumber = atoi(tp);        // transrate to number
+      }
+    }
+  } while(fno.fname[0] != 0);
+  f_closedir(&dir);     // directory close
+  if (fileNumber == 0) {
+    fileNumber = 1;
+  } else {
+    fileNumber++;         // index pulus
+  }
+
+  sprintf(fileName,"%d",fileNumber);  // transrate to str
+  strcat(fileName, ".csv");           // file name create
+  fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
+
+  strcat(columnTitle,"cntlog,");
+  strcat(columnTitle,"MarkerSensor,");
+  strcat(columnTitle,"encTotalR,");
+  strcat(columnTitle,"encTotalL,");
+  strcat(columnTitle,"encTotalN,");
+  strcat(columnTitle,"lSensor[0],");
+  strcat(columnTitle,"lSensor[1],");
+  strcat(columnTitle,"lSensor[2],");
+  strcat(columnTitle,"lSensor[3],");
+  strcat(columnTitle,"lSensor[4],");
+  strcat(columnTitle,"lSensor[5],");
+  strcat(columnTitle,"lSensor[6],");
+  strcat(columnTitle,"lSensor[7],");
+  strcat(columnTitle,"lSensor[8],");
+  strcat(columnTitle,"lSensor[9],");
+  strcat(columnTitle,"lSensor[10],");
+  strcat(columnTitle,"lSensor[11],");
+  strcat(columnTitle,"gyroVal[X],");
+  strcat(columnTitle,"gyroVal[Y],");
+  strcat(columnTitle,"gyroVal[Z],");
+  strcat(columnTitle,"rawCurrentR,");
+  strcat(columnTitle,"rawCurrentL,");
+  strcat(columnTitle,"\n");
+  f_printf(&fil, columnTitle);
+
+  modeLOG = 1;    // log start
+  cntLog = 0;
+}
+
+void writeLog(void) {
+  f_printf(&fil, "%d,%x,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+  cntLog,
+  getMarkerSensor(),
+  encTotalR,
+  encTotalL,
+  encTotalN,
+  lSensor[0],
+  lSensor[1],
+  lSensor[2],
+  lSensor[3],
+  lSensor[4],
+  lSensor[5],
+  lSensor[6],
+  lSensor[7],
+  lSensor[8],
+  lSensor[9],
+  lSensor[10],
+  lSensor[11],
+  gyroVal[INDEX_X],
+  gyroVal[INDEX_Y],
+  gyroVal[INDEX_Z],
+  rawCurrentR,
+  rawCurrentL);
+}
+
+void endLog(void) {
+  modeLOG = 0;
+  while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
+  f_close(&fil);
 }
 /* USER CODE END 4 */
 

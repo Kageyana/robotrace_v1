@@ -8,6 +8,7 @@
 // モード関連
 uint8_t	pattern = 0;
 uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
+uint8_t modeLOG = 0;		// ログ取得状況		0:ログ停止	1:ログ取得中
 uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
 
 // 速度パラメータ関連
@@ -96,8 +97,11 @@ void systemLoop (void) {
 
 				HAL_Delay(5000);
 				lcdRowPrintf(LOWROW, "      Go");
+				modeLCD = 0;
+				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 				encTotalN = 0;
 				cntRun = 0;
+				initLog();
 				pattern = 1;
 			}
 			break;
@@ -108,11 +112,7 @@ void systemLoop (void) {
 			} else {
 				targetSpeed = paramSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
 			}
-			
 			motorPwmOutSynth( tracePwm, speedPwm );
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
-			// lcdRowPrintf(UPROW, "    %4d", encCurrentN);
-			// lcdRowPrintf(LOWROW, "   %d", SGmarker);
 
 			// マーカー処理
 			if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 6000) {
@@ -149,6 +149,7 @@ void systemLoop (void) {
 			motorPwmOutSynth( tracePwm, speedPwm );
 
 			if (enc1 >= encMM(500)) {
+				endLog();
 				pattern = 102;
 			}
 			break;

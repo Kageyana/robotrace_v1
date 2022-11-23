@@ -2,6 +2,6 @@
 ../Core/Src/BNO055.c:31:6:readBNO055AxisData	32	static
 ../Core/Src/BNO055.c:44:6:writeBNO055	32	static
 ../Core/Src/BNO055.c:56:6:initBNO055	8	static
-../Core/Src/BNO055.c:78:6:getBNO055Acceleration	8	static
-../Core/Src/BNO055.c:90:6:getBNO055Gyro	16	static
-../Core/Src/BNO055.c:106:6:calcDegrees	8	static
+../Core/Src/BNO055.c:78:6:getBNO055Acceleration	24	static
+../Core/Src/BNO055.c:94:6:getBNO055Gyro	24	static
+../Core/Src/BNO055.c:110:6:calcDegrees	16	static

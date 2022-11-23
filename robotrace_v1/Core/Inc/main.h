@@ -79,6 +79,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void initMicroSD(void);
+void writeLog(void);
+void endLog(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

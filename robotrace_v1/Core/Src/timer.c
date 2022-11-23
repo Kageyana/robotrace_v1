@@ -7,6 +7,7 @@
 //====================================//
 uint32_t    cntRun = 0;
 uint32_t    cnt5ms = 0;
+uint32_t    cntLog = 0;
 // Emergency stop
 uint16_t    cntEmc1 = 0;
 /////////////////////////////////////////////////////////////////////
@@ -19,6 +20,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	cntRun++;
     cnt5ms++;
+    cntLog++;
     // if (trace_test == 1 || (pattern > 10 && pattern < 100) ) {
     //     if (abs(yawPwm) > 400) {
     //         cntEmc1++;
@@ -58,6 +60,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             motorControlYaw();
             break;
         case 3:
+            if (modeLOG) writeLog();
             break;
         case 4:
             break;

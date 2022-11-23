@@ -30,12 +30,8 @@ uint8_t pattern_parameter2 = 1;
 uint8_t pattern_parameter3 = 1;
 uint8_t pattern_parameter4 = 1;
 uint8_t pattern_gain = 1;
-uint8_t pattern_gain2 = 1;
-uint8_t pattern_gain3 = 1;
 uint8_t pattern_speedseting = 1;
-uint8_t pattern_msd = 1;
-uint8_t pattern_flash = 1;
-uint8_t pattern_scanf = 0;
+uint8_t patternLog = 1;
 
 // フラグ関連
 uint8_t setting_1meter;
@@ -466,15 +462,15 @@ void setup( void )
 					switch( pattern_sensor_accele ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleValX);
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_X]);
 							break;
 						case 2:
 							lcdRowPrintf(UPROW, "Y accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleValY);
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_Y]);
 							break;
 						case 3:
 							lcdRowPrintf(UPROW, "Z accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleValZ);
+							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_Z]);
 							break;
 					}
 					break;
@@ -487,32 +483,32 @@ void setup( void )
 					switch( pattern_sensor_gyro ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",gyroValX);
+							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_X]);
 							break;
 						case 2:
 							lcdRowPrintf(UPROW, "Y gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",gyroValY);
+							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_Y]);
 							break;
 						case 3:
 							lcdRowPrintf(UPROW, "Z gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",gyroValZ);
+							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_Z]);
 							break;
 						case 4:
 							lcdRowPrintf(UPROW, "X angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angleX);
+							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_X]);
 							break;
 						case 5:
 							lcdRowPrintf(UPROW, "Y angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angleY);
+							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_Y]);
 							break;
 						case 6:
 							lcdRowPrintf(UPROW, "Z angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angleZ);
+							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_Z]);
 							break;
 					}
 					break;
 				case 9:
-					// PID出力のPWM
+					// PID制御量
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "tra%5d",tracePwm);
 					lcdRowPrintf(LOWROW, "vel%5d",yawPwm);
@@ -525,6 +521,36 @@ void setup( void )
 					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
 					break;
 			} // switch
+			break;
+		//------------------------------------------------------------------
+		// Log
+		//------------------------------------------------------------------
+		case 0x7:
+			dataTuningLR( &pattern_sensors, 1 );
+			lcdRowPrintf(UPROW, "LOG     ");
+			lcdRowPrintf(LOWROW, "       %d", modeLOG);
+
+			
+			switch (patternLog) {
+			case 1:
+				// ログ取得開始前
+				if (swValTact == SW_UP) {
+					initLog();
+					patternLog = 2;
+				}
+				break;
+			
+			case 2:
+				// ログ取得中
+				if (swValTact == SW_DOWN) {
+					endLog();
+					patternLog = 1;
+				}
+				break;
+			
+			default:
+				break;
+			}
 			break;
 
 	default:

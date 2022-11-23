@@ -6,7 +6,7 @@
 // グローバル変数の宣言
 //====================================//
 double CurrntL = 0, CurrntR = 0;
-
+int16_t rawCurrentR, rawCurrentL;
 //////////////////////////////////////////////////////////////////////////
 // モジュール名 readINA260
 // 処理概要     データ受信
@@ -53,8 +53,6 @@ void initINA260( void ) {
 //////////////////////////////////////////////////////////////////////////
 void getCurrent( void )
 {
-    int16_t rawCurrentR, rawCurrentL;
-    
     // Rawデータ取得
     rawCurrentR = readINA260(INA260_SLAVEADDRESS_R, 0x01);
 	if (rawCurrentR > 32767) rawCurrentR = ~rawCurrentR+0x8000;     // 2の補数計算(16bitの半分を超えたとき)

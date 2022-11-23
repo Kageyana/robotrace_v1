@@ -26,11 +26,11 @@ void motorControlYaw(void) {
 	kp = kp3_buff;
 	ki = ki3_buff;
 	kd = kd3_buff;
-	Dev = (gyroValZ - (int32_t)anglevelocity);	// 目標値-現在値
+	Dev = (angularVelocity[INDEX_Z] - (int32_t)anglevelocity);	// 目標値-現在値
 	// I成分積算
 	Int3 += (double)Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット
-	// else if ( Int3 < -5000 ) Int3 = -5000;
+	// else if ( Int3 < -5000 ) Int3 = -5000;s
 	Dif = ( Dev - angleZBefore ) * 1;	// dゲイン1/1000倍
 
 	iP = (double)kp * Dev;	// 比例
@@ -45,5 +45,5 @@ void motorControlYaw(void) {
 	
 	yawPwm = iRet;
 	angleZBefore = Dev;				// 次回はこの値が1ms前の値となる
-	anglevelocityBefore = gyroValZ;
+	anglevelocityBefore = angularVelocity[INDEX_Z];
 }

@@ -1,4 +1,4 @@
-#include <string.h>/* USER CODE BEGIN Header */
+/* USER CODE BEGIN Header */
 /**
  ******************************************************************************
   * @file    user_diskio.h

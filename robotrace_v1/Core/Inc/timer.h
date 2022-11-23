@@ -13,9 +13,9 @@
 // グローバル変数の宣言
 //====================================//
 extern uint16_t		cntSW;
-extern uint32_t 	cntRun;
-
-extern uint16_t    cntEmc1;
+extern uint32_t     cntRun;
+extern uint32_t     cntLog;
+extern uint16_t     cntEmc1;
 
 //====================================//
 // プロトタイプ宣言
