@@ -6,7 +6,7 @@
 // グローバル変数の宣言
 //====================================//
 // モード関連
-uint8_t	pattern = 0;
+uint8_t	patternTrace = 0;
 uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
 uint8_t modeLOG = 0;		// ログ取得状況		0:ログ停止	1:ログ取得中
 uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
@@ -87,7 +87,7 @@ void systemInit (void) {
 void systemLoop (void) {
 
 	
-	switch (pattern) {
+	switch (patternTrace) {
       	case 0:
 			setup();
 
@@ -102,7 +102,7 @@ void systemLoop (void) {
 				encTotalN = 0;
 				cntRun = 0;
 				initLog();
-				pattern = 1;
+				patternTrace = 11;
 			}
 			break;
 
@@ -140,7 +140,7 @@ void systemLoop (void) {
 			if (SGmarker == GOALMARKER) {
 				goalTime = cntRun;
 				enc1 = 0;
-				pattern = 101;
+				patternTrace = 101;
 			}
 			break;
 
@@ -150,7 +150,8 @@ void systemLoop (void) {
 
 			if (enc1 >= encMM(500)) {
 				endLog();
-				pattern = 102;
+				modeLCD = 1;
+				patternTrace = 102;
 			}
 			break;
 

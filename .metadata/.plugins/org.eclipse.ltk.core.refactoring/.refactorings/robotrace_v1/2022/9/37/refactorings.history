@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;robotrace_v1/Core/Src/io.h&apos; to &apos;io.c&apos;" description="Rename resource &apos;io.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Src/io.h" name="io.c" stamp="1662552192444" updateReferences="true"/>
-</session>

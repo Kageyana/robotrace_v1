@@ -961,7 +961,11 @@ void initLog(void) {
   fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
 
   strcat(columnTitle,"cntlog,");
+  strcat(columnTitle,"patternTrace,");
   strcat(columnTitle,"MarkerSensor,");
+  strcat(columnTitle,"encCurrentR,");
+  strcat(columnTitle,"encCurrentL,");
+  strcat(columnTitle,"encCurrentN,");
   strcat(columnTitle,"encTotalR,");
   strcat(columnTitle,"encTotalL,");
   strcat(columnTitle,"encTotalN,");
@@ -990,9 +994,13 @@ void initLog(void) {
 }
 
 void writeLog(void) {
-  f_printf(&fil, "%d,%x,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+  f_printf(&fil, "%d,%d,%x,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
   cntLog,
+  patternTrace,
   getMarkerSensor(),
+  encCurrentR,
+  encCurrentL,
+  encCurrentN,
   encTotalR,
   encTotalL,
   encTotalN,

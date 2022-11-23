@@ -13,6 +13,8 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
+extern int16_t      encCurrentR;
+extern int16_t      encCurrentL;
 extern int16_t      encCurrentN;
 extern int32_t      encTotalR;
 extern int32_t      encTotalL;

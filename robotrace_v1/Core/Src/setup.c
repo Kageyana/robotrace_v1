@@ -21,22 +21,22 @@ int8_t pushUD = 0;
 // パターン関連
 uint8_t push = 0;
 uint8_t push1 = 0;
-uint8_t pattern_sensors = 1;
-uint8_t pattern_sensor_line = 1;
-uint8_t pattern_sensor_accele = 1;
-uint8_t pattern_sensor_gyro = 1;
-uint8_t pattern_parameter1 = 1;
-uint8_t pattern_parameter2 = 1;
-uint8_t pattern_parameter3 = 1;
-uint8_t pattern_parameter4 = 1;
-uint8_t pattern_gain = 1;
-uint8_t pattern_speedseting = 1;
+uint8_t patternSensors = 1;
+uint8_t patternSensorLine = 1;
+uint8_t patternSensorAccele = 1;
+uint8_t patternSensorGyro = 1;
+uint8_t patternParameter1 = 1;
+uint8_t patternParameter2 = 1;
+uint8_t patternParameter3 = 1;
+uint8_t patternParameter4 = 1;
+uint8_t patternGain = 1;
+uint8_t patternSpeedseting = 1;
 uint8_t patternLog = 1;
 
 // フラグ関連
-uint8_t setting_1meter;
-uint8_t setting_2meter;
-uint8_t setting_3meter;
+uint8_t setting1meter;
+uint8_t setting2meter;
+uint8_t setting3meter;
 uint8_t motor_test = 0;
 uint8_t trace_test = 0;
 uint8_t fixSpeed = 0;
@@ -78,12 +78,12 @@ void setup( void )
 		// パラメータ調整(通常トレース)
 		//------------------------------------------------------------------
 		case 0x1:
-			dataTuningLR( &pattern_parameter1, 1 );
+			dataTuningLR( &patternParameter1, 1 );
 			
-			if ( pattern_parameter1 == 6 ) pattern_parameter1 = 1;
-			else if ( pattern_parameter1 == 0 ) pattern_parameter1 = 5;
+			if ( patternParameter1 == 6 ) patternParameter1 = 1;
+			else if ( patternParameter1 == 0 ) patternParameter1 = 5;
 			
-			switch( pattern_parameter1 ) {
+			switch( patternParameter1 ) {
 				case 1:
 					// 通常走行速度
 					lcdRowPrintf(UPROW, "STRAIGHT");
@@ -137,11 +137,11 @@ void setup( void )
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 			}
 			
-			dataTuningLR( &pattern_gain, 1 );
-			if ( pattern_gain == 4 ) pattern_gain = 1;
-			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
 			
-			switch( pattern_gain ) {
+			switch( patternGain ) {
 				case 1:
 					// kp
 					//値を点滅
@@ -196,11 +196,11 @@ void setup( void )
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 			}
 			
-			dataTuningLR( &pattern_gain, 1 );
-			if ( pattern_gain == 4 ) pattern_gain = 1;
-			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
 			
-			switch( pattern_gain ) {
+			switch( patternGain ) {
 				case 1:
 					// kp
 					//値を点滅
@@ -247,11 +247,11 @@ void setup( void )
 			
 			// data_select( &trace_test, SW_PUSH );
 			
-			dataTuningLR( &pattern_gain, 1 );
-			if ( pattern_gain == 4 ) pattern_gain = 1;
-			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
 			
-			switch( pattern_gain ) {
+			switch( patternGain ) {
 				case 1:
 					// kp
 					//値を点滅
@@ -309,11 +309,11 @@ void setup( void )
 				motorPwmOutSynth( 0, 0 );
 			}
 			
-			dataTuningLR( &pattern_gain, 1 );
-			if ( pattern_gain == 4 ) pattern_gain = 1;
-			else if ( pattern_gain == 0 ) pattern_gain = 3;
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
 			
-			switch( pattern_gain ) {
+			switch( patternGain ) {
 				case 1:
 					// kp
 					//値を点滅
@@ -356,13 +356,13 @@ void setup( void )
 		// Motor_test
 		//------------------------------------------------------------------
 		case 0x6:
-			dataTuningLR( &pattern_sensors, 1 );
+			dataTuningLR( &patternSensors, 1 );
 			
-			if ( pattern_sensors == 11 ) pattern_sensors = 1;
-			else if ( pattern_sensors == 0 ) pattern_sensors = 10;
+			if ( patternSensors == 11 ) patternSensors = 1;
+			else if ( patternSensors == 0 ) patternSensors = 10;
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 
-			switch( pattern_sensors ) {
+			switch( patternSensors ) {
 				case 1:
 					// LED
 					lcdRowPrintf(UPROW, "LED     ");
@@ -418,11 +418,11 @@ void setup( void )
 
 				case 6:
 					// ラインセンサ
-					dataTuningUD( &pattern_sensor_line, 1 );
-					if ( pattern_sensor_line == 7 ) pattern_sensor_line = 1;
-					else if ( pattern_sensor_line == 0 ) pattern_sensor_line = 6;
+					dataTuningUD( &patternSensorLine, 1 );
+					if ( patternSensorLine == 7 ) patternSensorLine = 1;
+					else if ( patternSensorLine == 0 ) patternSensorLine = 6;
 
-					switch( pattern_sensor_line ) {
+					switch( patternSensorLine ) {
 						case 1:
 							lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
 							lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
@@ -455,11 +455,11 @@ void setup( void )
 					break;
 				case 7:
 					// 加速度
-					dataTuningUD( &pattern_sensor_accele, 1 );
-					if ( pattern_sensor_accele == 4 ) pattern_sensor_accele = 1;
-					else if ( pattern_sensor_accele == 0 ) pattern_sensor_accele = 3;
+					dataTuningUD( &patternSensorAccele, 1 );
+					if ( patternSensorAccele == 4 ) patternSensorAccele = 1;
+					else if ( patternSensorAccele == 0 ) patternSensorAccele = 3;
 
-					switch( pattern_sensor_accele ) {
+					switch( patternSensorAccele ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X accele");
 							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_X]);
@@ -476,11 +476,11 @@ void setup( void )
 					break;
 				case 8:
 					// 角速度
-					dataTuningUD( &pattern_sensor_gyro, 1 );
-					if ( pattern_sensor_gyro == 7 ) pattern_sensor_gyro = 1;
-					else if ( pattern_sensor_gyro == 0 ) pattern_sensor_gyro = 6;
+					dataTuningUD( &patternSensorGyro, 1 );
+					if ( patternSensorGyro == 7 ) patternSensorGyro = 1;
+					else if ( patternSensorGyro == 0 ) patternSensorGyro = 6;
 
-					switch( pattern_sensor_gyro ) {
+					switch( patternSensorGyro ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X gyro  ");
 							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_X]);
@@ -526,7 +526,7 @@ void setup( void )
 		// Log
 		//------------------------------------------------------------------
 		case 0x7:
-			dataTuningLR( &pattern_sensors, 1 );
+			dataTuningLR( &patternSensors, 1 );
 			lcdRowPrintf(UPROW, "LOG     ");
 			lcdRowPrintf(LOWROW, "       %d", modeLOG);
 
@@ -664,7 +664,7 @@ uint8_t fixSpeedSetting ( void )
 {
 	uint8_t ret = 0;
 	
-	// if ( setting_1meter == 1 ) {
+	// if ( setting1meter == 1 ) {
 	// 	speed_straight		= 10;
 	// 	speed_curve_brake	= 10;
 	// 	speed_curve_r600	= 10;
@@ -691,7 +691,7 @@ uint8_t fixSpeedSetting ( void )
 		
 	// 	fixSpeed = 1;
 	// 	ret = 1;
-	// } else if ( setting_2meter == 1 ) {
+	// } else if ( setting2meter == 1 ) {
 	// 	speed_straight		= 20;
 	// 	speed_curve_brake	= 20;
 	// 	speed_curve_r600	= 20;
@@ -718,7 +718,7 @@ uint8_t fixSpeedSetting ( void )
 		
 	// 	fixSpeed = 1;
 	// 	ret = 1;
-	// } else if ( setting_3meter == 1 ) {
+	// } else if ( setting3meter == 1 ) {
 	// 	speed_straight		= 30;
 	// 	speed_curve_brake	= 30;
 	// 	speed_curve_r600	= 30;

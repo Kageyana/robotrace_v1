@@ -21,12 +21,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	cntRun++;
     cnt5ms++;
     cntLog++;
-    // if (trace_test == 1 || (pattern > 10 && pattern < 100) ) {
+    // if (trace_test == 1 || (patternTrace > 10 && patternTrace < 100) ) {
     //     if (abs(yawPwm) > 400) {
     //         cntEmc1++;
     //     }
     // }
-    if (pattern < 10 ||	 pattern > 100) {
+    if (patternTrace < 10 ||	 patternTrace > 100) {
         cntSW++;
         cntSetup1++;
         cntSetup2++;
