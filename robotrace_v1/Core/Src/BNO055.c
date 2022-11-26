@@ -61,7 +61,7 @@ void initBNO055(void) {
         // 加速
         writeBNO055(BNO055_ACC_CONFIG_ADDR, 0x17);    // 16G 250Hz
         // ジャイロ
-        writeBNO055(BNO055_GYR_CONFIG_0_ADDR, 0x08);  // 2000dps 230Hz 
+        writeBNO055(BNO055_GYR_CONFIG_0_ADDR, 0x00);  // 2000dps 523Hz 
 
         // モード変更
         writeBNO055(BNO055_PAGE_ID_ADDR, 0x00);     // ページ0に変更
@@ -76,8 +76,9 @@ void initBNO055(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void getBNO055Acceleration(void) {
-    int16_t rawData[8];
+	uint8_t rawData[8];
     readBNO055AxisData(BNO055_ACCEL_DATA_X_LSB_ADDR, rawData);
+
     accelVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     accelVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     accelVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
@@ -92,8 +93,9 @@ void getBNO055Acceleration(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void getBNO055Gyro(void) {
-    int16_t rawData[8];
+    uint8_t rawData[8];
     readBNO055AxisData(BNO055_GYRO_DATA_X_LSB_ADDR, rawData);
+
     gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );

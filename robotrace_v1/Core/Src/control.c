@@ -101,6 +101,7 @@ void systemLoop (void) {
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 				encTotalN = 0;
 				cntRun = 0;
+				angle[INDEX_Z] = 0;
 				initLog();
 				patternTrace = 11;
 			}
