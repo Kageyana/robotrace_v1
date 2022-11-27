@@ -967,6 +967,7 @@ void initLog(void) {
   setLogStr("existMarker",  "%d");
   setLogStr("encMarker",    "%d");
   setLogStr("checkMarker",  "%d");
+  setLogStr("stateMarker",  "%d");
   setLogStr("MarkerSensor", "%d");
   // setLogStr("encCurrentR",  "%d");
   // setLogStr("encCurrentL",  "%d");
@@ -1008,6 +1009,7 @@ void writeLog(void) {
   existMarker,
   encMarker,
   cMarker,
+  stateMarker,
   getMarkerSensor(),
   // encCurrentR,
   // encCurrentL,

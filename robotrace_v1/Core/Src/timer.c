@@ -55,7 +55,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
     if (modeLCD == 1) lcdShowProcess();   // LCD
     
-    cMarker = checkMarker();
     switch(cnt5ms) {
         case 1:
 
@@ -68,7 +67,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             motorControlYaw();
             break;
         case 3:
-            
+            cMarker = checkMarker();
             if (modeLOG) writeLog();
             break;
         case 4:

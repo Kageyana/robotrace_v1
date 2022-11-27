@@ -9,7 +9,7 @@ uint8_t     SGmarker = 0;
 uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0, cntMarkerNone = 0;
 
 int32_t		encMarker = 0;
-
+uint8_t     stateMarker = 0, checkStart = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
 // 処理概要     マーカーセンサの値を取得
@@ -53,34 +53,38 @@ uint8_t checkMarker( void ) {
 	// 	}
 	// }
 
-	if (crossLine == 1 && encTotalN - encMarker >= encMM(50)) {
+	if (crossLine == 1 && encTotalN - encMarker >= encMM(90)) {
 		crossLine = 0;
 		encMarker = 0;
 	}
-	if (cntMarkerNone >= 10) {
-		encMarker = 0;
-		cntMarkerNone = 0;
-		existMarker = 0;
-	}
 
-	if (nowMarker != 0 && existMarker == 0 && crossLine == 0) {
+	if (nowMarker != 0 && checkStart == 0 && crossLine == 0) {
 		existMarker = nowMarker;
+		checkStart = 1;
+		cntMarkerNone = 0;
 		encMarker = encTotalN;
 	}
-	if (existMarker != 0) {
-		if (encTotalN - encMarker <= encMM(17)) {
+	if (checkStart == 1) {
+		if (encTotalN - encMarker <= encMM(50)) {
 			if (nowMarker != 0 && nowMarker != existMarker) {
 				// クロスライン
-				crossLine = 1;
-				ret = CROSSLINE;
-				existMarker = 0;
-			} else if (nowMarker == 0) {
+				stateMarker = 1;
+				checkStart = 0;
+				return CROSSLINE;
+			} else if ( nowMarker == existMarker ) {
+				if (cntMarkerNone == 0 && encTotalN - encMarker >= encMM(19)) {
+					checkStart = 0;
+					stateMarker = 4;
+					return existMarker;
+				}
+			} else if ( nowMarker == 0 ) {
 				cntMarkerNone++;
+				stateMarker = 2;
 			}
 		} else {
-			ret = existMarker;
-			existMarker = 0;
-			encMarker = 0;
+			checkStart = 0;
+			stateMarker = 3;
+			return existMarker;
 		}
 	}
 

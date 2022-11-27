@@ -17,10 +17,11 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern  uint8_t     SGmarker;
-extern  uint8_t		nowMarker, existMarker;
+extern uint8_t  SGmarker;
+extern uint8_t  nowMarker, existMarker;
 
-extern  int32_t		encMarker;
+extern int32_t  encMarker;
+extern uint8_t  stateMarker;
 //====================================//
 // プロトタイプ宣言
 //====================================//
