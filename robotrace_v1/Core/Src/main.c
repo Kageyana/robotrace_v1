@@ -67,6 +67,7 @@ char buffer[1024];
 FATFS *pfs;
 DWORD fre_clust;
 uint32_t total, free_space;
+uint8_t columnTitle[512] = "", formatLog[256] = "";
 
 /* USER CODE END PV */
 
@@ -935,7 +936,7 @@ void initMicroSD(void) {
 void initLog(void) {
   DIR dir;                    // Directory
   FILINFO fno;                // File Info
-  uint8_t fileName[10], columnTitle[256] = "";
+  uint8_t fileName[10];
   uint8_t *tp;
   uint16_t fileNumber = 0;
 
@@ -960,33 +961,39 @@ void initLog(void) {
   strcat(fileName, ".csv");           // file name create
   fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
 
-  strcat(columnTitle,"cntlog,");
-  strcat(columnTitle,"patternTrace,");
-  strcat(columnTitle,"MarkerSensor,");
-  strcat(columnTitle,"encCurrentR,");
-  strcat(columnTitle,"encCurrentL,");
-  strcat(columnTitle,"encCurrentN,");
-  strcat(columnTitle,"encTotalR,");
-  strcat(columnTitle,"encTotalL,");
-  strcat(columnTitle,"encTotalN,");
-  strcat(columnTitle,"lSensor[0],");
-  strcat(columnTitle,"lSensor[1],");
-  strcat(columnTitle,"lSensor[2],");
-  strcat(columnTitle,"lSensor[3],");
-  strcat(columnTitle,"lSensor[4],");
-  strcat(columnTitle,"lSensor[5],");
-  strcat(columnTitle,"lSensor[6],");
-  strcat(columnTitle,"lSensor[7],");
-  strcat(columnTitle,"lSensor[8],");
-  strcat(columnTitle,"lSensor[9],");
-  strcat(columnTitle,"lSensor[10],");
-  strcat(columnTitle,"lSensor[11],");
-  strcat(columnTitle,"gyroVal[X],");
-  strcat(columnTitle,"gyroVal[Y],");
-  strcat(columnTitle,"gyroVal[Z],");
-  strcat(columnTitle,"rawCurrentR,");
-  strcat(columnTitle,"rawCurrentL,");
+  setLogStr("cntlog",       "%d");
+  setLogStr("patternTrace", "%d");
+  setLogStr("nowMarker",    "%d");
+  setLogStr("existMarker",  "%d");
+  setLogStr("encMarker",    "%d");
+  setLogStr("checkMarker",  "%d");
+  setLogStr("MarkerSensor", "%d");
+  // setLogStr("encCurrentR",  "%d");
+  // setLogStr("encCurrentL",  "%d");
+  // setLogStr("encCurrentN",  "%d");
+  // setLogStr("encTotalR",    "%d");
+  // setLogStr("encTotalL",    "%d");
+  setLogStr("encTotalN",    "%d");
+  // strcat(columnTitle,"lSensor[0],");
+  // strcat(columnTitle,"lSensor[1],");
+  // strcat(columnTitle,"lSensor[2],");
+  // strcat(columnTitle,"lSensor[3],");
+  // strcat(columnTitle,"lSensor[4],");
+  // strcat(columnTitle,"lSensor[5],");
+  // strcat(columnTitle,"lSensor[6],");
+  // strcat(columnTitle,"lSensor[7],");
+  // strcat(columnTitle,"lSensor[8],");
+  // strcat(columnTitle,"lSensor[9],");
+  // strcat(columnTitle,"lSensor[10],");
+  // strcat(columnTitle,"lSensor[11],");
+  // setLogStr("gyroVal[X]",   "%d");
+  // setLogStr("gyroVal[Y]",   "%d");
+  // setLogStr("gyroVal[Z]",   "%d");
+  // setLogStr("rawCurrentR",  "%d");
+  // setLogStr("rawCurrentL",  "%d");
+
   strcat(columnTitle,"\n");
+  strcat(formatLog,"\n");
   f_printf(&fil, columnTitle);
 
   modeLOG = 1;    // log start
@@ -994,39 +1001,56 @@ void initLog(void) {
 }
 
 void writeLog(void) {
-  f_printf(&fil, "%d,%d,%x,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+  f_printf(&fil, formatLog,
   cntLog,
   patternTrace,
+  nowMarker,
+  existMarker,
+  encMarker,
+  cMarker,
   getMarkerSensor(),
-  encCurrentR,
-  encCurrentL,
-  encCurrentN,
-  encTotalR,
-  encTotalL,
-  encTotalN,
-  lSensor[0],
-  lSensor[1],
-  lSensor[2],
-  lSensor[3],
-  lSensor[4],
-  lSensor[5],
-  lSensor[6],
-  lSensor[7],
-  lSensor[8],
-  lSensor[9],
-  lSensor[10],
-  lSensor[11],
-  gyroVal[INDEX_X],
-  gyroVal[INDEX_Y],
-  gyroVal[INDEX_Z],
-  rawCurrentR,
-  rawCurrentL);
+  // encCurrentR,
+  // encCurrentL,
+  // encCurrentN,
+  // encTotalR,
+  // encTotalL,
+  encTotalN
+  // lSensor[0],
+  // lSensor[1],
+  // lSensor[2],
+  // lSensor[3],
+  // lSensor[4],
+  // lSensor[5],
+  // lSensor[6],
+  // lSensor[7],
+  // lSensor[8],
+  // lSensor[9],
+  // lSensor[10],
+  // lSensor[11],
+  // gyroVal[INDEX_X],
+  // gyroVal[INDEX_Y],
+  // gyroVal[INDEX_Z],
+  // rawCurrentR,
+  // rawCurrentL
+  );
 }
 
 void endLog(void) {
   modeLOG = 0;
   while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
   f_close(&fil);
+}
+
+void setLogStr(uint8_t* column, uint8_t* format) {
+  uint8_t* columnStr[30], formatStr[30];
+
+  strcpy(columnStr,column);
+  strcpy(formatStr,format);
+
+  strcat(columnStr,",");
+  strcat(formatStr,",");
+  strcat(columnTitle,columnStr);
+  strcat(formatLog,formatStr);
 }
 /* USER CODE END 4 */
 

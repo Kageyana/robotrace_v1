@@ -7,9 +7,10 @@
 //====================================//
 // モード関連
 uint8_t	patternTrace = 0;
-uint8_t modeLCD = 1;		// LCD表示可否		0:消灯		1:表示
-uint8_t modeLOG = 0;		// ログ取得状況		0:ログ停止	1:ログ取得中
-uint8_t modeCurve = 0;		// カーブ判断		0:直線 		1:カーブ進入
+uint8_t modeLCD = 1;		// LCD表示可否		0:消灯			1:表示
+uint8_t modeLOG = 0;		// ログ取得状況		0:ログ停止		 1:ログ取得中
+uint8_t modeCurve = 0;		// カーブ判断		0:直線			1:カーブ進入
+uint8_t modeEMC = 0;
 
 // 速度パラメータ関連
 uint8_t paramSpeed[10] = {	PARAM_STRAIGHT, 
@@ -23,9 +24,10 @@ uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
 
 uint16_t analogVal[12];		// ADC結果格納配列
 
+// マーカー関連
+uint8_t cMarker;
+
 // ログ関連
-uint16_t logMarker[10000];
-uint16_t logEncoder[10000];
 uint32_t goalTime = 0;
 uint32_t j=0;
 
@@ -85,7 +87,11 @@ void systemInit (void) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void systemLoop (void) {
-
+	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
+		emargencyStop(STOP_ANGLE_X);
+	} else if (cntAngleY > STOP_COUNT_ANGLE_Y) {
+		emargencyStop(STOP_ANGLE_Y);
+	}
 	
 	switch (patternTrace) {
       	case 0:
@@ -93,16 +99,24 @@ void systemLoop (void) {
 
 			if (start) {
 				lcdRowPrintf(UPROW, "ready   ");
-				lcdRowPrintf(LOWROW, "        ");
-
-				HAL_Delay(5000);
-				lcdRowPrintf(LOWROW, "      Go");
+				lcdRowPrintf(LOWROW, "       5");
+				HAL_Delay(1000);
+				lcdRowPrintf(LOWROW, "       4");
+				HAL_Delay(1000);
+				lcdRowPrintf(LOWROW, "       3");
+				HAL_Delay(1000);
+				lcdRowPrintf(LOWROW, "       2");
+				HAL_Delay(1000);
+				lcdRowPrintf(LOWROW, "       1");
+				HAL_Delay(1000);
 				modeLCD = 0;
+				initLog();
 				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
 				encTotalN = 0;
 				cntRun = 0;
+				angle[INDEX_X] = 0;
+				angle[INDEX_Y] = 0;
 				angle[INDEX_Z] = 0;
-				initLog();
 				patternTrace = 11;
 			}
 			break;
@@ -116,18 +130,24 @@ void systemLoop (void) {
 			motorPwmOutSynth( tracePwm, speedPwm );
 
 			// マーカー処理
-			if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 6000) {
-				encCross2 = encTotalN;
-			}
-			if (encTotalN - encCross2 >= encMM (200) ) {
-				if (checkMarker() == RIGHTMARKER) {
-					// ゴールマーカー処理
-					if (SGmarker == 0) {
-						SGmarker = STARTMARKER;
-					} else if (SGmarker == STARTMARKER && encTotalN > encMM(500)) {
-						SGmarker = GOALMARKER;
-					}
-				}
+			// if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 6000) {
+			// 	encCross2 = encTotalN;
+			// }
+			// if (encTotalN - encCross2 >= encMM (200) ) {
+			// 	if (checkMarker() == RIGHTMARKER) {
+			// 		// ゴールマーカー処理
+			// 		if (SGmarker == 0) {
+			// 			SGmarker = STARTMARKER;
+			// 		} else if (SGmarker == STARTMARKER && encTotalN > encMM(500)) {
+			// 			SGmarker = GOALMARKER;
+			// 		}
+			// 	}
+			// }		
+			
+			if ( cMarker == RIGHTMARKER) {
+				// ゴールマーカー処理
+				if (SGmarker == STARTMARKER && encTotalN >= encMM(1000)) SGmarker = GOALMARKER;
+				if (SGmarker == 0) SGmarker = STARTMARKER;
 			}
 			 
 			// カーブ処理
@@ -162,18 +182,24 @@ void systemLoop (void) {
 			else                  motorPwmOutSynth( 0, speedPwm );
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
-			lcdRowPrintf(UPROW, "TIME    ");
+			lcdRowPrintf(UPROW, "TIME   %d",modeEMC);
 			lcdRowPrintf(LOWROW, "  %5ds",goalTime);
-
-			// if(swValTact == SW_PUSH) {
-			// 	printf("cnt\tmarker\tencoder");
-			// 	for (j=0;j<goalTime;j++) {
-			// 		printf("%4d\t%d\t%d",j,logMarker[j],logEncoder[j]);
-			// 	}
-			// }
 			break;
     
       	default:
         	break;
     } // switch case
+}
+
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 emargencyStop
+// 処理概要     緊急停止処理
+// 引数         なし
+// 戻り値       なし
+///////////////////////////////////////////////////////////////////////////
+void emargencyStop (uint8_t modeStop) { 
+	endLog();
+	modeLCD = 1;
+	modeEMC = modeStop;
+	patternTrace = 102;
 }

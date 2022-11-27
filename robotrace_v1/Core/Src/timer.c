@@ -10,6 +10,8 @@ uint32_t    cnt5ms = 0;
 uint32_t    cntLog = 0;
 // Emergency stop
 uint16_t    cntEmc1 = 0;
+uint16_t    cntAngleX = 0;
+uint16_t    cntAngleY = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 HAL_TIM_PeriodElapsedCallback
 // 処理概要     タイマー割り込み(1ms)
@@ -26,6 +28,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     //         cntEmc1++;
     //     }
     // }
+    if (trace_test == 1 || (patternTrace > 10 && patternTrace < 100) ) {
+        if (fabs(angle[INDEX_X]) > 45.0) cntAngleX++;
+        else    cntAngleX = 0;
+        if (fabs(angle[INDEX_Y]) > 45.0) cntAngleY++;
+        else    cntAngleY = 0;
+    }
     if (patternTrace < 10 ||	 patternTrace > 100) {
         cntSW++;
         cntSetup1++;
@@ -47,19 +55,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
     if (modeLCD == 1) lcdShowProcess();   // LCD
     
-
+    cMarker = checkMarker();
     switch(cnt5ms) {
         case 1:
 
             break;
         case 2:
-            getCurrent();               // 電流計測
+            // getCurrent();               // 電流計測
             // getBNO055Acceleration();    // 加速度取得       
             getBNO055Gyro();    // 角速度取得
             calcDegrees();
             motorControlYaw();
             break;
         case 3:
+            
             if (modeLOG) writeLog();
             break;
         case 4:

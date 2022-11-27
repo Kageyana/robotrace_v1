@@ -81,6 +81,7 @@ void Error_Handler(void);
 void initMicroSD(void);
 void writeLog(void);
 void endLog(void);
+void setLogStr(uint8_t* column, uint8_t* format);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

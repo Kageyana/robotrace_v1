@@ -6,14 +6,10 @@
 // グローバル変数の宣言
 //====================================//
 uint8_t     SGmarker = 0;
+uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0, cntMarkerNone = 0;
+
 int32_t		encMarker = 0;
-int32_t		encMarker2 = 0;
-int32_t		encMarker3 = 0;
-int32_t		cntmark = 0;
-int32_t     encth = 900;
-int32_t 	mark = 0;
-int32_t		encCross = 0;
-int32_t 	encCross2 = 0;
+
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
 // 処理概要     マーカーセンサの値を取得
@@ -40,27 +36,51 @@ uint8_t getMarkerSensor ( void ) {
 uint8_t checkMarker( void ) {
 	uint8_t ret = 0;
 
-	if (encTotalN - encCross >= encMM(40)) encCross = 0;
+	nowMarker = getMarkerSensor();
 
-	if ( getMarkerSensor() != 0) {
-		if (encMarker == 0) {
-			mark = getMarkerSensor();
-			encMarker = encTotalN;
-		} else if (encTotalN - encMarker <= encth && encTotalN - encCross <= encMM(40)) {
-			// encMarker2 = encTotalN
-			// encMarker3 = encMarker;
-			// cntmark++;
-			// encMarker = 0;
-			
-			// if (mark != getMarkerSensor()) {
-			// 	ret = 0;
-			// 	encMarker = 0;
-			// 	encCross = encTotalN;
-			// }
-		} else if (encTotalN - encMarker >= encth) {
-			ret = getMarkerSensor();
+	// if (encTotalN - encCross >= encMM(30)) encCross = 0;
+
+	// if ( getMarkerSensor() != 0) {
+	// 	if (encMarker == 0) {
+	// 		mark = getMarkerSensor();
+	// 		encMarker = encTotalN;
+	// 	} else if (encTotalN - encMarker <= encth && encTotalN - encCross <= encMM(40)) {
+
+	// 	} else if (encTotalN - encMarker >= encth) {
+	// 		ret = getMarkerSensor();
+	// 		encMarker = 0;
+	// 		mark = 0;
+	// 	}
+	// }
+
+	if (crossLine == 1 && encTotalN - encMarker >= encMM(50)) {
+		crossLine = 0;
+		encMarker = 0;
+	}
+	if (cntMarkerNone >= 10) {
+		encMarker = 0;
+		cntMarkerNone = 0;
+		existMarker = 0;
+	}
+
+	if (nowMarker != 0 && existMarker == 0 && crossLine == 0) {
+		existMarker = nowMarker;
+		encMarker = encTotalN;
+	}
+	if (existMarker != 0) {
+		if (encTotalN - encMarker <= encMM(17)) {
+			if (nowMarker != 0 && nowMarker != existMarker) {
+				// クロスライン
+				crossLine = 1;
+				ret = CROSSLINE;
+				existMarker = 0;
+			} else if (nowMarker == 0) {
+				cntMarkerNone++;
+			}
+		} else {
+			ret = existMarker;
+			existMarker = 0;
 			encMarker = 0;
-			mark = 0;
 		}
 	}
 
