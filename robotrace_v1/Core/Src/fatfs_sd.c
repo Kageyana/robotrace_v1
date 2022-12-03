@@ -113,92 +113,92 @@ static void SD_PowerOn(void)
   PowerFlag = 1;
 }
 
-/* 전원 끄기 */
+/* 電源を切る */
 static void SD_PowerOff(void) 
 {
   PowerFlag = 0;
 }
 
-/* 전원 상태 확인 */
+/* 電源状態の確認 */
 static uint8_t SD_CheckPower(void) 
 {
   /*  0=off, 1=on */
   return PowerFlag;
 }
 
-/* 데이터 패킷 수신 */
+/* データパケットの受信 */
 static bool SD_RxDataBlock(BYTE *buff, UINT btr) 
 {
   uint8_t token;
   
-  /* 100ms 타이머 */
+  /* 100ms タイマー */
   Timer1 = 10;
 
-  /* 응답 대기 */		
+  /* 応答待ち */		
   do 
   {    
     token = SPI_RxByte();
   } while((token == 0xFF) && Timer1);
   
-  /* 0xFE 이외 Token 수신 시 에러 처리 */
+  /* 0xFE 以外トークン受信時のエラー処理 */
   if(token != 0xFE)
     return FALSE;
   
-  /* 버퍼에 데이터 수신 */
+  /* バッファへのデータの受信 */
   do 
   {     
     SPI_RxBytePtr(buff++);
     SPI_RxBytePtr(buff++);
   } while(btr -= 2);
   
-  SPI_RxByte(); /* CRC 무시 */
+  SPI_RxByte(); /* CRC 無視 */
   SPI_RxByte();
   
   return TRUE;
 }
 
-/* 데이터 전송 패킷 */
+/* データ転送パケット */
 #if _READONLY == 0
 static bool SD_TxDataBlock(const BYTE *buff, BYTE token)
 {
   uint8_t resp, wc;
   uint8_t i = 0;
     
-  /* SD카드 준비 대기 */
+  /* SDカード準備待ち */
   if (SD_ReadyWait() != 0xFF)
     return FALSE;
   
-  /* 토큰 전송 */
+  /* トークン転送 */
   SPI_TxByte(token);      
   
-  /* 데이터 토큰인 경우 */
+  /* データトークンの場合 */
   if (token != 0xFD) 
   { 
     wc = 0;
     
-    /* 512 바이트 데이터 전송 */
+    /* 512バイトのデータ転送 */
     do 
     { 
       SPI_TxByte(*buff++);
       SPI_TxByte(*buff++);
     } while (--wc);
     
-    SPI_RxByte();       /* CRC 무시 */
+    SPI_RxByte();       /* CRC 無視 */
     SPI_RxByte();
     
-    /* 데이트 응답 수신 */        
+    /* デートレスポンスの受信 */        
     while (i <= 64) 
     {			
       resp = SPI_RxByte();
       
-      /* 에러 응답 처리 */
+      /* エラー応答処理 */
       if ((resp & 0x1F) == 0x05) 
         break;
       
       i++;
     }
     
-    /* SPI 수신 버퍼 Clear */
+    /* SPI 受信バッファ Clear*/
     while (SPI_RxByte() == 0);
   }
   
@@ -209,23 +209,23 @@ static bool SD_TxDataBlock(const BYTE *buff, BYTE token)
 }
 #endif /* _READONLY */
 
-/* CMD 패킷 전송 */
+/* CMD パケット転送 */
 static BYTE SD_SendCmd(BYTE cmd, DWORD arg) 
 {
   uint8_t crc, res;
   
-  /* SD카드 대기 */
+  /* SDカード待ち */
   if (SD_ReadyWait() != 0xFF)
     return 0xFF;
   
-  /* 명령 패킷 전송 */
+  /* コマンドパケット転送 */
   SPI_TxByte(cmd); 			/* Command */
   SPI_TxByte((BYTE) (arg >> 24)); 	/* Argument[31..24] */
   SPI_TxByte((BYTE) (arg >> 16)); 	/* Argument[23..16] */
   SPI_TxByte((BYTE) (arg >> 8)); 	/* Argument[15..8] */
   SPI_TxByte((BYTE) arg); 		/* Argument[7..0] */
   
-  /* 명령별 CRC 준비 */
+  /* コマンドによるCRCの準備 */
   crc = 0;  
   if (cmd == CMD0)
     crc = 0x95; /* CRC for CMD0(0) */
@@ -233,14 +233,14 @@ static BYTE SD_SendCmd(BYTE cmd, DWORD arg)
   if (cmd == CMD8)
     crc = 0x87; /* CRC for CMD8(0x1AA) */
   
-  /* CRC 전송 */
+  /* CRC 転送 */
   SPI_TxByte(crc);
   
-  /* CMD12 Stop Reading 명령인 경우에는 응답 바이트 하나를 버린다 */
+  /* CMD12 Stop Readingコマンドの場合は、応答バイトを1つ捨てる */
   if (cmd == CMD12)
     SPI_RxByte();
   
-  /* 10회 내에 정상 데이터를 수신한다. */
+  /* 10回以内に正常データを受信する. */
   uint8_t n = 10; 
   do
   {
@@ -251,39 +251,39 @@ static BYTE SD_SendCmd(BYTE cmd, DWORD arg)
 }
 
 /*-----------------------------------------------------------------------
-  fatfs에서 사용되는 Global 함수들
-  user_diskio.c 파일에서 사용된다.
+  fatfsで使用されるグローバル関数
+  user_diskio.cファイルで使用される.
 -----------------------------------------------------------------------*/
 
-/* SD카드 초기화 */
+/* SDカードの初期化 */
 DSTATUS SD_disk_initialize(BYTE drv) 
 {
   uint8_t n, type, ocr[4];
   
-  /* 한종류의 드라이브만 지원 */
+  /* 一種類のドライブのみサポート */
   if(drv)
     return STA_NOINIT;  
   
-  /* SD카드 미삽입 */
+  /* SDカード未挿入 */
   if(Stat & STA_NODISK)
     return Stat;        
   
-  /* SD카드 Power On */
+  /* SDカード Power On */
   SD_PowerOn();         
   
-  /* SPI 통신을 위해 Chip Select */
+  /* SPI 通信のために Chip Select */
   SELECT();             
   
-  /* SD카드 타입변수 초기화 */
+  /* SDカードタイプ変数の初期化 */
   type = 0;
   
-  /* Idle 상태 진입 */
+  /* Idle ステータスエントリー */
   if (SD_SendCmd(CMD0, 0) == 1) 
   { 
-    /* 타이머 1초 설정 */
+    /* タイマー1秒設定 */
     Timer1 = 100;
     
-    /* SD 인터페이스 동작 조건 확인 */
+    /* SD インタフェース動作条件の確認 */
     if (SD_SendCmd(CMD8, 0x1AA) == 1) 
     { 
       /* SDC Ver2+ */
@@ -294,7 +294,7 @@ DSTATUS SD_disk_initialize(BYTE drv)
       
       if (ocr[2] == 0x01 && ocr[3] == 0xAA) 
       { 
-        /* 2.7-3.6V 전압범위 동작 */
+        /* 2.7-3.6V 電圧範囲動作 */
         do {
           if (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 1UL << 30) == 0)
             break; /* ACMD41 with HCS bit */
@@ -332,7 +332,7 @@ DSTATUS SD_disk_initialize(BYTE drv)
       
       if (!Timer1 || SD_SendCmd(CMD16, 512) != 0) 
       {
-        /* 블럭 길이 선택 */
+        /* ブロック長の選択 */
         type = 0;
       }
     }
@@ -342,7 +342,7 @@ DSTATUS SD_disk_initialize(BYTE drv)
   
   DESELECT();
   
-  SPI_RxByte(); /* Idle 상태 전환 (Release DO) */
+  SPI_RxByte(); /* Idle 状態遷移 (Release DO) */
   
   if (type) 
   {
@@ -358,7 +358,7 @@ DSTATUS SD_disk_initialize(BYTE drv)
   return Stat;
 }
 
-/* 디스크 상태 확인 */
+/* ディスクの状態の確認 */
 DSTATUS SD_disk_status(BYTE drv) 
 {
   if (drv)
@@ -367,7 +367,7 @@ DSTATUS SD_disk_status(BYTE drv)
   return Stat;
 }
 
-/* 섹터 읽기 */
+/* セクターを読む */
 DRESULT SD_disk_read(BYTE pdrv, BYTE* buff, DWORD sector, UINT count) 
 {
   if (pdrv || !count)
@@ -377,19 +377,19 @@ DRESULT SD_disk_read(BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
     return RES_NOTRDY;
   
   if (!(CardType & 4))
-    sector *= 512;      /* 지정 sector를 Byte addressing 단위로 변경 */
+    sector *= 512;      /* 指定 sector を Byte addressing 単位に変更 */
   
   SELECT();
   
   if (count == 1) 
   { 
-    /* 싱글 블록 읽기 */
+    /* シングルブロックを読む */
     if ((SD_SendCmd(CMD17, sector) == 0) && SD_RxDataBlock(buff, 512))
       count = 0;
   } 
   else 
   { 
-    /* 다중 블록 읽기 */
+    /* マルチブロック読み取り */
     if (SD_SendCmd(CMD18, sector) == 0) 
     {       
       do {
@@ -399,18 +399,18 @@ DRESULT SD_disk_read(BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
         buff += 512;
       } while (--count);
       
-      /* STOP_TRANSMISSION, 모든 블럭을 다 읽은 후, 전송 중지 요청 */
+      /* STOP_TRANSMISSION, すべてのブロックをすべて読んだ後、転送停止要求 */
       SD_SendCmd(CMD12, 0); 
     }
   }
   
   DESELECT();
-  SPI_RxByte(); /* Idle 상태(Release DO) */
+  SPI_RxByte(); /* Idle 状態(Release DO) */
   
   return count ? RES_ERROR : RES_OK;
 }
 
-/* 섹터 쓰기 */
+/* セクターを書く */
 #if _READONLY == 0
 DRESULT SD_disk_write(BYTE pdrv, const BYTE* buff, DWORD sector, UINT count) 
 {
@@ -424,19 +424,19 @@ DRESULT SD_disk_write(BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
     return RES_WRPRT;
   
   if (!(CardType & 4))
-    sector *= 512; /* 지정 sector를 Byte addressing 단위로 변경 */
+    sector *= 512; /* 指定 sector を Byte addressing 単位に変更 */
   
   SELECT();
   
   if (count == 1) 
   { 
-    /* 싱글 블록 쓰기 */
+    /* シングルブロック書き込み */
     if ((SD_SendCmd(CMD24, sector) == 0) && SD_TxDataBlock(buff, 0xFE))
       count = 0;
   } 
   else 
   { 
-    /* 다중 블록 쓰기 */
+    /* マルチブロック書き込み */
     if (CardType & 2) 
     {
       SD_SendCmd(CMD55, 0);
@@ -466,7 +466,7 @@ DRESULT SD_disk_write(BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 }
 #endif /* _READONLY */
 
-/* 기타 함수 */
+/* その他の機能 */
 DRESULT SD_disk_ioctl(BYTE drv, BYTE ctrl, void *buff) 
 {
   DRESULT res;
@@ -509,7 +509,7 @@ DRESULT SD_disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
     switch (ctrl) 
     {
     case GET_SECTOR_COUNT: 
-      /* SD카드 내 Sector의 개수 (DWORD) */
+      /* SDカード内のSectorの数 (DWORD) */
       if ((SD_SendCmd(CMD9, 0) == 0) && SD_RxDataBlock(csd, 16)) 
       {
         if ((csd[0] >> 6) == 1) 
@@ -531,31 +531,31 @@ DRESULT SD_disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
       break;
       
     case GET_SECTOR_SIZE: 
-      /* 섹터의 단위 크기 (WORD) */
+      /* セクタの単位サイズ (WORD) */
       *(WORD*) buff = 512;
       res = RES_OK;
       break;
       
     case CTRL_SYNC: 
-      /* 쓰기 동기화 */
+      /* 書き込み同期 */
       if (SD_ReadyWait() == 0xFF)
         res = RES_OK;
       break;
       
     case MMC_GET_CSD: 
-      /* CSD 정보 수신 (16 bytes) */
+      /* CSD情報の受信 (16 bytes) */
       if (SD_SendCmd(CMD9, 0) == 0 && SD_RxDataBlock(ptr, 16))
         res = RES_OK;
       break;
       
     case MMC_GET_CID: 
-      /* CID 정보 수신 (16 bytes) */
+      /* CID情報の受信 (16 bytes) */
       if (SD_SendCmd(CMD10, 0) == 0 && SD_RxDataBlock(ptr, 16))
         res = RES_OK;
       break;
       
     case MMC_GET_OCR: 
-      /* OCR 정보 수신 (4 bytes) */
+      /* OCR情報の受信 (4 bytes) */
       if (SD_SendCmd(CMD58, 0) == 0) 
       {         
         for (n = 0; n < 4; n++)
