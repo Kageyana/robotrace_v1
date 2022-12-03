@@ -28,5 +28,5 @@ extern uint16_t		cntSW;			// アナログ入力スイッチのチャタリング
 //====================================//
 uint8_t getSWrotary( uint16_t ad );
 uint8_t getSWtact( uint16_t ad );
-
+void getSwitches(void);
 #endif // SWITCH_H_

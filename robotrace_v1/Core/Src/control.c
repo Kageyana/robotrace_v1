@@ -88,10 +88,16 @@ void systemInit (void) {
 ///////////////////////////////////////////////////////////////////////////
 void systemLoop (void) {
 	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
-		emargencyStop(STOP_ANGLE_X);
+		emargencyStop(STOP_ANGLE_X);	// X角度が一定値以上
 	} else if (cntAngleY > STOP_COUNT_ANGLE_Y) {
-		emargencyStop(STOP_ANGLE_Y);
+		emargencyStop(STOP_ANGLE_Y);	// Y角度が一定値以上
+	} else if (cntEncStop > STOP_COUNT_ENCODER_CURRENT) {
+		emargencyStop(STOP_ENCODER_CURRENT);	// エンコーダ停止
 	}
+
+	// if (encTotalN >= encMM(19) ) {
+	// 	emargencyStop(STOP_DISTANCE);
+	// }
 	
 	switch (patternTrace) {
       	case 0:

@@ -139,7 +139,12 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   systemInit();
-  initMicroSD();
+  if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
+    initMicroSD();
+  } else {
+    lcdRowPrintf(UPROW,"no MSD  ");
+    HAL_Delay(800);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -867,11 +872,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : Sidesensor1_Pin */
-  GPIO_InitStruct.Pin = Sidesensor1_Pin;
+  /*Configure GPIO pins : Sidesensor1_Pin SW_MSD_Pin */
+  GPIO_InitStruct.Pin = Sidesensor1_Pin|SW_MSD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(Sidesensor1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Output1_Pin Output2_Pin */
   GPIO_InitStruct.Pin = Output1_Pin|Output2_Pin;
@@ -899,11 +904,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Input1_Pin SW_MSD_Pin */
-  GPIO_InitStruct.Pin = Input1_Pin|SW_MSD_Pin;
+  /*Configure GPIO pin : Input1_Pin */
+  GPIO_InitStruct.Pin = Input1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(Input1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_R_Pin */
   GPIO_InitStruct.Pin = LED_R_Pin;
@@ -961,20 +966,21 @@ void initLog(void) {
   strcat(fileName, ".csv");           // file name create
   fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
 
-  setLogStr("cntlog",       "%d");
-  setLogStr("patternTrace", "%d");
-  setLogStr("nowMarker",    "%d");
-  setLogStr("existMarker",  "%d");
-  setLogStr("encMarker",    "%d");
+  // setLogStr("cntlog",       "%d");
+  // setLogStr("patternTrace", "%d");
+  // setLogStr("nowMarker",    "%d");
+  // setLogStr("existMarker",  "%d");
+  // setLogStr("encMarker",    "%d");
   setLogStr("checkMarker",  "%d");
-  setLogStr("stateMarker",  "%d");
+  // setLogStr("stateMarker",  "%d");
+  // setLogStr("SGmarker",  "%d");
   setLogStr("MarkerSensor", "%d");
   // setLogStr("encCurrentR",  "%d");
   // setLogStr("encCurrentL",  "%d");
   // setLogStr("encCurrentN",  "%d");
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
-  setLogStr("encTotalN",    "%d");
+  // setLogStr("encTotalN",    "%d");
   // strcat(columnTitle,"lSensor[0],");
   // strcat(columnTitle,"lSensor[1],");
   // strcat(columnTitle,"lSensor[2],");
@@ -1003,20 +1009,21 @@ void initLog(void) {
 
 void writeLog(void) {
   f_printf(&fil, formatLog,
-  cntLog,
-  patternTrace,
-  nowMarker,
-  existMarker,
-  encMarker,
+  // cntLog,
+  // patternTrace,
+  // nowMarker,
+  // existMarker,
+  // encMarker,
   cMarker,
-  stateMarker,
-  getMarkerSensor(),
+  // stateMarker,
+  // SGmarker,
+  getMarkerSensor()
   // encCurrentR,
   // encCurrentL,
   // encCurrentN,
   // encTotalR,
   // encTotalL,
-  encTotalN
+  // encTotalN
   // lSensor[0],
   // lSensor[1],
   // lSensor[2],
@@ -1046,6 +1053,7 @@ void endLog(void) {
 void setLogStr(uint8_t* column, uint8_t* format) {
   uint8_t* columnStr[30], formatStr[30];
 
+  // copy str to local variable
   strcpy(columnStr,column);
   strcpy(formatStr,format);
 

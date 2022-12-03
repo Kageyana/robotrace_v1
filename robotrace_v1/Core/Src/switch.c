@@ -13,9 +13,9 @@ uint8_t			swValRotary;
 uint16_t		cntSW = 0;		// 5方向タクトスイッチのチャタリング防止用
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getSWrotary
-// 処理概要  ロータリスイッチのアナログ入力から2進数への変換
-// 引数     なし
-// 戻り値    ロータリスイッチのカウント
+// 処理概要  	ロータリスイッチのアナログ入力から2進数への変換
+// 引数     	なし
+// 戻り値    	ロータリスイッチのカウント
 /////////////////////////////////////////////////////////////////////
 uint8_t getSWrotary( uint16_t ad ) {
 	uint8_t ret = 0;
@@ -41,9 +41,9 @@ uint8_t getSWrotary( uint16_t ad ) {
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getSWtact
-// 処理概要  5方向タクトスイッチのアナログ入力から5方向の入力に変換
-// 引数      なし
-// 戻り値     スイッチの方向
+// 処理概要  	5方向タクトスイッチのアナログ入力から5方向の入力に変換
+// 引数      	なし
+// 戻り値     	スイッチの方向
 /////////////////////////////////////////////////////////////////////
 uint8_t getSWtact( uint16_t ad ) {
 	uint8_t ret = SW_NONE;
@@ -56,4 +56,25 @@ uint8_t getSWtact( uint16_t ad ) {
 	else if ( ad < 150 && ad >= 0 ) 	ret = SW_UP;
 
 	return ret;
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 getSwitches
+// 処理概要  	アナログ入力のスイッチの読み取り
+// 引数      	なし
+// 戻り値    	なし
+/////////////////////////////////////////////////////////////////////
+void getSwitches(void) {
+	cntSW++;
+	
+	if( cntSW >= 100 ) {
+        HAL_ADC_Start(&hadc2);
+        HAL_ADC_PollForConversion(&hadc2, 1);
+        swValTact = getSWtact(HAL_ADC_GetValue(&hadc2));
+
+        HAL_ADC_Start(&hadc2);
+		HAL_ADC_PollForConversion(&hadc2, 1);
+        swValRotary = getSWrotary(HAL_ADC_GetValue(&hadc2));
+        // HAL_ADC_Stop(&hadc2);
+        cntSW = 0;
+    }
 }

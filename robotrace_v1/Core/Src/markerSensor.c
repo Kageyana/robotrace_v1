@@ -38,47 +38,26 @@ uint8_t checkMarker( void ) {
 
 	nowMarker = getMarkerSensor();
 
-	// if (encTotalN - encCross >= encMM(30)) encCross = 0;
-
-	// if ( getMarkerSensor() != 0) {
-	// 	if (encMarker == 0) {
-	// 		mark = getMarkerSensor();
-	// 		encMarker = encTotalN;
-	// 	} else if (encTotalN - encMarker <= encth && encTotalN - encCross <= encMM(40)) {
-
-	// 	} else if (encTotalN - encMarker >= encth) {
-	// 		ret = getMarkerSensor();
-	// 		encMarker = 0;
-	// 		mark = 0;
-	// 	}
-	// }
-
 	if (crossLine == 1 && encTotalN - encMarker >= encMM(90)) {
 		crossLine = 0;
 		encMarker = 0;
 	}
 
-	if (nowMarker != 0 && checkStart == 0 && crossLine == 0) {
+	if (nowMarker >= 1 && checkStart == 0 && crossLine == 0) {
 		existMarker = nowMarker;
 		checkStart = 1;
-		cntMarkerNone = 0;
+		// cntMarkerNone = 0;
 		encMarker = encTotalN;
 	}
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(50)) {
+		if (encTotalN - encMarker <= encMM(19)) {
 			if (nowMarker != 0 && nowMarker != existMarker) {
 				// クロスライン
 				stateMarker = 1;
 				checkStart = 0;
 				return CROSSLINE;
-			} else if ( nowMarker == existMarker ) {
-				if (cntMarkerNone == 0 && encTotalN - encMarker >= encMM(19)) {
-					checkStart = 0;
-					stateMarker = 4;
-					return existMarker;
-				}
 			} else if ( nowMarker == 0 ) {
-				cntMarkerNone++;
+				checkStart = 0;
 				stateMarker = 2;
 			}
 		} else {

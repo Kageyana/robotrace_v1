@@ -28,12 +28,13 @@
 // 緊急停止関連
 #define STOP_ANGLE_X          1
 #define STOP_ANGLE_Y          2
+#define STOP_ENCODER_CURRENT         3
 
 #define STOP_COUNT_SENSOR1	60		// センサ全灯
 #define STOP_COUNT_SENSOR2	800		// センサ全消灯
-#define STOP_COUNT_ENCODER	100		// エンコーダ停止(ひっくり返った？)
-#define STOP_COUNT_ANGLE_X	200		// マイナスの加速度検知(コースから落ちた？)
-#define STOP_COUNT_ANGLE_Y	200		// マイナスの加速度検知(コースから落ちた？)
+#define STOP_COUNT_ENCODER_CURRENT	100		// エンコーダ停止
+#define STOP_COUNT_ANGLE_X	200		// X方向の角度変化
+#define STOP_COUNT_ANGLE_Y	200		// Y方向の角度変化
 #define STOP_COUNT_TIME		1000	// 時間停止
 //====================================//
 // グローバル変数の宣言
