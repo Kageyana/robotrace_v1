@@ -71,6 +71,7 @@ void systemInit (void) {
 
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start_IT(&htim7);
 
 	// while(1) {
 	// 	// lcdRowPrintf(UPROW, "   %5d",lSensorBright[0]);
@@ -114,6 +115,7 @@ void systemLoop (void) {
 				lcdRowPrintf(LOWROW, "       2");
 				HAL_Delay(1000);
 				lcdRowPrintf(LOWROW, "       1");
+				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				HAL_Delay(1000);
 				modeLCD = 0;
 				initLog();
@@ -134,28 +136,7 @@ void systemLoop (void) {
 				targetSpeed = paramSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
 			}
 			motorPwmOutSynth( tracePwm, speedPwm );
-
-			// マーカー処理
-			// if ((lSensor[0] + lSensor[1] + lSensor[10] + lSensor[11]) < 6000) {
-			// 	encCross2 = encTotalN;
-			// }
-			// if (encTotalN - encCross2 >= encMM (200) ) {
-			// 	if (checkMarker() == RIGHTMARKER) {
-			// 		// ゴールマーカー処理
-			// 		if (SGmarker == 0) {
-			// 			SGmarker = STARTMARKER;
-			// 		} else if (SGmarker == STARTMARKER && encTotalN > encMM(500)) {
-			// 			SGmarker = GOALMARKER;
-			// 		}
-			// 	}
-			// }		
-			
-			if ( cMarker == RIGHTMARKER) {
-				// ゴールマーカー処理
-				if (SGmarker == STARTMARKER && encTotalN >= encMM(1000)) SGmarker = GOALMARKER;
-				if (SGmarker == 0) SGmarker = STARTMARKER;
-			}
-			 
+	 
 			// カーブ処理
 			if (angleSensor < paramAngle[INDEX_ANGLE_CURVE] && angleSensor > -paramAngle[INDEX_ANGLE_CURVE]) {
 				modeCurve = 0;
@@ -163,8 +144,18 @@ void systemLoop (void) {
 				modeCurve = 1;
 			}
 
+			// ゴールマーカー処理
+			if ( cMarker == RIGHTMARKER ) {
+				if (SGmarker == 0) {		// 初回検知
+					SGmarker++;
+				} else if (encRightMarker > encMM(600) ) {	// 2回目以降
+					SGmarker++;
+					encRightMarker = 0;
+				}
+			}
+
 			// ゴール
-			if (SGmarker == GOALMARKER) {
+			if (SGmarker >= COUNT_GOAL ) {
 				goalTime = cntRun;
 				enc1 = 0;
 				patternTrace = 101;

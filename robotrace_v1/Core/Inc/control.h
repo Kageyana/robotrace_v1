@@ -25,10 +25,12 @@
 #define PARAM_ANGLE_CURVE           17
 #define INDEX_ANGLE_CURVE           0
 
+// ゴール
+#define COUNT_GOAL              4
 // 緊急停止関連
-#define STOP_ANGLE_X          1
-#define STOP_ANGLE_Y          2
-#define STOP_ENCODER_CURRENT         3
+#define STOP_ANGLE_X            1
+#define STOP_ANGLE_Y            2
+#define STOP_ENCODER_CURRENT    3
 
 #define STOP_COUNT_SENSOR1	60		// センサ全灯
 #define STOP_COUNT_SENSOR2	800		// センサ全消灯

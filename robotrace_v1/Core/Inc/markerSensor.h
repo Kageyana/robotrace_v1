@@ -12,8 +12,6 @@
 #define LEFTMARKER       0x2
 #define CROSSLINE       0x3
 
-#define STARTMARKER      0x1
-#define GOALMARKER       0x2
 //====================================//
 // グローバル変数の宣言
 //====================================//

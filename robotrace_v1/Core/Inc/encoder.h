@@ -20,6 +20,7 @@ extern int32_t      encTotalR;
 extern int32_t      encTotalL;
 extern int32_t      encTotalN;
 extern int32_t      enc1;
+extern int32_t      encRightMarker;
 //====================================//
 // プロトタイプ宣言
 //====================================//

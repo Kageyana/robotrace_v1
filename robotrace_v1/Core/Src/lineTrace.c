@@ -41,7 +41,7 @@ void motorControlTrace( void ) {
 	// kp = kp1_buff;
 	// ki = ki1_buff;
 	// kd = kd1_buff;
-	// Dev = lSensor[4] - lSensor[7];
+	// Dev = angleSensor * 10;
 	// I成分積算
 	Int += (double)Dev * 0.001;
 	if ( Int > 10000 ) Int = 10000;		// I成分リミット

@@ -14,6 +14,7 @@ int32_t     encTotalR = 0;
 int32_t     encTotalL = 0;
 int32_t     encTotalN = 0;
 int32_t     enc1 = 0;
+int32_t     encRightMarker = 0;
 
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getEncoder
@@ -37,7 +38,9 @@ void getEncoder(void) {
     encTotalR += encCurrentR;
     encTotalL += encCurrentL;
     encTotalN += encCurrentN;
+
     enc1 += encCurrentN;
+    encRightMarker += encCurrentN;
 
     // 前回値を更新
     encBufR = encRawR;

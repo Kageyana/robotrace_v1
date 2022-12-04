@@ -37,6 +37,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "control.h"
 #include "timer.h"
@@ -79,7 +80,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void initMicroSD(void);
-void writeLog(void);
+void writeLogPrint(void);
 void endLog(void);
 void setLogStr(uint8_t* column, uint8_t* format);
 /* USER CODE END EFP */
@@ -117,6 +118,8 @@ void setLogStr(uint8_t* column, uint8_t* format);
 #define LED_B_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
+#define PERIOD_LOG  2
+
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern DMA_HandleTypeDef hdma_adc1;
@@ -131,6 +134,7 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim7;
 
 /* USER CODE END Private defines */
 

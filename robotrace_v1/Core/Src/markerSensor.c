@@ -6,7 +6,7 @@
 // グローバル変数の宣言
 //====================================//
 uint8_t     SGmarker = 0;
-uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0, cntMarkerNone = 0;
+uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0;
 
 int32_t		encMarker = 0;
 uint8_t     stateMarker = 0, checkStart = 0;
@@ -38,32 +38,29 @@ uint8_t checkMarker( void ) {
 
 	nowMarker = getMarkerSensor();
 
-	if (crossLine == 1 && encTotalN - encMarker >= encMM(90)) {
-		crossLine = 0;
-		encMarker = 0;
-	}
-
-	if (nowMarker >= 1 && checkStart == 0 && crossLine == 0) {
+	if (nowMarker >= 1 && checkStart == 0) {
 		existMarker = nowMarker;
 		checkStart = 1;
-		// cntMarkerNone = 0;
 		encMarker = encTotalN;
 	}
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(19)) {
-			if (nowMarker != 0 && nowMarker != existMarker) {
+		if (encTotalN - encMarker <= encMM(16)) {
+			if (nowMarker > 0 && nowMarker != existMarker) {
 				// クロスライン
+				ledOut(0x3);
 				stateMarker = 1;
 				checkStart = 0;
-				return CROSSLINE;
+				ret = CROSSLINE;
 			} else if ( nowMarker == 0 ) {
+				ledOut(0x2);
 				checkStart = 0;
 				stateMarker = 2;
 			}
 		} else {
+			ledOut(0x1);
 			checkStart = 0;
 			stateMarker = 3;
-			return existMarker;
+			ret = existMarker;
 		}
 	}
 

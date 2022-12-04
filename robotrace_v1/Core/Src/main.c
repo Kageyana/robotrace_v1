@@ -55,19 +55,22 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN PV */
-FATFS fs;
-FIL fil;
-FRESULT fresult;
-char buffer[1024];
-// UINT br, bw;
-FATFS *pfs;
-DWORD fre_clust;
-uint32_t total, free_space;
-uint8_t columnTitle[512] = "", formatLog[256] = "";
+// MicroSD
+FATFS     fs;
+FIL       fil;
+FRESULT   fresult;
+FATFS     *pfs;
+DWORD     fre_clust;
+uint32_t  total, free_space;
+uint8_t   columnTitle[512] = "", formatLog[256] = "";
+
+uint32_t  logBuffer[512];
+uint32_t  logIndex = 0 , sendLogNum = 0;
 
 /* USER CODE END PV */
 
@@ -86,6 +89,7 @@ static void MX_TIM4_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_ADC2_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -137,6 +141,7 @@ int main(void)
   MX_TIM6_Init();
   MX_ADC2_Init();
   MX_FATFS_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   systemInit();
   if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
@@ -799,6 +804,44 @@ static void MX_TIM6_Init(void)
 }
 
 /**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 11;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 749;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
   * @brief UART5 Initialization Function
   * @param None
   * @retval None
@@ -966,21 +1009,16 @@ void initLog(void) {
   strcat(fileName, ".csv");           // file name create
   fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
 
-  // setLogStr("cntlog",       "%d");
-  // setLogStr("patternTrace", "%d");
-  // setLogStr("nowMarker",    "%d");
-  // setLogStr("existMarker",  "%d");
-  // setLogStr("encMarker",    "%d");
+  setLogStr("cntlog",       "%d");
+  setLogStr("patternTrace", "%d");
   setLogStr("checkMarker",  "%d");
-  // setLogStr("stateMarker",  "%d");
-  // setLogStr("SGmarker",  "%d");
-  setLogStr("MarkerSensor", "%d");
   // setLogStr("encCurrentR",  "%d");
   // setLogStr("encCurrentL",  "%d");
-  // setLogStr("encCurrentN",  "%d");
+  setLogStr("encCurrentN",  "%d");
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
-  // setLogStr("encTotalN",    "%d");
+  setLogStr("encTotalN",    "%d");
+  setLogStr("angleSensor",    "%d");
   // strcat(columnTitle,"lSensor[0],");
   // strcat(columnTitle,"lSensor[1],");
   // strcat(columnTitle,"lSensor[2],");
@@ -996,6 +1034,9 @@ void initLog(void) {
   // setLogStr("gyroVal[X]",   "%d");
   // setLogStr("gyroVal[Y]",   "%d");
   // setLogStr("gyroVal[Z]",   "%d");
+  setLogStr("angle[X]",   "%d");
+  setLogStr("angle[Y]",   "%d");
+  setLogStr("angle[Z]",   "%d");
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
 
@@ -1007,7 +1048,35 @@ void initLog(void) {
   cntLog = 0;
 }
 
-void writeLog(void) {
+void writeLogBuffer (uint8_t valNum, ...) {
+  va_list args;
+  uint8_t count;
+
+  va_start( args, valNum );
+  for ( count = 0; count < valNum; count++ ) {
+    logBuffer[logIndex & 511] = va_arg( args, int32_t );
+    logIndex++;
+  }
+  logBuffer[logIndex & 511] = "\n";
+  logIndex++;
+  va_end( args );
+}
+
+void writeLogPut(void) {
+  uint8_t str[32];
+
+  if (sendLogNum < logIndex) {
+    if (logBuffer[sendLogNum & 511] == "\n") {
+      f_puts(logBuffer[sendLogNum & 511], &fil);
+    } else {
+      sprintf(str,"%d,",logBuffer[sendLogNum & 511]);
+      f_puts(str, &fil);
+    }
+    sendLogNum++;
+  }
+}
+
+void writeLogPrint(void) {
   f_printf(&fil, formatLog,
   // cntLog,
   // patternTrace,
@@ -1015,8 +1084,8 @@ void writeLog(void) {
   // existMarker,
   // encMarker,
   cMarker,
-  // stateMarker,
-  // SGmarker,
+  stateMarker,
+  SGmarker,
   getMarkerSensor()
   // encCurrentR,
   // encCurrentL,
