@@ -9,11 +9,12 @@
 // ラインセンサ関連
 uint32_t		lSensorInt[12] = {0};	// ラインセンサのAD値積算用
 uint16_t		lSensor[12] = {0};		// ラインセンサの平均AD値
-
-lSensors     	lSensorsList[12];
-double        	angleSensor;
-
 uint16_t		cntls = 0;		// ラインセンサの積算回数カウント用
+// 仮想センサステア関連
+lSensors     	lSensorsList[12];
+float        	angleSensor;
+// キャリブレーション関連
+uint16_t		lSensorOffset[12] = {0};
 /////////////////////////////////////////////////////////////////////
 // モジュール名 cmpareLSensorsList
 // 処理概要  	構造体のvalueを比較する qsort関数に渡す比較用の関数（昇順）
@@ -58,7 +59,7 @@ void getLineSensor(void) {
 /////////////////////////////////////////////////////////////////////
 void getAngleSensor(void) {
 	uint16_t index, sen1, sen2;
-	double nsen1, nsen2, phi, dthita;
+	float nsen1, nsen2, phi, dthita;
 
 	// 昇順ソート
 	qsort(lSensorsList, NUM_SENSORS, sizeof(lSensors), compareLSensorsList);
@@ -69,8 +70,8 @@ void getAngleSensor(void) {
 		sen1 = lSensor[index-1];
 		sen2 = lSensor[index+1];
 		// 正規化
-		nsen1 = (double)sen1 / (sen1 + sen2);
-		nsen2 = (double)sen2 / (sen1 + sen2);
+		nsen1 = (float)sen1 / (sen1 + sen2);
+		nsen2 = (float)sen2 / (sen1 + sen2);
 		if (index >= NUM_SENSORS/2) phi = atan( (nsen1 - nsen2)/1 );		// 偏角φ計算
 		else 						phi = atan( (nsen2 - nsen1)/1 );		// 偏角φ計算
 		dthita = (phi*THITA_SENSOR* (M_PI/180.0)/2) / (M_PI/4);	// 微小角度dθ計算
@@ -94,7 +95,8 @@ void getAngleSensor(void) {
 /////////////////////////////////////////////////////////////////////
 void calibrationLinesensor (void) {
 	uint8_t i;
+	
 	for ( i=0;i<NUM_SENSORS;i++) {
-		lSensor[i]
+		if (lSensor[i] > lSensorOffset[i]) lSensorOffset[i] = lSensor[i];
 	}
 }

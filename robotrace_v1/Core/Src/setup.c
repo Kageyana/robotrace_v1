@@ -89,28 +89,28 @@ void setup( void )
 				case 1:
 					// 通常走行速度
 					lcdRowPrintf(UPROW, "STRAIGHT");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_STRAIGHT] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_STRAIGHT] / 10);
 					
 					dataTuningUD( &paramSpeed[INDEX_STRAIGHT], 1 );
 					break;
 				case 2:
 					// 停止速度
 					lcdRowPrintf(UPROW, "CURVE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_CURVE] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_CURVE] / 10);
 					
 					dataTuningUD( &paramSpeed[INDEX_CURVE], 1 );
 					break;
 				case 3:
 					// カーブブレーキ
 					lcdRowPrintf(UPROW, "BRAKE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_CURVEBREAK] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_CURVEBREAK] / 10);
 					
 					dataTuningUD( &paramSpeed[INDEX_CURVEBREAK], 1 );
 					break;
 				case 4:
 					// 停止速度
 					lcdRowPrintf(UPROW, "STOP    ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (double)paramSpeed[INDEX_STOP] / 10);
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_STOP] / 10);
 					
 					dataTuningUD( &paramSpeed[INDEX_STOP], 1 );
 					break;
@@ -577,7 +577,7 @@ void setup( void )
 					// 仮想センサ角度
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "Anglesen");
-					lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
+					lcdRowPrintf(LOWROW, "   %3.1f", angleSensor);
 					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
 					break;
 			} // switch patternSensors

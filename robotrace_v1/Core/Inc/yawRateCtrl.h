@@ -15,7 +15,7 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern double   targetAngularVelocity;
+extern float   targetAngularVelocity;
 extern int32_t 	yawRatePwm;	// 白線トレースサーボPWM
 extern uint8_t  kp3_buff, ki3_buff, kd3_buff;
 

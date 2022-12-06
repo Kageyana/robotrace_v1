@@ -39,9 +39,9 @@ extern volatile uint8_t		who_am_i,ret,imuflag;
 extern volatile int16_t		offset[3];	// オフセット値
 extern volatile char 		caribration;
 
-extern double 		TurningAngleIMU;	// yaw軸角度
-extern double		RollAngleIMU;		// Roll角度
-extern double 		PichAngleIMU;		// Pich角度
+extern float 		TurningAngleIMU;	// yaw軸角度
+extern float		RollAngleIMU;		// Roll角度
+extern float 		PichAngleIMU;		// Pich角度
 //==========================//
 // プロトタイプ宣言
 //==========================//

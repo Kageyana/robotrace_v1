@@ -5,10 +5,10 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-double	 	targetAngle;
+float	 	targetAngle;
 int32_t		yawPwm;		// 白線トレースサーボPWM
 int32_t 	angleBefore;	// 1ms前のセンサ値
-double		Int4;			// I成分積算値(白線トレース)
+float		Int4;			// I成分積算値(白線トレース)
 uint8_t		kp4_buff = KP4, ki4_buff = KI4, kd4_buff = KD4;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@ uint8_t		kp4_buff = KP4, ki4_buff = KI4, kd4_buff = KD4;
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void motorControlYaw(void) {
-	double iP, iD, iI;
+	float iP, iD, iI;
 	int32_t Dev, Dif, kp, ki, kd, iRet;
 	
 	//サーボモータ用PWM値計算
@@ -27,14 +27,14 @@ void motorControlYaw(void) {
 	kd = kd4_buff;
 	Dev = (angle[INDEX_Z] - targetAngle) * 10;	// 目標値-現在値
 	// I成分積算
-	Int4 += (double)Dev * 0.005;
+	Int4 += (float)Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット
 	// else if ( Int3 < -5000 ) Int3 = -5000;s
 	Dif = ( Dev - angleBefore ) * 1;	// dゲイン1/1000倍
 
-	iP = (double)kp * Dev;	// 比例
-	iI = (double)ki * Int4;	// 積分
-	iD = (double)kd * Dif;	// 微分
+	iP = (float)kp * Dev;	// 比例
+	iI = (float)ki * Int4;	// 積分
+	iD = (float)kd * Dif;	// 微分
 	iRet = (int32_t)iP + iI + iD;
 	iRet = iRet >> 2;				// PWMを0～100近傍に収める
 

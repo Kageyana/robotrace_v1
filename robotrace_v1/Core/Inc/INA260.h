@@ -17,7 +17,7 @@
 // グローバル変数の宣言
 //====================================//
 extern int16_t rawCurrentR, rawCurrentL;
-extern double CurrntL, CurrntR;
+extern float CurrntL, CurrntR;
 
 /******************************** 自動生成関数 *********************************/
 #define 	I2C_INA260_SEND	    HAL_I2C_Master_Transmit(&hi2c1,addr,tx_buf,1,100);

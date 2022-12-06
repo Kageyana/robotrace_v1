@@ -6,10 +6,10 @@
 // グローバル変数の宣言
 //====================================//
 int16_t 	speedPwm;			// モーター制御PWM
-double		targetSpeed;		// 目標速度
+float		targetSpeed;		// 目標速度
 int16_t		encoderBefore;		// 1ms前の速度
-double 		targetSpeedBefore;	// 1ms前の目標速度	
-double 		Int2;				// I成分積算値(速度制御)
+float 		targetSpeedBefore;	// 1ms前の目標速度	
+float 		Int2;				// I成分積算値(速度制御)
 bool 		demo;
 uint8_t		kp2_buff = KP2, ki2_buff = KI2, kd2_buff = KD2;
 
@@ -42,11 +42,11 @@ void motorControlSpeed( void ) {
 	// 目標値を変更したらI成分リセット
 	if ( i != targetSpeedBefore ) Int2 = 0;
 	
-	Int2 += (double)Dev * 0.001;	// 時間積分
+	Int2 += (float)Dev * 0.001;	// 時間積分
 	Dif = Dev - encoderBefore;		// 微分　dゲイン1/1000倍
 	
 	iP = (int32_t)kp2 * Dev;		// 比例
-	iI = (double)ki2 * Int2;		// 積分
+	iI = (float)ki2 * Int2;		// 積分
 	iD = (int32_t)kd2 * Dif;		// 微分
 	iRet = iP + iI + iD;
 	iRet = iRet >> 1;

@@ -181,9 +181,9 @@
 // グローバル変数の宣言
 //====================================//
 extern int16_t accelVal[3], gyroVal[3];
-extern double acceleration[3];        // 加速度
-extern double angularVelocity[3];     // 角速度
-extern double angle[3];               // 角度
+extern float acceleration[3];        // 加速度
+extern float angularVelocity[3];     // 角速度
+extern float angle[3];               // 角度
 //====================================//
 // プロトタイプ宣言
 //====================================//

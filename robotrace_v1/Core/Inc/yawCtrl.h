@@ -15,7 +15,7 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern double 	targetAngle;
+extern float 	targetAngle;
 extern int32_t 	yawPwm;	// 白線トレースサーボPWM
 extern uint8_t  kp4_buff, ki4_buff, kd4_buff;
 

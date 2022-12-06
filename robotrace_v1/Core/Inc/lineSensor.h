@@ -20,7 +20,7 @@ typedef struct {
 //====================================//
 extern uint16_t		lSensor[12];
 extern lSensors     lSensorsList[12];
-extern double       angleSensor;
+extern float       angleSensor;
 
 //====================================//
 // プロトタイプ宣言

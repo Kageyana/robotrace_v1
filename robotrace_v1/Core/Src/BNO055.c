@@ -3,9 +3,9 @@
 //====================================//
 #include "BNO055.h"
 
-double angularVelocity[3];
-double acceleration[3];
-double angle[3] = {0,0,0};
+float angularVelocity[3];
+float acceleration[3];
+float angle[3] = {0,0,0};
 int16_t accelVal[3], gyroVal[3];
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readBNO055
@@ -82,9 +82,9 @@ void getBNO055Acceleration(void) {
     accelVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     accelVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     accelVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    acceleration[INDEX_X] = ((double)accelVal[INDEX_X]) / ACCELELSB;
-    acceleration[INDEX_Y] = ((double)accelVal[INDEX_Y]) / ACCELELSB;
-    acceleration[INDEX_Z] = ((double)accelVal[INDEX_Z]) / ACCELELSB;  
+    acceleration[INDEX_X] = ((float)accelVal[INDEX_X]) / ACCELELSB;
+    acceleration[INDEX_Y] = ((float)accelVal[INDEX_Y]) / ACCELELSB;
+    acceleration[INDEX_Z] = ((float)accelVal[INDEX_Z]) / ACCELELSB;  
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getGyro
@@ -99,9 +99,9 @@ void getBNO055Gyro(void) {
     gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    angularVelocity[INDEX_X] = ((double)gyroVal[INDEX_X]) / GYROLSB;
-    angularVelocity[INDEX_Y] = ((double)gyroVal[INDEX_Y]) / GYROLSB;
-    angularVelocity[INDEX_Z] = ((double)gyroVal[INDEX_Z]) / GYROLSB;   
+    angularVelocity[INDEX_X] = ((float)gyroVal[INDEX_X]) / GYROLSB;
+    angularVelocity[INDEX_Y] = ((float)gyroVal[INDEX_Y]) / GYROLSB;
+    angularVelocity[INDEX_Z] = ((float)gyroVal[INDEX_Z]) / GYROLSB;   
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcDegrees

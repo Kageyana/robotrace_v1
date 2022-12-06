@@ -11,9 +11,9 @@ volatile uint8_t	who_am_i,ret,imuflag;
 volatile int16_t	offset[3] = { 0,0,0 };	// オフセット値
 volatile char 	caribration;
 
-double 		TurningAngleIMU;	// yaw軸角度
-double		RollAngleIMU;		// Roll角度
-double 		PichAngleIMU;		// Pich角度
+float 		TurningAngleIMU;	// yaw軸角度
+float		RollAngleIMU;		// Roll角度
+float 		PichAngleIMU;		// Pich角度
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readByte
 // 処理概要     指定レジスタの値を読み出す
@@ -117,10 +117,10 @@ void readAccelData() {
 /////////////////////////////////////////////////////////////////////
 void getTurningAngleIMU(void)
 {
-	double angularVelocity_zg;
+	float angularVelocity_zg;
 	int intzg;
 	
-	angularVelocity_zg = (double)(zg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_zg = (float)(zg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	TurningAngleIMU += angularVelocity_zg * DELTATIMU;
 	
@@ -133,10 +133,10 @@ void getTurningAngleIMU(void)
 /////////////////////////////////////////////////////////////////////
 void getRollAngleIMU(void)
 {
-	double angularVelocity_yg;
+	float angularVelocity_yg;
 	int intyg;
 	
-	angularVelocity_yg = (double)(yg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_yg = (float)(yg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	RollAngleIMU -= angularVelocity_yg * DELTATIMU;
 	
@@ -149,10 +149,10 @@ void getRollAngleIMU(void)
 /////////////////////////////////////////////////////////////////////
 void getPichAngleIMU( void )
 {
-	double angularVelocity_xg;
+	float angularVelocity_xg;
 	int intxg;
 	
-	angularVelocity_xg = (double)(xg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_xg = (float)(xg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	PichAngleIMU -= angularVelocity_xg * DELTATIMU;
 	
