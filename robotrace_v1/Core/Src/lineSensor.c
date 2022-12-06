@@ -8,7 +8,7 @@
 
 // ラインセンサ関連
 uint32_t		lSensorInt[12] = {0};	// ラインセンサのAD値積算用
-uint16_t		lSensor[12] = {0};	// ラインセンサのAD値積算用
+uint16_t		lSensor[12] = {0};		// ラインセンサの平均AD値
 
 lSensors     	lSensorsList[12];
 double        	angleSensor;
@@ -20,7 +20,7 @@ uint16_t		cntls = 0;		// ラインセンサの積算回数カウント用
 // 引数     	n1 n2
 // 戻り値    	1:n1>n2 0:n1<n2
 /////////////////////////////////////////////////////////////////////
-int cmpareLSensorsList(const void *n1, const void *n2) {
+int compareLSensorsList(const void *n1, const void *n2) {
     if (((lSensors *)n1)->value > ((lSensors *)n2)->value) {
         return 1;
     } else if (((lSensors *)n1)->value < ((lSensors *)n2)->value) {
@@ -61,10 +61,10 @@ void getAngleSensor(void) {
 	double nsen1, nsen2, phi, dthita;
 
 	// 昇順ソート
-	qsort(lSensorsList, NUM_SENSORS, sizeof(lSensors), cmpareLSensorsList);
+	qsort(lSensorsList, NUM_SENSORS, sizeof(lSensors), compareLSensorsList);
 	index = lSensorsList[0].index;
 	
-	if (index !=0 && index != NUM_SENSORS -1 ) {
+	if (index !=0 && index != NUM_SENSORS -1 ) {// 両端のセンサが白線の上にあるときは無視
 		// 白線に一番近いセンサの両隣のセンサ値を取得
 		sen1 = lSensor[index-1];
 		sen2 = lSensor[index+1];
@@ -85,4 +85,16 @@ void getAngleSensor(void) {
 	// インデックスを初期化
 	for (int i = 0; i < NUM_SENSORS; i ++) lSensorsList[i].index = i;
 	
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 calibrationLinesensor
+// 処理概要  	ラインセンサのAD値を正規化する
+// 引数     	なし
+// 戻り値    	なし
+/////////////////////////////////////////////////////////////////////
+void calibrationLinesensor (void) {
+	uint8_t i;
+	for ( i=0;i<NUM_SENSORS;i++) {
+		lSensor[i]
+	}
 }

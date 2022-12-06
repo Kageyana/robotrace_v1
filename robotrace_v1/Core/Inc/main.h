@@ -54,7 +54,9 @@ extern "C" {
 #include "velocityCtrl.h"
 #include "INA260.h"
 #include "yawRateCtrl.h"
+#include "yawCtrl.h"
 #include "fatfs_sd.h"
+
 
 /* USER CODE END Includes */
 

@@ -36,11 +36,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             else    cntEncStop = 0;
 
         }
-        if (patternTrace < 10 ||	 patternTrace > 100) {
+        if (patternTrace < 10 || patternTrace > 100) {
             getSwitches();  // スイッチの入力を取得
             cntSetup1++;
             cntSetup2++;
-            cntSetup3++;
+            cntSwitchUD++;
+            cntSwitchLR++;
         }
 
         if (modeLCD == 1) lcdShowProcess();   // LCD
@@ -59,7 +60,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                 // getBNO055Acceleration();    // 加速度取得       
                 getBNO055Gyro();    // 角速度取得
                 calcDegrees();
-                motorControlYaw();
+                motorControlYawRate();
+                // motorControlYaw();
                 break;
             case 2:
                 cMarker = checkMarker();
@@ -87,9 +89,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // lSensor[9],
                     // lSensor[10],
                     // lSensor[11],
-                    // gyroVal[INDEX_X],
-                    // gyroVal[INDEX_Y],
-                    // gyroVal[INDEX_Z],
+                    (int32_t)angularVelocity[INDEX_X]*10,
+                    (int32_t)angularVelocity[INDEX_Y]*10,
+                    (int32_t)angularVelocity[INDEX_Z]*10,
                     (int32_t)angle[INDEX_X]*10,
                     (int32_t)angle[INDEX_Y]*10,
                     (int32_t)angle[INDEX_Z]*10

@@ -1,5 +1,5 @@
-#ifndef YAWRATECTRL_H_
-#define YAWRATECTRL_H_
+#ifndef YAWCTRL_H_
+#define YAWCTRL_H_
 //====================================//
 // インクルード
 //====================================//
@@ -8,20 +8,20 @@
 //====================================//
 // シンボル定義
 //====================================//
-#define KP3		4
-#define KI3		110
-#define KD3		3
+#define KP4		1
+#define KI4		0
+#define KD4		0
 
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern double   targetAngularVelocity;
-extern int32_t 	yawRatePwm;	// 白線トレースサーボPWM
-extern uint8_t  kp3_buff, ki3_buff, kd3_buff;
+extern double 	targetAngle;
+extern int32_t 	yawPwm;	// 白線トレースサーボPWM
+extern uint8_t  kp4_buff, ki4_buff, kd4_buff;
 
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void motorControlYawRate( void );
+void motorControlYaw( void );
 
-#endif // YAWRATECTRL_H_
+#endif // YAWCTRL_H_

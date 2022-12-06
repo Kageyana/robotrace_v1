@@ -23,9 +23,10 @@ extern uint8_t		start;
 // タイマ関連
 extern uint16_t 	cntSetup1;
 extern uint16_t 	cntSetup2;
-extern uint16_t 	cntSetup3;	
-extern uint16_t		cntSwitchUD;	// スイッチ長押し判定用右
-extern uint16_t		cntSwitchLR;	// スイッチ長押し判定用左
+extern uint16_t 	cntSwitchUD;		// スイッチ判定用右
+extern uint16_t 	cntSwitchLR;		// スイッチ判定用左
+extern uint16_t		cntSwitchUDLong;	// スイッチ長押し判定用右
+extern uint16_t		cntSwitchLRLong;	// スイッチ長押し判定用左
 
 // パラメータ関連
 extern uint8_t      fixSpeed;

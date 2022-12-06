@@ -1031,9 +1031,9 @@ void initLog(void) {
   // strcat(columnTitle,"lSensor[9],");
   // strcat(columnTitle,"lSensor[10],");
   // strcat(columnTitle,"lSensor[11],");
-  // setLogStr("gyroVal[X]",   "%d");
-  // setLogStr("gyroVal[Y]",   "%d");
-  // setLogStr("gyroVal[Z]",   "%d");
+  setLogStr("gyroVal[X]",   "%d");
+  setLogStr("gyroVal[Y]",   "%d");
+  setLogStr("gyroVal[Z]",   "%d");
   setLogStr("angle[X]",   "%d");
   setLogStr("angle[Y]",   "%d");
   setLogStr("angle[Z]",   "%d");

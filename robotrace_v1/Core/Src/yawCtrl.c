@@ -1,15 +1,15 @@
 //====================================//
 // インクルード
 //====================================//
-#include "yawRateCtrl.h"
+#include "yawCtrl.h"
 //====================================//
 // グローバル変数の宣言
 //====================================//
-double	 	targetAngularVelocity;
-int32_t		yawRatePwm;				// 制御量
-int32_t 	angularVelocityBefore;	// 1ms前のセンサ値
-double		Int3;					// I成分積算値(白線トレース)
-uint8_t		kp3_buff = KP3, ki3_buff = KI3, kd3_buff = KD3;
+double	 	targetAngle;
+int32_t		yawPwm;		// 白線トレースサーボPWM
+int32_t 	angleBefore;	// 1ms前のセンサ値
+double		Int4;			// I成分積算値(白線トレース)
+uint8_t		kp4_buff = KP4, ki4_buff = KI4, kd4_buff = KD4;
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 motorControlYaw
@@ -17,23 +17,23 @@ uint8_t		kp3_buff = KP3, ki3_buff = KI3, kd3_buff = KD3;
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void motorControlYawRate(void) {
+void motorControlYaw(void) {
 	double iP, iD, iI;
 	int32_t Dev, Dif, kp, ki, kd, iRet;
 	
 	//サーボモータ用PWM値計算
-	kp = kp3_buff;
-	ki = ki3_buff;
-	kd = kd3_buff;
-	Dev = angularVelocity[INDEX_Z] - targetAngularVelocity;	// 目標値-現在値
+	kp = kp4_buff;
+	ki = ki4_buff;
+	kd = kd4_buff;
+	Dev = (angle[INDEX_Z] - targetAngle) * 10;	// 目標値-現在値
 	// I成分積算
-	Int3 += (double)Dev * 0.005;
+	Int4 += (double)Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット
 	// else if ( Int3 < -5000 ) Int3 = -5000;s
-	Dif = ( Dev - angularVelocityBefore ) * 1;	// dゲイン1/1000倍
+	Dif = ( Dev - angleBefore ) * 1;	// dゲイン1/1000倍
 
 	iP = (double)kp * Dev;	// 比例
-	iI = (double)ki * Int3;	// 積分
+	iI = (double)ki * Int4;	// 積分
 	iD = (double)kd * Dif;	// 微分
 	iRet = (int32_t)iP + iI + iD;
 	iRet = iRet >> 2;				// PWMを0～100近傍に収める
@@ -42,6 +42,6 @@ void motorControlYawRate(void) {
 	if ( iRet >  1000 ) iRet =  1000;
 	if ( iRet <  -1000 ) iRet = -1000;
 	
-	yawRatePwm = iRet;
-	angularVelocityBefore = Dev;				// 次回はこの値が1ms前の値となる
+	yawPwm = iRet;
+	angleBefore = Dev;				// 次回はこの値が1ms前の値となる
 }

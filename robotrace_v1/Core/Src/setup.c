@@ -8,11 +8,12 @@
 uint8_t 	start = 0;		// 0:セットアップ中	1:セットアップ完了
 
 // タイマ関連
-uint16_t 		cntSetup1 = 0;		// セットアップで使用
-uint16_t 		cntSetup2 = 0;		// セットアップで使用
-uint16_t 		cntSetup3 = 0;		// セットアップで使用
-uint16_t		cntSwitchUD;	// スイッチ長押し判定用右
-uint16_t		cntSwitchLR;	// スイッチ長押し判定用左
+uint16_t 		cntSetup1 = 0;			// セットアップで使用
+uint16_t 		cntSetup2 = 0;			// セットアップで使用
+uint16_t 		cntSwitchUD = 0;		// スイッチ判定用右
+uint16_t 		cntSwitchLR = 0;		// スイッチ判定用左
+uint16_t		cntSwitchUDLong = 0;	// スイッチ長押し判定用右
+uint16_t		cntSwitchLRLong = 0;	// スイッチ長押し判定用左
 
 // スイッチ関連
 int8_t pushLR = 0;
@@ -32,6 +33,7 @@ uint8_t patternParameter4 = 1;
 uint8_t patternGain = 1;
 uint8_t patternSpeedseting = 1;
 uint8_t patternLog = 1;
+uint8_t patternCalibration = 1;
 
 // フラグ関連
 uint8_t setting1meter;
@@ -61,7 +63,7 @@ int16_t cnttest = 0;
 ///////////////////////////////////////////////////////////////
 void setup( void )
 {
-	uint8_t cnt_led, sd_sw;
+	uint8_t cntLed, sd_sw;
 	int16_t i, j, k;
 	
 	// ディップスイッチで項目選択
@@ -296,15 +298,12 @@ void setup( void )
 		case 0x5:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
-			anglevelocity = 0;
+			targetAngularVelocity = 0;
 			targetSpeed = 0;
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
-//			if ( cntEmc1 > 500 ) {
-//				motorPwmOutSynth( 0, 0 );
-//			} else
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawPwm, speedPwm );
+				motorPwmOutSynth( yawRatePwm, speedPwm );
 			} else {
 				motorPwmOutSynth( 0, 0 );
 			}
@@ -353,9 +352,70 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// Motor_test
+		// ゲイン調整(角度)
 		//------------------------------------------------------------------
 		case 0x6:
+			lcdRowPrintf(UPROW, "kp ki kd");
+			
+			if (cntSetup2 < 1000) 	targetAngle = 45.0;
+			else 					targetAngle = -45.0;
+			if (cntSetup2 > 2000)	cntSetup2 = 0;
+			targetSpeed = 0;
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+			if ( trace_test == 1 ) {
+				motorPwmOutSynth( yawPwm, speedPwm );
+			} else {
+				motorPwmOutSynth( 0, 0 );
+			}
+			
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
+			
+			switch( patternGain ) {
+				case 1:
+					// kp
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "   %2d %2d", ki4_buff, kd4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &kp4_buff, 1 );
+					break;
+				case 2:
+					// ki
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d    %2d", kp4_buff, kd4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &ki4_buff, 1 );
+					break;
+				case 3:
+					// kd
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d %2d   ", kp4_buff, ki4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &kd4_buff, 1 );
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// Motor_test
+		//------------------------------------------------------------------
+		case 0x7:
 			dataTuningLR( &patternSensors, 1 );
 			
 			if ( patternSensors == 11 ) patternSensors = 1;
@@ -367,12 +427,12 @@ void setup( void )
 					// LED
 					lcdRowPrintf(UPROW, "LED     ");
 					lcdRowPrintf(LOWROW, "        ");
-					cnt_led = 0x00;
+					cntLed = 0x00;
 					if ( swValTact == SW_PUSH) {
-						cnt_led = 0x00;
-						while( cnt_led <= 0x7 ) {
-							ledOut( cnt_led );
-							cnt_led++;
+						cntLed = 0x00;
+						while( cntLed <= 0x7 ) {
+							ledOut( cntLed );
+							cntLed++;
 							HAL_Delay(400);
 						}
 						ledOut( 0 );
@@ -520,37 +580,114 @@ void setup( void )
 					lcdRowPrintf(LOWROW, "   %3.1lf", angleSensor);
 					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
 					break;
-			} // switch
+			} // switch patternSensors
 			break;
 		//------------------------------------------------------------------
 		// Log
 		//------------------------------------------------------------------
-		case 0x7:
-			dataTuningLR( &patternSensors, 1 );
+		case 0x8:
 			lcdRowPrintf(UPROW, "LOG     ");
 			lcdRowPrintf(LOWROW, "       %d", modeLOG);
 
 			
 			switch (patternLog) {
-			case 1:
-				// ログ取得開始前
-				if (swValTact == SW_UP) {
-					initLog();
-					patternLog = 2;
+				case 1:
+					// ログ取得開始前
+					if (swValTact == SW_UP) {
+						initLog();
+						patternLog = 2;
+					}
+					break;
+				
+				case 2:
+					// ログ取得中
+					if (swValTact == SW_DOWN) {
+						endLog();
+						patternLog = 1;
+					}
+					break;
+				
+				default:
+					break;
 				}
-				break;
-			
-			case 2:
-				// ログ取得中
-				if (swValTact == SW_DOWN) {
-					endLog();
-					patternLog = 1;
+			break;
+		//------------------------------------------------------------------
+		// キャリブレーション(ラインセンサ) 
+		//------------------------------------------------------------------
+		case 0x9:
+			switch (patternCalibration) {
+				case 1:
+					// スイッチ入力待ち
+					targetSpeed = 0;
+					motorPwmOutSynth( 0, speedPwm );
+					lcdRowPrintf(UPROW, "Calibrat");
+					lcdRowPrintf(LOWROW, "  times");
+					if (swValTact == SW_PUSH) {
+						cntSetup1 = 0;
+						enc1 = 0;
+						patternCalibration = 2;
+					}
+					break;
+
+				case 2:
+					// 開始準備
+					lcdRowPrintf(LOWROW, "%4d",cntSetup1);
+					if (cntSetup1 > 1000) {
+						cntSetup1 = 0;
+						enc1 = 0;
+						patternCalibration = 3;
+						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+					}
+					break;
+				
+				case 3:
+					// 前進
+					targetSpeed = 0.4*PALSE_MILLIMETER;
+					motorPwmOutSynth( 0, speedPwm );
+					if (enc1 > encMM(100)) {
+						cntSetup1 = 0;
+						patternCalibration = 4;
+						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+					}
+					break;
+
+				case 4:
+					// 停止
+					targetSpeed = 0;
+					motorPwmOutSynth( 1, speedPwm );
+					if (abs(encCurrentN) < 2) {
+						enc1 = 0;
+						patternCalibration = 5;
+						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+					}
+					break;
+
+				case 5:
+					// 後退
+					targetSpeed = -0.4*PALSE_MILLIMETER;
+					motorPwmOutSynth( 0, speedPwm );
+					if (enc1 < -encMM(100)) {
+						cntSetup1 = 0;
+						patternCalibration = 6;
+						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+					}
+					break;
+
+				case 6:
+					// 停止
+					targetSpeed = 0;
+					motorPwmOutSynth( 0, speedPwm );
+					if (abs(encCurrentN) < 2) {
+						enc1 = 0;
+						patternCalibration = 1;
+						motorPwmOutSynth( 0, 0 );
+						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+					}
+					break;
+				
+				default:
+					break;
 				}
-				break;
-			
-			default:
-				break;
-			}
 			break;
 
 	default:
@@ -590,12 +727,12 @@ void dataTuningUD ( void *data, uint8_t add )
 {
 	int16_t *data2 = (int16_t*)data;	// short型ポインタにキャスト
 	
-	if ( cntSetup2 >= 50 ) {
+	if ( cntSwitchUD >= 50 ) {
 		if ( swValTact == SW_UP || swValTact == SW_DOWN ) {
-			cntSwitchUD++; // 長押し時間計測
+			cntSwitchUDLong++; // 長押し時間計測
 			if ( swValTact == SW_UP  ) {
 				// インクリメント
-				if ( cntSwitchUD >= 20 ) {	// 長押し処理
+				if ( cntSwitchUDLong >= 20 ) {	// 長押し処理
 					*data2 += add;
 				} else if (pushUD == 0) {	// 1回押し処理
 					pushUD = 1;
@@ -603,7 +740,7 @@ void dataTuningUD ( void *data, uint8_t add )
 				}
 			} else if ( swValTact == SW_DOWN  ) {
 				// デクリメント
-				if ( cntSwitchUD >= 20 ) {	// 長押し処理
+				if ( cntSwitchUDLong >= 20 ) {	// 長押し処理
 					*data2 -= add;
 				} else if (pushUD == 0) {	// 1回押し処理
 					pushUD = 1;
@@ -612,9 +749,9 @@ void dataTuningUD ( void *data, uint8_t add )
 			}
 		} else {
 			pushUD = 0;
-			cntSwitchUD = 0;
+			cntSwitchUDLong = 0;
 		}
-		cntSetup2 = 0;
+		cntSwitchUD = 0;
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -627,12 +764,12 @@ void dataTuningLR ( void *data, uint8_t add )
 {
 	int16_t *data2 = (int16_t*)data;	// short型ポインタにキャスト
 
-	if ( cntSetup3 >= 50 ) {
+	if ( cntSwitchLR >= 50 ) {
 		if ( swValTact == SW_LEFT || swValTact == SW_RIGHT ) {
-			cntSwitchLR++; // 長押し時間計測
+			cntSwitchLRLong++; // 長押し時間計測
 			if ( swValTact == SW_RIGHT  ) {
 				// インクリメント
-				if ( cntSwitchLR >= 20 ) {	// 長押し処理
+				if ( cntSwitchLRLong >= 20 ) {	// 長押し処理
 					*data2 += add;
 				} else if (pushLR == 0) {	// 1回押し処理
 					pushLR = 1;
@@ -640,7 +777,7 @@ void dataTuningLR ( void *data, uint8_t add )
 				}
 			} else if ( swValTact == SW_LEFT  ) {
 				// デクリメント
-				if ( cntSwitchLR >= 20 ) {	// 長押し処理
+				if ( cntSwitchLRLong >= 20 ) {	// 長押し処理
 					*data2 -= add;
 				} else if (pushLR == 0) {	// 1回押し処理
 					pushLR = 1;
@@ -649,9 +786,9 @@ void dataTuningLR ( void *data, uint8_t add )
 			}
 		} else {
 			pushLR = 0;
-			cntSwitchLR = 0;
+			cntSwitchLRLong = 0;
 		}
-		cntSetup3 = 0;
+		cntSwitchLR = 0;
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////
