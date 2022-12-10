@@ -118,9 +118,8 @@ void readAccelData() {
 void getTurningAngleIMU(void)
 {
 	float angularVelocity_zg;
-	int intzg;
 	
-	angularVelocity_zg = (float)(zg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_zg = (float)zg / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	TurningAngleIMU += angularVelocity_zg * DELTATIMU;
 	
@@ -134,9 +133,8 @@ void getTurningAngleIMU(void)
 void getRollAngleIMU(void)
 {
 	float angularVelocity_yg;
-	int intyg;
 	
-	angularVelocity_yg = (float)(yg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_yg = (float)yg / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	RollAngleIMU -= angularVelocity_yg * DELTATIMU;
 	
@@ -150,9 +148,8 @@ void getRollAngleIMU(void)
 void getPichAngleIMU( void )
 {
 	float angularVelocity_xg;
-	int intxg;
 	
-	angularVelocity_xg = (float)(xg) / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
+	angularVelocity_xg = (float)xg / GYROLSB;	// IMUのデータを角速度[deg/s]に変換
 	
 	PichAngleIMU -= angularVelocity_xg * DELTATIMU;
 	

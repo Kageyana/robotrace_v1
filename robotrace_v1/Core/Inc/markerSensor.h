@@ -25,5 +25,5 @@ extern uint8_t  stateMarker;
 //====================================//
 uint8_t getMarkerSensor ( void );
 uint8_t checkMarker( void );
-
+void checkGoalMarker(void);
 #endif // MARKERSENSOR_H_

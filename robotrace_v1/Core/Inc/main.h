@@ -39,23 +39,26 @@ extern "C" {
 #include <string.h>
 #include <stdarg.h>
 
-#include "control.h"
-#include "timer.h"
+#include "fatfs_sd.h"
 #include "AQM0802A.h"
 // #include "ICM20608.h"
 #include "BNO055.h"
-#include "setup.h"
 #include "encoder.h"
 #include "switch.h"
 #include "led.h"
+#include "motor.h"
 #include "markerSensor.h"
 #include "lineSensor.h"
+#include "INA260.h"
+
 #include "lineTrace.h"
 #include "velocityCtrl.h"
-#include "INA260.h"
 #include "yawRateCtrl.h"
 #include "yawCtrl.h"
-#include "fatfs_sd.h"
+
+#include "timer.h"
+#include "setup.h"
+#include "control.h"
 
 
 /* USER CODE END Includes */
@@ -82,9 +85,12 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void initMicroSD(void);
+void initLog(void);
 void writeLogPrint(void);
 void endLog(void);
 void setLogStr(uint8_t* column, uint8_t* format);
+void writeLogBuffer (uint8_t valNum, ...);
+void writeLogPut(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -121,6 +127,7 @@ void setLogStr(uint8_t* column, uint8_t* format);
 /* USER CODE BEGIN Private defines */
 
 #define PERIOD_LOG  2
+#define BUFFER_SIZW_LOG  1024
 
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;

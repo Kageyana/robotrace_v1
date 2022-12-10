@@ -3,8 +3,8 @@
 //====================================//
 #include "BNO055.h"
 
-float angularVelocity[3];
-float acceleration[3];
+float acceleration[3] = {0,0,0};
+float angularVelocity[3] = {0,0,0};
 float angle[3] = {0,0,0};
 int16_t accelVal[3], gyroVal[3];
 /////////////////////////////////////////////////////////////////////
@@ -42,8 +42,8 @@ void readBNO055AxisData(uint8_t reg, uint8_t *rx_buf ) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void writeBNO055(uint8_t reg, uint8_t data) {
-    uint8_t rx_buf[1], tx_buf[1] = {reg, data};
-    uint8_t rx_num = 1, tx_num = 2;
+    uint8_t tx_buf[2] = {reg, data};
+    uint8_t tx_num = 2;
 
     I2C_BNO055_SEND
 }
@@ -82,9 +82,9 @@ void getBNO055Acceleration(void) {
     accelVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     accelVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     accelVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    acceleration[INDEX_X] = ((float)accelVal[INDEX_X]) / ACCELELSB;
-    acceleration[INDEX_Y] = ((float)accelVal[INDEX_Y]) / ACCELELSB;
-    acceleration[INDEX_Z] = ((float)accelVal[INDEX_Z]) / ACCELELSB;  
+    acceleration[INDEX_X] = (float)accelVal[INDEX_X] / ACCELELSB;
+    acceleration[INDEX_Y] = (float)accelVal[INDEX_Y] / ACCELELSB;
+    acceleration[INDEX_Z] = (float)accelVal[INDEX_Z] / ACCELELSB;  
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getGyro
@@ -99,9 +99,9 @@ void getBNO055Gyro(void) {
     gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
     gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
     gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    angularVelocity[INDEX_X] = ((float)gyroVal[INDEX_X]) / GYROLSB;
-    angularVelocity[INDEX_Y] = ((float)gyroVal[INDEX_Y]) / GYROLSB;
-    angularVelocity[INDEX_Z] = ((float)gyroVal[INDEX_Z]) / GYROLSB;   
+    angularVelocity[INDEX_X] = (float)gyroVal[INDEX_X] / GYROLSB;
+    angularVelocity[INDEX_Y] = (float)gyroVal[INDEX_Y] / GYROLSB;
+    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB;   
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcDegrees

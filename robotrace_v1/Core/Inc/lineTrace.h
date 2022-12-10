@@ -24,10 +24,10 @@
 extern int16_t 	tracePwm;	// 白線トレースサーボPWM
 extern uint8_t  kp1_buff, ki1_buff, kd1_buff;
 extern uint8_t	kp1Curve_buff, ki1Curve_buff, kd1Curve_buff;
-
+extern uint8_t	modeCalLinesensors;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void motorControltrace( void );
+void motorControlTrace( void );
 
 #endif // LINETRACE_H_

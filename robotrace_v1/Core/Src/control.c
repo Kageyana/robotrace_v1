@@ -24,6 +24,8 @@ uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
 
 uint16_t analogVal[12];		// ADC結果格納配列
 
+int8_t countdown;
+
 // マーカー関連
 uint8_t cMarker;
 
@@ -39,8 +41,6 @@ uint32_t j=0;
 ///////////////////////////////////////////////////////////////////////////
 void systemInit (void) {
 	// Encoder count
-	int16_t val;
-
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
@@ -60,7 +60,7 @@ void systemInit (void) {
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 500);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
 	// Line sensor OFF
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+	powerLinesensors(0);
 
 	HAL_Delay(500);
 
@@ -73,13 +73,6 @@ void systemInit (void) {
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim7);
 
-	// while(1) {
-	// 	// lcdRowPrintf(UPROW, "   %5d",lSensorBright[0]);
-	// 	val = readINA260(0x01);
-	// 	if (val > 32767) val = ~val+0x8000;
-	// 	lcdRowPrintf(LOWROW, "   %5d",val);
-	// 	HAL_Delay(500);
-	// }
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemLoop
@@ -88,6 +81,7 @@ void systemInit (void) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void systemLoop (void) {
+
 	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
 		emargencyStop(STOP_ANGLE_X);	// X角度が一定値以上
 	} else if (cntAngleY > STOP_COUNT_ANGLE_Y) {
@@ -105,54 +99,59 @@ void systemLoop (void) {
 			setup();
 
 			if (start) {
-				lcdRowPrintf(UPROW, "ready   ");
-				lcdRowPrintf(LOWROW, "       5");
-				HAL_Delay(1000);
-				lcdRowPrintf(LOWROW, "       4");
-				HAL_Delay(1000);
-				lcdRowPrintf(LOWROW, "       3");
-				HAL_Delay(1000);
-				lcdRowPrintf(LOWROW, "       2");
-				HAL_Delay(1000);
-				lcdRowPrintf(LOWROW, "       1");
-				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
-				HAL_Delay(1000);
-				modeLCD = 0;
-				initLog();
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
-				encTotalN = 0;
 				cntRun = 0;
-				angle[INDEX_X] = 0;
-				angle[INDEX_Y] = 0;
-				angle[INDEX_Z] = 0;
-				patternTrace = 11;
+				countdown = 5;		// カウントダウンスタート
+				patternTrace = 1;
+			}
+			break;
+		case 1:
+			// カウントダウンスタート
+			lcdRowPrintf(UPROW, "ready   ");
+			lcdRowPrintf(LOWROW, "       %d",countdown);
+			if ( countdown == 0 ) {
+				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
+				modeLCD = 0;		// LCD OFF
+				// Logファイル作成
+				if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
+					initLog();
+				}
+				powerLinesensors(1);	// ラインセンサ ON
+				// 変数初期化
+				encTotalN = 0;
+				encRightMarker = encMM(600);
+				cntRun = 0;
+				angle[INDEX_X] = 0.0f;
+				angle[INDEX_Y] = 0.0f;
+				angle[INDEX_Z] = 0.0f;
+
+				modeLOG = 1;    // log start
+				patternTrace = 2;
 			}
 			break;
 
+		case 2:
+			targetSpeed = 0.5 * PALSE_MILLIMETER;
+			motorPwmOutSynth( tracePwm, speedPwm );
+			if (encTotalN > encMM(200)) {
+				patternTrace = 11;
+			}
+			break;
       	case 11:
+			// 目標速度
 			if (!modeCurve) {
 				targetSpeed = paramSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
 			} else {
 				targetSpeed = paramSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
 			}
+			// ライントレース
 			motorPwmOutSynth( tracePwm, speedPwm );
 	 
 			// カーブ処理
-			if (angleSensor < paramAngle[INDEX_ANGLE_CURVE] && angleSensor > -paramAngle[INDEX_ANGLE_CURVE]) {
-				modeCurve = 0;
-			} else {
-				modeCurve = 1;
-			}
-
-			// ゴールマーカー処理
-			if ( cMarker == RIGHTMARKER ) {
-				if (SGmarker == 0) {		// 初回検知
-					SGmarker++;
-				} else if (encRightMarker > encMM(600) ) {	// 2回目以降
-					SGmarker++;
-					encRightMarker = 0;
-				}
-			}
+			// if (angleSensor < paramAngle[INDEX_ANGLE_CURVE] && angleSensor > -paramAngle[INDEX_ANGLE_CURVE]) {
+			// 	modeCurve = 0;
+			// } else {
+			// 	modeCurve = 1;
+			// }
 
 			// ゴール
 			if (SGmarker >= COUNT_GOAL ) {
@@ -177,7 +176,7 @@ void systemLoop (void) {
 			targetSpeed = 0;
 			if (encCurrentN == 0) motorPwmOutSynth( 0, 0 );
 			else                  motorPwmOutSynth( 0, speedPwm );
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+			powerLinesensors(0);
 
 			lcdRowPrintf(UPROW, "TIME   %d",modeEMC);
 			lcdRowPrintf(LOWROW, "  %5ds",goalTime);
@@ -199,4 +198,15 @@ void emargencyStop (uint8_t modeStop) {
 	modeLCD = 1;
 	modeEMC = modeStop;
 	patternTrace = 102;
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 countDown
+// 処理概要     カウントダウン
+// 引数         なし
+// 戻り値       なし
+///////////////////////////////////////////////////////////////////////////
+void countDown (void) { 
+	if ( cntRun % 1000 == 0 ) {
+		countdown--;
+	}
 }

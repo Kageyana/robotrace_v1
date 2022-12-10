@@ -42,6 +42,8 @@ uint8_t setting3meter;
 uint8_t motor_test = 0;
 uint8_t trace_test = 0;
 uint8_t fixSpeed = 0;
+uint8_t	calTimes = 1;
+uint8_t	calTimesNow = 0;
 uint8_t str[8];
 
 // パラメータ関連
@@ -63,8 +65,7 @@ int16_t cnttest = 0;
 ///////////////////////////////////////////////////////////////
 void setup( void )
 {
-	uint8_t cntLed, sd_sw;
-	int16_t i, j, k;
+	uint8_t cntLed;
 	
 	// ディップスイッチで項目選択
 	switch ( swValRotary ) {
@@ -133,10 +134,10 @@ void setup( void )
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
 				motorPwmOutSynth( tracePwm, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
+				powerLinesensors(1);
 			} else {
 				motorPwmOutSynth( 0, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+				powerLinesensors(0);
 			}
 			
 			dataTuningLR( &patternGain, 1 );
@@ -192,10 +193,10 @@ void setup( void )
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
 				motorPwmOutSynth( tracePwm, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
+				powerLinesensors(1);
 			} else {
 				motorPwmOutSynth( 0, 0 );
-				__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+				powerLinesensors(0);
 			}
 			
 			dataTuningLR( &patternGain, 1 );
@@ -420,7 +421,7 @@ void setup( void )
 			
 			if ( patternSensors == 11 ) patternSensors = 1;
 			else if ( patternSensors == 0 ) patternSensors = 10;
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
+			powerLinesensors(1);
 
 			switch( patternSensors ) {
 				case 1:
@@ -511,6 +512,35 @@ void setup( void )
 							lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
 							lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
 							break;
+
+						// case 1:
+						// 	lcdRowPrintf(UPROW, "L1  %1.2f",lSensorf[0]);
+						// 	lcdRowPrintf(LOWROW, "L2  %1.2f",lSensorf[1]);
+						// 	break;
+
+						// case 2:
+						// 	lcdRowPrintf(UPROW, "L3  %1.2f",lSensorf[2]);
+						// 	lcdRowPrintf(LOWROW, "L4  %1.2f",lSensorf[3]);
+						// 	break;
+						// case 3:
+						// 	lcdRowPrintf(UPROW, "L5  %1.2f",lSensorf[4]);
+						// 	lcdRowPrintf(LOWROW, "L6  %1.2f",lSensorf[5]);
+						// 	break;
+						
+						// case 4:
+						// 	lcdRowPrintf(UPROW, "R1  %1.2f",lSensorf[11]);
+						// 	lcdRowPrintf(LOWROW, "R2  %1.2f",lSensorf[10]);
+						// 	break;
+
+						// case 5:
+						// 	lcdRowPrintf(UPROW, "R3  %1.2f",lSensorf[9]);
+						// 	lcdRowPrintf(LOWROW, "R4  %1.2f",lSensorf[8]);
+						// 	break;
+
+						// case 6:
+						// 	lcdRowPrintf(UPROW, "R5  %1.2f",lSensorf[7]);
+						// 	lcdRowPrintf(LOWROW, "R6  %1.2f",lSensorf[6]);
+						// 	break;
 					}
 					break;
 				case 7:
@@ -595,6 +625,7 @@ void setup( void )
 					// ログ取得開始前
 					if (swValTact == SW_UP) {
 						initLog();
+						modeLOG = 1;
 						patternLog = 2;
 					}
 					break;
@@ -618,10 +649,12 @@ void setup( void )
 			switch (patternCalibration) {
 				case 1:
 					// スイッチ入力待ち
+					dataTuningUD( &calTimes, 1 );
+
 					targetSpeed = 0;
 					motorPwmOutSynth( 0, speedPwm );
 					lcdRowPrintf(UPROW, "Calibrat");
-					lcdRowPrintf(LOWROW, "  times");
+					lcdRowPrintf(LOWROW, "%d  times", calTimes);
 					if (swValTact == SW_PUSH) {
 						cntSetup1 = 0;
 						enc1 = 0;
@@ -633,10 +666,11 @@ void setup( void )
 					// 開始準備
 					lcdRowPrintf(LOWROW, "%4d",cntSetup1);
 					if (cntSetup1 > 1000) {
+						powerLinesensors(1);
 						cntSetup1 = 0;
 						enc1 = 0;
+						modeCalLinesensors = 1; 	// キャリブレーション開始
 						patternCalibration = 3;
-						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
 					}
 					break;
 				
@@ -646,42 +680,36 @@ void setup( void )
 					motorPwmOutSynth( 0, speedPwm );
 					if (enc1 > encMM(100)) {
 						cntSetup1 = 0;
+						enc1 = 0;
 						patternCalibration = 4;
-						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
 					}
 					break;
 
 				case 4:
-					// 停止
-					targetSpeed = 0;
-					motorPwmOutSynth( 1, speedPwm );
-					if (abs(encCurrentN) < 2) {
-						enc1 = 0;
-						patternCalibration = 5;
-						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
-					}
-					break;
-
-				case 5:
 					// 後退
 					targetSpeed = -0.4*PALSE_MILLIMETER;
 					motorPwmOutSynth( 0, speedPwm );
 					if (enc1 < -encMM(100)) {
+						modeCalLinesensors = 0;		// キャリブレーション停止
+						powerLinesensors(0);
 						cntSetup1 = 0;
-						patternCalibration = 6;
-						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+						patternCalibration = 5;
 					}
 					break;
 
-				case 6:
+				case 5:
 					// 停止
 					targetSpeed = 0;
 					motorPwmOutSynth( 0, speedPwm );
 					if (abs(encCurrentN) < 2) {
+						calTimesNow++;
 						enc1 = 0;
-						patternCalibration = 1;
-						motorPwmOutSynth( 0, 0 );
-						lcdRowPrintf(LOWROW, "%d  start", patternCalibration);
+						if (calTimesNow >= calTimes) {
+							calTimesNow = 0;
+							patternCalibration = 1;
+						} else {
+							patternCalibration = 3;
+						}
 					}
 					break;
 				

@@ -1,5 +1,5 @@
-#ifndef TIMER_H_
-#define TIMER_H_
+#ifndef MOTOR_H_
+#define MOTOR_H_
 
 //====================================//
 // インクルード
@@ -19,4 +19,4 @@
 void motorPwmOut(int16_t pwmL, int16_t pwmR);
 void motorPwmOutSynth(int16_t tPwm, int16_t sPwm);
 
-#endif // TIMER_H_
+#endif // MOTOR_H_

@@ -38,31 +38,47 @@ uint8_t checkMarker( void ) {
 
 	nowMarker = getMarkerSensor();
 
-	if (nowMarker >= 1 && checkStart == 0) {
+	if ( crossLine == 1 && encTotalN - encMarker >= encMM(50)) {
+		crossLine = 0;
+	} else if (nowMarker >= 1 && checkStart == 0) {
 		existMarker = nowMarker;
 		checkStart = 1;
 		encMarker = encTotalN;
 	}
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(16)) {
+		if (encTotalN - encMarker <= encMM(30)) {
+
+			// if ( nowMarker == 0 && encTotalN - encMarker <= encMM(15)) {
+			// 	checkStart = 0;
+			// 	return 0;
+			// }
 			if (nowMarker > 0 && nowMarker != existMarker) {
 				// クロスライン
-				ledOut(0x3);
-				stateMarker = 1;
 				checkStart = 0;
+				crossLine = 1;
+				encMarker = encTotalN;
 				ret = CROSSLINE;
-			} else if ( nowMarker == 0 ) {
-				ledOut(0x2);
-				checkStart = 0;
-				stateMarker = 2;
 			}
 		} else {
-			ledOut(0x1);
 			checkStart = 0;
-			stateMarker = 3;
 			ret = existMarker;
 		}
 	}
+	
 
 	return ret;
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 checkGoalMarker
+// 処理概要     クロスラインの読み飛ばし処理を含むマーカー検知
+// 引数         なし
+// 戻り値       0:マーカなし 0x1:右 0x2:左 0x3:クロスライン
+///////////////////////////////////////////////////////////////////////////
+void checkGoalMarker (void) {
+	if ( cMarker == RIGHTMARKER ) {
+		if (encRightMarker > encMM(600) ) {	// 2回目以降
+			SGmarker++;
+			encRightMarker = 0;
+		}
+	}
 }

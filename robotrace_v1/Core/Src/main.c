@@ -69,7 +69,7 @@ DWORD     fre_clust;
 uint32_t  total, free_space;
 uint8_t   columnTitle[512] = "", formatLog[256] = "";
 
-uint32_t  logBuffer[512];
+uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 
 /* USER CODE END PV */
@@ -524,7 +524,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -1019,23 +1019,25 @@ void initLog(void) {
   // setLogStr("encTotalL",    "%d");
   setLogStr("encTotalN",    "%d");
   setLogStr("angleSensor",    "%d");
-  // strcat(columnTitle,"lSensor[0],");
-  // strcat(columnTitle,"lSensor[1],");
-  // strcat(columnTitle,"lSensor[2],");
-  // strcat(columnTitle,"lSensor[3],");
-  // strcat(columnTitle,"lSensor[4],");
-  // strcat(columnTitle,"lSensor[5],");
-  // strcat(columnTitle,"lSensor[6],");
-  // strcat(columnTitle,"lSensor[7],");
-  // strcat(columnTitle,"lSensor[8],");
-  // strcat(columnTitle,"lSensor[9],");
-  // strcat(columnTitle,"lSensor[10],");
-  // strcat(columnTitle,"lSensor[11],");
-  setLogStr("gyroVal[X]",   "%d");
-  setLogStr("gyroVal[Y]",   "%d");
+  setLogStr("tracePwm",    "%d");
+  setLogStr("speedPwm",    "%d");
+  // strcat(columnTitle,"lSensorf[0],");
+  // strcat(columnTitle,"lSensorf[1],");
+  // strcat(columnTitle,"lSensorf[2],");
+  // strcat(columnTitle,"lSensorf[3],");
+  // strcat(columnTitle,"lSensorf[4],");
+  // strcat(columnTitle,"lSensorf[5],");
+  // strcat(columnTitle,"lSensorf[6],");
+  // strcat(columnTitle,"lSensorf[7],");
+  // strcat(columnTitle,"lSensorf[8],");
+  // strcat(columnTitle,"lSensorf[9],");
+  // strcat(columnTitle,"lSensorf[10],");
+  // strcat(columnTitle,"lSensorf[11],");
+  // setLogStr("gyroVal[X]",   "%d");
+  // setLogStr("gyroVal[Y]",   "%d");
   setLogStr("gyroVal[Z]",   "%d");
-  setLogStr("angle[X]",   "%d");
-  setLogStr("angle[Y]",   "%d");
+  // setLogStr("angle[X]",   "%d");
+  // setLogStr("angle[Y]",   "%d");
   setLogStr("angle[Z]",   "%d");
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
@@ -1044,7 +1046,6 @@ void initLog(void) {
   strcat(formatLog,"\n");
   f_printf(&fil, columnTitle);
 
-  modeLOG = 1;    // log start
   cntLog = 0;
 }
 
@@ -1054,10 +1055,10 @@ void writeLogBuffer (uint8_t valNum, ...) {
 
   va_start( args, valNum );
   for ( count = 0; count < valNum; count++ ) {
-    logBuffer[logIndex & 511] = va_arg( args, int32_t );
+    logBuffer[logIndex & BUFFER_SIZW_LOG - 1] = va_arg( args, int32_t );
     logIndex++;
   }
-  logBuffer[logIndex & 511] = "\n";
+  logBuffer[logIndex & BUFFER_SIZW_LOG - 1] = "\n";
   logIndex++;
   va_end( args );
 }
@@ -1066,10 +1067,10 @@ void writeLogPut(void) {
   uint8_t str[32];
 
   if (sendLogNum < logIndex) {
-    if (logBuffer[sendLogNum & 511] == "\n") {
-      f_puts(logBuffer[sendLogNum & 511], &fil);
+    if (logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1] == "\n") {
+      f_puts(logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1], &fil);
     } else {
-      sprintf(str,"%d,",logBuffer[sendLogNum & 511]);
+      sprintf(str,"%d,",logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1]);
       f_puts(str, &fil);
     }
     sendLogNum++;

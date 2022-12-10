@@ -29,7 +29,7 @@ uint16_t readINA260( uint16_t addr, uint8_t reg )
 //////////////////////////////////////////////////////////////////////////
 void writeINA260( uint16_t addr, uint8_t reg, uint16_t data )
 {
-    uint8_t rx_buf[2], tx_buf[2] = { reg, data};
+    uint8_t tx_buf[2] = { reg, data};
 	I2C_INA260_SEND2
 }
 //////////////////////////////////////////////////////////////////////////

@@ -10,8 +10,8 @@
 //====================================//
 // シンボル定義
 //====================================//
-#define KP2		20
-#define KI2		4
+#define KP2		11
+#define KI2		6
 #define KD2		0
 
 //====================================//
@@ -25,6 +25,6 @@ extern uint8_t  kp2_buff, ki2_buff, kd2_buff;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void motorControlspeed( void );
+void motorControlSpeed( void );
 
 #endif // VELOCITYCTRL_H_
