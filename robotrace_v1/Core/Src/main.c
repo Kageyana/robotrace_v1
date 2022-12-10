@@ -71,6 +71,7 @@ uint8_t   columnTitle[512] = "", formatLog[256] = "";
 
 uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
+uint8_t   insertMSD = 0;
 
 /* USER CODE END PV */
 
@@ -146,8 +147,10 @@ int main(void)
   systemInit();
   if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
     initMicroSD();
+    insertMSD = 1;
   } else {
     lcdRowPrintf(UPROW,"no MSD  ");
+    insertMSD = 0;
     HAL_Delay(800);
   }
   /* USER CODE END 2 */

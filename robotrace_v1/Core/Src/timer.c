@@ -92,7 +92,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // encTotalR,
                     // encTotalL,
                     encTotalN,
-                    (int32_t)angleSensor*100,
+                    (int32_t)(angleSensor*100),
                     tracePwm,
                     speedPwm,
                     // (int32_t)lSensorf[0],

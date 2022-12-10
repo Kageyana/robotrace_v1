@@ -112,7 +112,7 @@ void systemLoop (void) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = 0;		// LCD OFF
 				// Logファイル作成
-				if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
+				if (insertMSD == 1) {
 					initLog();
 				}
 				powerLinesensors(1);	// ラインセンサ ON

@@ -617,13 +617,18 @@ void setup( void )
 		//------------------------------------------------------------------
 		case 0x8:
 			lcdRowPrintf(UPROW, "LOG     ");
-			lcdRowPrintf(LOWROW, "       %d", modeLOG);
+			if (insertMSD == 1) {
+				lcdRowPrintf(LOWROW, "       %d", modeLOG);
+			} else {
+				lcdRowPrintf(LOWROW, "  no MSD");
+			}
+			
 
 			
 			switch (patternLog) {
 				case 1:
 					// ログ取得開始前
-					if (swValTact == SW_UP) {
+					if (swValTact == SW_UP && insertMSD == 1) {
 						initLog();
 						modeLOG = 1;
 						patternLog = 2;

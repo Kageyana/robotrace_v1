@@ -84,6 +84,8 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+
+// MicroSD
 void initMicroSD(void);
 void initLog(void);
 void writeLogPrint(void);
@@ -144,6 +146,9 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
+
+// MicroSD
+extern uint8_t insertMSD;
 
 /* USER CODE END Private defines */
 
