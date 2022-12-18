@@ -128,7 +128,7 @@ void setup( void )
 		// ゲイン調整(直線トレース)
 		//------------------------------------------------------------------
 		case 0x2:
-			lcdRowPrintf(UPROW, "kp ki kd");
+			lcdRowPrintf(UPROW, "%d ki kd",modeCurve);
 			
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF

@@ -42,10 +42,10 @@
 // グローバル変数の宣言
 //====================================//
 // パターン、モード関連
-extern uint8_t  patternTrace;		// パターン番号
+extern uint8_t  patternTrace;	// パターン番号
 extern uint8_t  modeLCD;		// LCD表示選択
-extern uint8_t  modeLOG;     // ログ取得状況
-extern uint8_t  modeCurve;	// カーブ判断 0:直線 1:カーブ進入
+extern uint8_t  modeLOG;        // ログ取得状況
+extern uint8_t  modeCurve;	    // カーブ判断 0:直線 1:カーブ進入
 
 // パラメータ関連
 extern uint8_t  paramSpeed[10];

@@ -19,8 +19,11 @@ extern int16_t      encCurrentN;
 extern int32_t      encTotalR;
 extern int32_t      encTotalL;
 extern int32_t      encTotalN;
+
+// 外部変数
 extern int32_t      enc1;
 extern int32_t      encRightMarker;
+extern int32_t      encCurve;
 //====================================//
 // プロトタイプ宣言
 //====================================//

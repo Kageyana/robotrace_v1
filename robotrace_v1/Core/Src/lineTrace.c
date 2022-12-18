@@ -6,8 +6,6 @@
 // グローバル変数の宣言
 //====================================//
 int16_t		tracePwm;		// 白線トレースサーボPWM
-float 		traceBefore;	// 1ms前のセンサ値
-float		Int;			// I成分積算値(白線トレース)
 uint8_t		kp1_buff = KP1, ki1_buff = KI1, kd1_buff = KD1;
 uint8_t		kp1Curve_buff = KP1CURVE, ki1Curve_buff = KI1CURVE, kd1Curve_buff = KD1CURVE;
 
@@ -18,27 +16,19 @@ uint8_t		kp1Curve_buff = KP1CURVE, ki1Curve_buff = KI1CURVE, kd1Curve_buff = KD1
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void motorControlTrace( void ) {
-	int32_t iP, iD, iI, iRet;
-	float Dev, Dif, kp, ki, kd;
+	int32_t 		iP, iD, iI, iRet, Dev, Dif, kp, ki, kd;
+	static float 	Int;
+	static int32_t 	traceBefore;
 	
 	//サーボモータ用PWM値計算
-	// if (angleSensor > (float)paramAngle[INDEX_ANGLE_CURVE]) {
-	// 	kp = kp1Curve_buff;
-	// 	ki = ki1Curve_buff;
-	// 	kd = kd1Curve_buff;
-	// 	Dev = lSensorf[5] - lSensorf[8];
-	// } else if (angleSensor < -(float)paramAngle[INDEX_ANGLE_CURVE]) {
-	// 	kp = kp1Curve_buff;
-	// 	ki = ki1Curve_buff;
-	// 	kd = kd1Curve_buff;
-	// 	Dev = lSensorf[3] - lSensorf[6];
-	// } else {
-		// kp = kp1_buff;
-		// ki = ki1_buff;
-		// kd = kd1_buff;
-	// 	Dev = lSensorf[4] - lSensorf[7];
-	// }
-	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
+	if (modeCurve == 1 && angleSensor < -3.0f) {
+		Dev = ((lSensor[4]*0.2) + (lSensor[5]*0.8) + (lSensor[6])) - ((lSensor[7]) + (lSensor[8]*0.8) + (lSensor[9]*0.2));
+	} else if (modeCurve == 2 && angleSensor > 3.0f) {
+		Dev = ((lSensor[2]*0.2) + (lSensor[3]*0.8) + (lSensor[4])) - ((lSensor[5]) + (lSensor[6]*0.8) + (lSensor[7]*0.2));
+	} else {
+		Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
+	}
+	
 	kp = kp1_buff;
 	ki = ki1_buff;
 	kd = kd1_buff;

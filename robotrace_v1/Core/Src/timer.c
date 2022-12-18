@@ -35,8 +35,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             if (abs(encCurrentN) < 10) cntEncStop++;
             else    cntEncStop = 0;
 
+            cMarker = checkMarker();    // マーカー検知
             checkGoalMarker();  // ゴールマーカー処理
+            
         }
+        // if (trace_test) 
         if (patternTrace < 10 || patternTrace > 100) {
             getSwitches();  // スイッチの入力を取得
             countDown();
@@ -55,16 +58,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         // PWM
         motorControlTrace();
         motorControlSpeed();
-        cMarker = checkMarker();    // マーカー検知
+        
 
         switch(cnt5ms) {
             case 1:
                 // getCurrent();               // 電流計測
                 // getBNO055Acceleration();    // 加速度取得       
                 getBNO055Gyro();    // 角速度取得
-                calcDegrees();
-                motorControlYawRate();
+                calcDegrees();              // 角速度制御
+                motorControlYawRate();      // 角度制御
                 // motorControlYaw();
+
+                checkCurve();
                 break;
             case 2:
                 break;
@@ -82,7 +87,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         switch(cnt10ms) {
             case 10:
                 if (modeLOG == 1) writeLogBuffer(
-                    10,
+                    9,
                     cntLog,
                     patternTrace,
                     getMarkerSensor(),
@@ -93,8 +98,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // encTotalL,
                     encTotalN,
                     (int32_t)(angleSensor*100),
-                    tracePwm,
-                    speedPwm,
+                    modeCurve,
+                    // tracePwm,
+                    // speedPwm,
                     // (int32_t)lSensorf[0],
                     // (int32_t)lSensorf[1],
                     // (int32_t)lSensorf[2],
@@ -107,12 +113,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // (int32_t)lSensorf[9],
                     // (int32_t)lSensorf[10],
                     // (int32_t)lSensorf[11],
-                    // (int32_t)angularVelocity[INDEX_X]*10,
-                    // (int32_t)angularVelocity[INDEX_Y]*10,
-                    (int32_t)angularVelocity[INDEX_Z]*10,
-                    // (int32_t)angle[INDEX_X]*10,
-                    // (int32_t)angle[INDEX_Y]*10,
-                    (int32_t)angle[INDEX_Z]*10
+                    // (int32_t)(angularVelocity[INDEX_X]*10),
+                    // (int32_t)(angularVelocity[INDEX_Y]*10),
+                    (int32_t)(angularVelocity[INDEX_Z]*10),
+                    // (int32_t)(angle[INDEX_X]*10),
+                    // (int32_t)(angle[INDEX_Y]*10),
+                    (int32_t)(angle[INDEX_Z]*10)
                     // rawCurrentR,
                     // rawCurrentL,
                     );

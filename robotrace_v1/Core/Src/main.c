@@ -1022,8 +1022,9 @@ void initLog(void) {
   // setLogStr("encTotalL",    "%d");
   setLogStr("encTotalN",    "%d");
   setLogStr("angleSensor",    "%d");
-  setLogStr("tracePwm",    "%d");
-  setLogStr("speedPwm",    "%d");
+  setLogStr("modeCurve",    "%d");
+  // setLogStr("tracePwm",    "%d");
+  // setLogStr("speedPwm",    "%d");
   // strcat(columnTitle,"lSensorf[0],");
   // strcat(columnTitle,"lSensorf[1],");
   // strcat(columnTitle,"lSensorf[2],");

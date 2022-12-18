@@ -173,6 +173,8 @@
 #define INDEX_X         0
 #define INDEX_Y         1
 #define INDEX_Z         2
+
+#define DEFF_TIME       0.0056
 /******************************** 自動生成関数 *********************************/
 #define I2C_BNO055_SEND HAL_I2C_Master_Transmit(&hi2c1,BNO055_SLAVEADDRESS,tx_buf,tx_num,100);
 #define I2C_BNO055_READ HAL_I2C_Master_Receive(&hi2c1,BNO055_SLAVEADDRESS|0x0001,rx_buf,rx_num,100);

@@ -19,7 +19,7 @@
 //====================================//
 extern bool     demo;
 extern int16_t  speedPwm;	    // モーター制御PWM
-extern float	targetSpeed;	// 目標速度
+extern int16_t	targetSpeed;	// 目標速度
 extern uint8_t  kp2_buff, ki2_buff, kd2_buff;
 
 //====================================//

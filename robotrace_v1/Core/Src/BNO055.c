@@ -110,7 +110,7 @@ void getBNO055Gyro(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void calcDegrees(void) {
-    angle[INDEX_X] += angularVelocity[INDEX_X] * 0.0056;
-    angle[INDEX_Y] += angularVelocity[INDEX_Y] * 0.0056;
-    angle[INDEX_Z] += angularVelocity[INDEX_Z] * 0.0056;   
+    angle[INDEX_X] += angularVelocity[INDEX_X] * DEFF_TIME;
+    angle[INDEX_Y] += angularVelocity[INDEX_Y] * DEFF_TIME;
+    angle[INDEX_Z] += angularVelocity[INDEX_Z] * DEFF_TIME;   
 }

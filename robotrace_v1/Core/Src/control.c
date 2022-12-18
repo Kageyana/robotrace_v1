@@ -125,11 +125,12 @@ void systemLoop (void) {
 				angle[INDEX_Z] = 0.0f;
 
 				modeLOG = 1;    // log start
-				patternTrace = 2;
+				patternTrace = 11;
 			}
 			break;
 
 		case 2:
+			// 予備加速
 			targetSpeed = 0.5 * PALSE_MILLIMETER;
 			motorPwmOutSynth( tracePwm, speedPwm );
 			if (encTotalN > encMM(200)) {
@@ -147,7 +148,7 @@ void systemLoop (void) {
 			motorPwmOutSynth( tracePwm, speedPwm );
 	 
 			// カーブ処理
-			// if (angleSensor < paramAngle[INDEX_ANGLE_CURVE] && angleSensor > -paramAngle[INDEX_ANGLE_CURVE]) {
+			// if (fabs(angleSensor) > (float)paramAngle[INDEX_ANGLE_CURVE]) {
 			// 	modeCurve = 0;
 			// } else {
 			// 	modeCurve = 1;
@@ -162,20 +163,24 @@ void systemLoop (void) {
 			break;
 
       	case 101:
-			targetSpeed = paramSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
+			if (enc1 >= encMM(500)) {
+				targetSpeed = 0;
+			} else {
+				targetSpeed = paramSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
+			}
 			motorPwmOutSynth( tracePwm, speedPwm );
 
-			if (enc1 >= encMM(500)) {
+			
+			if (encCurrentN == 0 && enc1 >= encMM(500)) {
 				endLog();
 				modeLCD = 1;
 				patternTrace = 102;
 			}
+			
 			break;
 
       	case 102:
-			targetSpeed = 0;
-			if (encCurrentN == 0) motorPwmOutSynth( 0, 0 );
-			else                  motorPwmOutSynth( 0, speedPwm );
+			motorPwmOutSynth( 0, 0 );
 			powerLinesensors(0);
 
 			lcdRowPrintf(UPROW, "TIME   %d",modeEMC);
@@ -209,4 +214,53 @@ void countDown (void) {
 	if ( cntRun % 1000 == 0 ) {
 		countdown--;
 	}
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 countDown
+// 処理概要     カウントダウン
+// 引数         なし
+// 戻り値       なし
+///////////////////////////////////////////////////////////////////////////
+void checkCurve(void) {
+	static uint8_t 	checkStraight, checkRight, checkLeft;
+	static float	angleCurve;
+
+	angleCurve += angularVelocity[INDEX_Z] * DEFF_TIME;
+
+	if (fabs(angularVelocity[INDEX_Z]) < 50.0f) {
+		// ストレート時
+		checkRight = 0;
+		checkLeft = 0;
+		if (checkStraight == 0) {
+			encCurve = 0;
+			checkStraight = 1;
+		}
+		if(checkStraight == 1 && encCurve > encMM(100)){
+			modeCurve = 0;
+			angleCurve = 0;
+		}
+	} else if (angularVelocity[INDEX_Z] > 250.0f) {
+		// 左カーブ時
+		checkStraight = 0;
+		checkRight = 0;
+		if (checkLeft == 0) {
+			encCurve = 0;
+			checkLeft = 1;
+		}
+		if(checkLeft == 1 && encCurve > encMM(20)){
+			modeCurve = 2;
+		}
+	} else if (angularVelocity[INDEX_Z] < -250.0f) {
+		// 右カーブ時
+		checkStraight = 0;
+		checkLeft = 0;
+		if (checkRight == 0) {
+			encCurve = 0;
+			checkRight = 1;
+		}
+		if(checkRight == 1 && encCurve > encMM(20)){
+			modeCurve = 1;
+		}
+	}
+	
 }
