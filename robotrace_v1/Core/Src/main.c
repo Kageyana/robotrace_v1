@@ -106,6 +106,7 @@ static void MX_TIM7_Init(void);
   */
 int main(void)
 {
+  uint8_t i=0;
   /* USER CODE BEGIN 1 */
 
 
@@ -144,15 +145,32 @@ int main(void)
   MX_FATFS_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-  systemInit();
+  initSystem();
+  
   if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
     initMicroSD();
     insertMSD = 1;
+    lcdRowPrintf(UPROW,"insert  ");
+    lcdRowPrintf(LOWROW,"     MSD");
   } else {
-    lcdRowPrintf(UPROW,"no MSD  ");
+    lcdRowPrintf(UPROW,"Noinsert");
+    lcdRowPrintf(LOWROW,"     MSD");
     insertMSD = 0;
-    HAL_Delay(800);
   }
+  countdown = 1200;
+  i=0;
+  while(countdown >= 0) {
+    if (insertMSD == 1) {
+      ledOut(1);
+    } else {
+      if (countdown % 50 == 0) {
+        countdown--;
+        ledOut(i);
+        i++;
+      }
+    }
+  }
+  ledOut(0x0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -162,7 +180,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    systemLoop();
+    loopSystem();
   }
   /* USER CODE END 3 */
 }
@@ -1043,8 +1061,8 @@ void initLog(void) {
   // setLogStr("angle[X]",   "%d");
   // setLogStr("angle[Y]",   "%d");
   setLogStr("angle[Z]",   "%d");
-  // setLogStr("rawCurrentR",  "%d");
-  // setLogStr("rawCurrentL",  "%d");
+  setLogStr("rawCurrentR",  "%d");
+  setLogStr("rawCurrentL",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");

@@ -46,6 +46,7 @@ extern uint8_t  patternTrace;	// パターン番号
 extern uint8_t  modeLCD;		// LCD表示選択
 extern uint8_t  modeLOG;        // ログ取得状況
 extern uint8_t  modeCurve;	    // カーブ判断 0:直線 1:カーブ進入
+extern int16_t  countdown;
 
 // パラメータ関連
 extern uint8_t  paramSpeed[10];
@@ -63,9 +64,10 @@ extern uint16_t logEncoder[10000];
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void systemInit (void);
-void systemLoop (void);
+void initSystem (void);
+void loopSystem (void);
 void emargencyStop (uint8_t modeStop);
 void countDown (void);
+void setTargetSpeed (uint8_t paramSpeed);
 
 #endif // CONTROL_H_

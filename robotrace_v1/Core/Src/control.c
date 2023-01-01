@@ -24,7 +24,7 @@ uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
 
 uint16_t analogVal[12];		// ADC結果格納配列
 
-int8_t countdown;
+int16_t countdown;
 
 // マーカー関連
 uint8_t cMarker;
@@ -39,7 +39,7 @@ uint32_t j=0;
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void systemInit (void) {
+void initSystem (void) {
 	// Encoder count
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
@@ -80,7 +80,7 @@ void systemInit (void) {
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void systemLoop (void) {
+void loopSystem (void) {
 
 	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
 		emargencyStop(STOP_ANGLE_X);	// X角度が一定値以上
@@ -100,7 +100,7 @@ void systemLoop (void) {
 
 			if (start) {
 				cntRun = 0;
-				countdown = 5;		// カウントダウンスタート
+				countdown = 5000;		// カウントダウンスタート
 				patternTrace = 1;
 			}
 			break;
@@ -131,7 +131,7 @@ void systemLoop (void) {
 
 		case 2:
 			// 予備加速
-			targetSpeed = 0.5 * PALSE_MILLIMETER;
+			setTargetSpeed(5);
 			motorPwmOutSynth( tracePwm, speedPwm );
 			if (encTotalN > encMM(200)) {
 				patternTrace = 11;
@@ -139,10 +139,10 @@ void systemLoop (void) {
 			break;
       	case 11:
 			// 目標速度
-			if (!modeCurve) {
-				targetSpeed = paramSpeed[INDEX_STRAIGHT]*PALSE_MILLIMETER/10;
+			if (modeCurve == 0) {
+				setTargetSpeed(paramSpeed[INDEX_STRAIGHT]);
 			} else {
-				targetSpeed = paramSpeed[INDEX_CURVE]*PALSE_MILLIMETER/10;
+				setTargetSpeed(paramSpeed[INDEX_CURVE]);
 			}
 			// ライントレース
 			motorPwmOutSynth( tracePwm, speedPwm );
@@ -164,9 +164,9 @@ void systemLoop (void) {
 
       	case 101:
 			if (enc1 >= encMM(500)) {
-				targetSpeed = 0;
+				setTargetSpeed(0);
 			} else {
-				targetSpeed = paramSpeed[INDEX_STOP]*PALSE_MILLIMETER/10;
+				setTargetSpeed(paramSpeed[INDEX_STOP]);
 			}
 			motorPwmOutSynth( tracePwm, speedPwm );
 
@@ -211,13 +211,11 @@ void emargencyStop (uint8_t modeStop) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void countDown (void) { 
-	if ( cntRun % 1000 == 0 ) {
-		countdown--;
-	}
+	countdown--;
 }
 ///////////////////////////////////////////////////////////////////////////
-// モジュール名 countDown
-// 処理概要     カウントダウン
+// モジュール名 checkCurve
+// 処理概要     カーブとストレートの判定
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
@@ -263,4 +261,13 @@ void checkCurve(void) {
 		}
 	}
 	
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 setTargetSpeed
+// 処理概要     目標速度の設定
+// 引数         目標速度の整数倍値
+// 戻り値       なし
+///////////////////////////////////////////////////////////////////////////
+void setTargetSpeed (uint8_t paramSpeed) {
+	targetSpeed = (float)paramSpeed*PALSE_MILLIMETER/10;
 }

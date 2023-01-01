@@ -62,7 +62,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt5ms) {
             case 1:
-                // getCurrent();               // 電流計測
+                
                 // getBNO055Acceleration();    // 加速度取得       
                 getBNO055Gyro();    // 角速度取得
                 calcDegrees();              // 角速度制御
@@ -86,8 +86,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
+                getCurrent();               // 電流計測
                 if (modeLOG == 1) writeLogBuffer(
-                    9,
+                    11,
                     cntLog,
                     patternTrace,
                     getMarkerSensor(),
@@ -118,9 +119,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     (int32_t)(angularVelocity[INDEX_Z]*10),
                     // (int32_t)(angle[INDEX_X]*10),
                     // (int32_t)(angle[INDEX_Y]*10),
-                    (int32_t)(angle[INDEX_Z]*10)
-                    // rawCurrentR,
-                    // rawCurrentL,
+                    (int32_t)(angle[INDEX_Z]*10),
+                    rawCurrentR,
+                    rawCurrentL
                     );
                 cnt10ms = 0;
                 break;

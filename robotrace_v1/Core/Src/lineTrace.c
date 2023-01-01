@@ -21,14 +21,14 @@ void motorControlTrace( void ) {
 	static int32_t 	traceBefore;
 	
 	//サーボモータ用PWM値計算
-	if (modeCurve == 1 && angleSensor < -3.0f) {
-		Dev = ((lSensor[4]*0.2) + (lSensor[5]*0.8) + (lSensor[6])) - ((lSensor[7]) + (lSensor[8]*0.8) + (lSensor[9]*0.2));
-	} else if (modeCurve == 2 && angleSensor > 3.0f) {
-		Dev = ((lSensor[2]*0.2) + (lSensor[3]*0.8) + (lSensor[4])) - ((lSensor[5]) + (lSensor[6]*0.8) + (lSensor[7]*0.2));
-	} else {
-		Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
-	}
-	
+	// if (modeCurve == 1 ) {
+	// 	Dev = ((lSensor[4]*0.2) + (lSensor[5]*0.8) + (lSensor[6])) - ((lSensor[7]) + (lSensor[8]*0.8) + (lSensor[9]*0.2));
+	// } else if (modeCurve == 2 ) {
+	// 	Dev = ((lSensor[2]*0.2) + (lSensor[3]*0.8) + (lSensor[4])) - ((lSensor[5]) + (lSensor[6]*0.8) + (lSensor[7]*0.2));
+	// } else {
+	// 	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
+	// }
+	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
 	kp = kp1_buff;
 	ki = ki1_buff;
 	kd = kd1_buff;

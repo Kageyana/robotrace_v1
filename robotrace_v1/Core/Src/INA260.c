@@ -44,6 +44,7 @@ void initINA260( void ) {
     writeINA260( INA260_SLAVEADDRESS_R, 0x00, 0x6b27 );
     HAL_Delay(50);
 	writeINA260( INA260_SLAVEADDRESS_L, 0x00, 0x6b27 );
+    HAL_Delay(50);
 }
 //////////////////////////////////////////////////////////////////////////
 // モジュール名 readCurrent
