@@ -629,9 +629,13 @@ void setup( void )
 				case 1:
 					// ログ取得開始前
 					if (swValTact == SW_UP && insertMSD == 1) {
-						initLog();
-						modeLOG = 1;
-						patternLog = 2;
+						// initLog();
+						// modeLOG = 1;
+						// patternLog = 2;
+
+						
+						readLog("256.csv");
+						HAL_Delay(1000);
 					}
 					break;
 				

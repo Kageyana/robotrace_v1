@@ -44,14 +44,33 @@ void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
-	int16_t pwmR, pwmL;
+	int16_t pwmR, pwmL, overpwm;
+
+    if (sPwm >= 900) {
+        sPwm = 900;
+    } else if (sPwm <= -900) {
+        sPwm = -900;
+    }
 
 	if (tPwm > 0) {
-		pwmR = sPwm - abs(tPwm);
-		pwmL = sPwm + abs(tPwm);
+        if (sPwm + abs(tPwm) > 1000 || sPwm - abs(tPwm) < -1000) {
+            overpwm = abs(sPwm) + abs(tPwm) - 1000;
+            pwmR = sPwm - abs(tPwm) - overpwm;
+		    pwmL = 1000;
+        } else {
+            pwmR = sPwm - abs(tPwm);
+		    pwmL = sPwm + abs(tPwm);
+        }
 	} else {
-		pwmR = sPwm + abs(tPwm);
-		pwmL = sPwm - abs(tPwm);
+		
+        if (sPwm + abs(tPwm) > 1000 || sPwm - abs(tPwm) < -1000) {
+            overpwm = abs(sPwm) + abs(tPwm) - 1000;
+            pwmR = 1000;
+		    pwmL = sPwm - abs(tPwm) - overpwm;
+        } else {
+            pwmR = sPwm + abs(tPwm);
+		    pwmL = sPwm - abs(tPwm);
+        }
 	}
 	motorPwmOut(pwmL, pwmR);
 }

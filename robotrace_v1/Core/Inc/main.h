@@ -88,11 +88,12 @@ void Error_Handler(void);
 // MicroSD
 void initMicroSD(void);
 void initLog(void);
-void writeLogPrint(void);
 void endLog(void);
 void setLogStr(uint8_t* column, uint8_t* format);
 void writeLogBuffer (uint8_t valNum, ...);
 void writeLogPut(void);
+
+void readLog(uint8_t *fileName);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -126,6 +127,7 @@ void writeLogPut(void);
 #define LED_G_GPIO_Port GPIOB
 #define LED_B_Pin GPIO_PIN_5
 #define LED_B_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 #define PERIOD_LOG  2

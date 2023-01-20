@@ -23,6 +23,7 @@ uint16_t    cntEncStop = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if(htim->Instance == TIM6){
+        // Interrupt 1ms
         cntRun++;
         cnt5ms++;
         cnt10ms++;
@@ -34,10 +35,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             else    cntAngleY = 0;
             if (abs(encCurrentN) < 10) cntEncStop++;
             else    cntEncStop = 0;
-
-            cMarker = checkMarker();    // マーカー検知
-            checkGoalMarker();  // ゴールマーカー処理
-            
+          
         }
         // if (trace_test) 
         if (patternTrace < 10 || patternTrace > 100) {
@@ -86,6 +84,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
+                cMarker = checkMarker();    // マーカー検知
+                checkGoalMarker();  // ゴールマーカー処理
+
                 getCurrent();               // 電流計測
                 if (modeLOG == 1) writeLogBuffer(
                     11,
@@ -130,6 +131,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         }
     }
     if(htim->Instance == TIM7){
+        // Interrupt 0.1ms
         if (modeLOG) writeLogPut();
     }
 }

@@ -107,7 +107,7 @@ void loopSystem (void) {
 		case 1:
 			// カウントダウンスタート
 			lcdRowPrintf(UPROW, "ready   ");
-			lcdRowPrintf(LOWROW, "       %d",countdown);
+			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
 			if ( countdown == 0 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = 0;		// LCD OFF

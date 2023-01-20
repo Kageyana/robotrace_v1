@@ -62,13 +62,15 @@ UART_HandleTypeDef huart5;
 /* USER CODE BEGIN PV */
 // MicroSD
 FATFS     fs;
-FIL       fil;
+FIL       fil_W;
+FIL       fil_R;
 FRESULT   fresult;
 FATFS     *pfs;
 DWORD     fre_clust;
 uint32_t  total, free_space;
 uint8_t   columnTitle[512] = "", formatLog[256] = "";
 
+// Log 
 uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 uint8_t   insertMSD = 0;
@@ -157,6 +159,7 @@ int main(void)
     lcdRowPrintf(LOWROW,"     MSD");
     insertMSD = 0;
   }
+  
   countdown = 1200;
   i=0;
   while(countdown >= 0) {
@@ -171,6 +174,7 @@ int main(void)
     }
   }
   ledOut(0x0);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -988,6 +992,16 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
   getLineSensor();
 }
 
+int _write(int file, char *ptr, int len)
+{
+  int DataIdx;
+  for(DataIdx=0; DataIdx<len; DataIdx++)
+  {
+    ITM_SendChar(*ptr++);
+  }
+  return len;
+}
+
 void initMicroSD(void) {
   fresult = f_mount(&fs, "", 0);    // SDcard mount
 	// if (fresult != FR_OK) printf ("error in mounting SD CARD...\r\n");
@@ -1000,6 +1014,23 @@ void initMicroSD(void) {
 	free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
 	// printf("SD free space: \t%lu\r\n", free_space);
 
+}
+
+ void readLog(uint8_t *fileName) {
+  uint8_t str[128];
+  uint8_t header[30];
+
+  fresult = f_open(&fil_R, "257.csv", FA_OPEN_EXISTING | FA_READ);
+  printf("test\r\n");
+  // while(fscanf(&fil_R,  "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"   ,str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str[8],str[9],str[10]) != EOF) {
+  //   printf(             "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n"  ,str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str[8],str[9],str[10]);
+  // }
+  while (fgets(str, 5, &fil_R) != NULL)
+	{
+		//	読み込んだ1行を画面に出力する
+		printf("%s", str);
+	}
+  f_close(&fil_R);
 }
 
 void initLog(void) {
@@ -1021,14 +1052,16 @@ void initLog(void) {
   } while(fno.fname[0] != 0);
   f_closedir(&dir);     // directory close
   if (fileNumber == 0) {
+    // not file
     fileNumber = 1;
   } else {
+    // exist file
     fileNumber++;         // index pulus
   }
 
   sprintf(fileName,"%d",fileNumber);  // transrate to str
   strcat(fileName, ".csv");           // file name create
-  fresult = f_open(&fil, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // file create
+  fresult = f_open(&fil_W, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // create file 
 
   setLogStr("cntlog",       "%d");
   setLogStr("patternTrace", "%d");
@@ -1043,30 +1076,30 @@ void initLog(void) {
   setLogStr("modeCurve",    "%d");
   // setLogStr("tracePwm",    "%d");
   // setLogStr("speedPwm",    "%d");
-  // strcat(columnTitle,"lSensorf[0],");
-  // strcat(columnTitle,"lSensorf[1],");
-  // strcat(columnTitle,"lSensorf[2],");
-  // strcat(columnTitle,"lSensorf[3],");
-  // strcat(columnTitle,"lSensorf[4],");
-  // strcat(columnTitle,"lSensorf[5],");
-  // strcat(columnTitle,"lSensorf[6],");
-  // strcat(columnTitle,"lSensorf[7],");
-  // strcat(columnTitle,"lSensorf[8],");
-  // strcat(columnTitle,"lSensorf[9],");
-  // strcat(columnTitle,"lSensorf[10],");
-  // strcat(columnTitle,"lSensorf[11],");
-  // setLogStr("gyroVal[X]",   "%d");
-  // setLogStr("gyroVal[Y]",   "%d");
-  setLogStr("gyroVal[Z]",   "%d");
-  // setLogStr("angle[X]",   "%d");
-  // setLogStr("angle[Y]",   "%d");
-  setLogStr("angle[Z]",   "%d");
+  // strcat(columnTitle,"lSensorf_0,");
+  // strcat(columnTitle,"lSensorf_1,");
+  // strcat(columnTitle,"lSensorf_2,");
+  // strcat(columnTitle,"lSensorf_3,");
+  // strcat(columnTitle,"lSensorf_4,");
+  // strcat(columnTitle,"lSensorf_5,");
+  // strcat(columnTitle,"lSensorf_6,");
+  // strcat(columnTitle,"lSensorf_7,");
+  // strcat(columnTitle,"lSensorf_8,");
+  // strcat(columnTitle,"lSensorf_9,");
+  // strcat(columnTitle,"lSensorf_10,");
+  // strcat(columnTitle,"lSensorf_11,");
+  // setLogStr("gyroVal_X",   "%d");
+  // setLogStr("gyroVal_Y",   "%d");
+  setLogStr("gyroVal_Z",   "%d");
+  // setLogStr("angle_X",   "%d");
+  // setLogStr("angle_Y",   "%d");
+  setLogStr("angle_Z",   "%d");
   setLogStr("rawCurrentR",  "%d");
   setLogStr("rawCurrentL",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");
-  f_printf(&fil, columnTitle);
+  f_printf(&fil_W, columnTitle);
 
   cntLog = 0;
 }
@@ -1074,9 +1107,11 @@ void initLog(void) {
 void writeLogBuffer (uint8_t valNum, ...) {
   va_list args;
   uint8_t count;
+  // valNum : amount of variable
 
   va_start( args, valNum );
   for ( count = 0; count < valNum; count++ ) {
+    // set logdata to logbuffer(ring buffer)
     logBuffer[logIndex & BUFFER_SIZW_LOG - 1] = va_arg( args, int32_t );
     logIndex++;
   }
@@ -1090,56 +1125,19 @@ void writeLogPut(void) {
 
   if (sendLogNum < logIndex) {
     if (logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1] == "\n") {
-      f_puts(logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1], &fil);
+      f_puts(logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1], &fil_W);
     } else {
       sprintf(str,"%d,",logBuffer[sendLogNum & BUFFER_SIZW_LOG - 1]);
-      f_puts(str, &fil);
+      f_puts(str, &fil_W);
     }
     sendLogNum++;
   }
 }
 
-void writeLogPrint(void) {
-  f_printf(&fil, formatLog,
-  // cntLog,
-  // patternTrace,
-  // nowMarker,
-  // existMarker,
-  // encMarker,
-  cMarker,
-  stateMarker,
-  SGmarker,
-  getMarkerSensor()
-  // encCurrentR,
-  // encCurrentL,
-  // encCurrentN,
-  // encTotalR,
-  // encTotalL,
-  // encTotalN
-  // lSensor[0],
-  // lSensor[1],
-  // lSensor[2],
-  // lSensor[3],
-  // lSensor[4],
-  // lSensor[5],
-  // lSensor[6],
-  // lSensor[7],
-  // lSensor[8],
-  // lSensor[9],
-  // lSensor[10],
-  // lSensor[11],
-  // gyroVal[INDEX_X],
-  // gyroVal[INDEX_Y],
-  // gyroVal[INDEX_Z],
-  // rawCurrentR,
-  // rawCurrentL
-  );
-}
-
 void endLog(void) {
   modeLOG = 0;
   while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
-  f_close(&fil);
+  f_close(&fil_W);
 }
 
 void setLogStr(uint8_t* column, uint8_t* format) {
