@@ -52,25 +52,19 @@ void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
         sPwm = -900;
     }
 
-	if (tPwm > 0) {
-        if (sPwm + abs(tPwm) > 1000 || sPwm - abs(tPwm) < -1000) {
-            overpwm = abs(sPwm) + abs(tPwm) - 1000;
-            pwmR = sPwm - abs(tPwm) - overpwm;
-		    pwmL = 1000;
+    if (sPwm + tPwm > 1000 || sPwm - tPwm < -1000) {
+        // 合計制御量が1000を超えたとき
+        overpwm = abs(sPwm) + abs(tPwm) - 1000; // 1000を超えた分の制御量を計算
+        if (tPwm > 0) {
+            pwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
+            pwmL = 1000 * (tPwm/abs(tPwm));
         } else {
-            pwmR = sPwm - abs(tPwm);
-		    pwmL = sPwm + abs(tPwm);
+            pwmR = 1000 * (tPwm/abs(tPwm));
+            pwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
         }
-	} else {
-		
-        if (sPwm + abs(tPwm) > 1000 || sPwm - abs(tPwm) < -1000) {
-            overpwm = abs(sPwm) + abs(tPwm) - 1000;
-            pwmR = 1000;
-		    pwmL = sPwm - abs(tPwm) - overpwm;
-        } else {
-            pwmR = sPwm + abs(tPwm);
-		    pwmL = sPwm - abs(tPwm);
-        }
-	}
+    } else {
+        pwmR = sPwm - tPwm;
+	    pwmL = sPwm + tPwm;
+    }
 	motorPwmOut(pwmL, pwmR);
 }
