@@ -167,7 +167,7 @@
 
 //  unit settings
 #define ACCELELSB       100.0F
-#define GYROLSB         16.0F
+#define GYROLSB         900.0F
 #define MAGPLSB         16.0F
 
 #define INDEX_X         0

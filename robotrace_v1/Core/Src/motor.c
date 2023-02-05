@@ -5,7 +5,8 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-
+int16_t motorpwmL = 0;
+int16_t motorpwmR = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 motorPwmOut
 // 処理概要     左右のモータにPWMを出力する
@@ -15,6 +16,7 @@
 void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 
     if (abs(pwmL) < 10) {
+        // スリープモードへの移行を防ぐためにduty比を10にする
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 10);
     } else if (pwmL > 0) {
@@ -44,7 +46,7 @@ void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
-	int16_t pwmR, pwmL, overpwm;
+	int16_t overpwm;
 
     if (sPwm >= 900) {
         sPwm = 900;
@@ -55,16 +57,19 @@ void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
     if (sPwm + tPwm > 1000 || sPwm - tPwm < -1000) {
         // 合計制御量が1000を超えたとき
         overpwm = abs(sPwm) + abs(tPwm) - 1000; // 1000を超えた分の制御量を計算
+
+        // トレースの内輪側から越えた分の制御量を引く
         if (tPwm > 0) {
-            pwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
-            pwmL = 1000 * (tPwm/abs(tPwm));
+            motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
+            motorpwmL = 1000 * (tPwm/abs(tPwm));
         } else {
-            pwmR = 1000 * (tPwm/abs(tPwm));
-            pwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+            motorpwmR = 1000 * (tPwm/abs(tPwm));
+            motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
         }
     } else {
-        pwmR = sPwm - tPwm;
-	    pwmL = sPwm + tPwm;
+        motorpwmR = sPwm - tPwm;
+	    motorpwmL = sPwm + tPwm;
     }
-	motorPwmOut(pwmL, pwmR);
+
+	motorPwmOut(motorpwmL, motorpwmR);
 }

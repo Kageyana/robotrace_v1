@@ -147,13 +147,6 @@ void loopSystem (void) {
 			// ライントレース
 			motorPwmOutSynth( tracePwm, speedPwm );
 	 
-			// カーブ処理
-			// if (fabs(angleSensor) > (float)paramAngle[INDEX_ANGLE_CURVE]) {
-			// 	modeCurve = 0;
-			// } else {
-			// 	modeCurve = 1;
-			// }
-
 			// ゴール
 			if (SGmarker >= COUNT_GOAL ) {
 				goalTime = cntRun;

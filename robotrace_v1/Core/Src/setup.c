@@ -634,7 +634,7 @@ void setup( void )
 						// patternLog = 2;
 
 						
-						readLog("256.csv");
+						readLog();
 						HAL_Delay(1000);
 					}
 					break;

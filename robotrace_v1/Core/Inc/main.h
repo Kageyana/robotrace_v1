@@ -93,7 +93,7 @@ void setLogStr(uint8_t* column, uint8_t* format);
 void writeLogBuffer (uint8_t valNum, ...);
 void writeLogPut(void);
 
-void readLog(uint8_t *fileName);
+void readLog(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

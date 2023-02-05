@@ -28,7 +28,8 @@ void motorControlTrace( void ) {
 	// } else {
 	// 	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
 	// }
-	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
+	// Dev = ((lSensor[3]*0.8) + (lSensor[4]) + (lSensor[5]*0.5)) - ((lSensor[6]*0.5) + (lSensor[7]) + (lSensor[8]*0.8));
+	Dev = ((lSensor[3]*0.5) + (lSensor[4]) + (lSensor[5]*0.5)) - ((lSensor[6]*0.5) + (lSensor[7]) + (lSensor[8]*0.5));
 	kp = kp1_buff;
 	ki = ki1_buff;
 	kd = kd1_buff;
@@ -38,7 +39,7 @@ void motorControlTrace( void ) {
 	Int += (float)Dev * 0.001;
 	if ( Int > 10000 ) Int = 10000;		// I成分リミット
 	else if ( Int < -10000 ) Int = -10000;
-	Dif = ( Dev - traceBefore ) * 1;	// dゲイン1/1000倍
+	Dif = ( Dev - traceBefore ) * 2;	// dゲイン1/500倍
 
 	iP = kp * Dev;	// 比例
 	iI = ki * Int;	// 積分

@@ -17,10 +17,10 @@
 #define INDEX_CURVE                 3
 
 // パラメータ
-#define PARAM_STRAIGHT              10
+#define PARAM_STRAIGHT              15
 #define PARAM_CURVEBREAK            4
 #define PARAM_STOP                  4
-#define PARAM_CURVE                 6
+#define PARAM_CURVE                 10
 
 #define PARAM_ANGLE_CURVE           17
 #define INDEX_ANGLE_CURVE           0

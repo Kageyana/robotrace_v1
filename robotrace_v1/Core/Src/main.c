@@ -174,6 +174,7 @@ int main(void)
     }
   }
   ledOut(0x0);
+  printf("boot Klic_RT_v1\n");
 
   /* USER CODE END 2 */
 
@@ -1016,21 +1017,28 @@ void initMicroSD(void) {
 
 }
 
- void readLog(uint8_t *fileName) {
-  uint8_t str[128];
-  uint8_t header[30];
+ void readLog(void) {
+  TCHAR header[256];
+  FIL       fil_Read;
+  int16_t   valNum = 0;
+  uint8_t formatLogRead[256] = "", *tmpStr;
 
-  fresult = f_open(&fil_R, "257.csv", FA_OPEN_EXISTING | FA_READ);
-  printf("test\r\n");
-  // while(fscanf(&fil_R,  "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"   ,str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str[8],str[9],str[10]) != EOF) {
-  //   printf(             "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n"  ,str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str[8],str[9],str[10]);
-  // }
-  while (fgets(str, 5, &fil_R) != NULL)
-	{
-		//	読み込んだ1行を画面に出力する
-		printf("%s", str);
-	}
-  f_close(&fil_R);
+  f_open(&fil_Read, "308.csv", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);  // create file
+  // f_printf(&fil_Read, "Hello csv");
+  f_gets(header,256,&fil_Read);
+  printf("%s\n",header);
+
+  tmpStr = header;
+  while(*tmpStr != '\0') {
+    if (*tmpStr == (uint8_t)',') {
+      valNum++;
+      strcat(formatLogRead,"%d,");
+    }
+    tmpStr++;
+  }
+  printf("%s\n",formatLogRead);
+
+  f_close(&fil_Read);
 }
 
 void initLog(void) {
@@ -1066,14 +1074,16 @@ void initLog(void) {
   setLogStr("cntlog",       "%d");
   setLogStr("patternTrace", "%d");
   setLogStr("checkMarker",  "%d");
-  // setLogStr("encCurrentR",  "%d");
-  // setLogStr("encCurrentL",  "%d");
+  setLogStr("encCurrentR",  "%d");
+  setLogStr("encCurrentL",  "%d");
   setLogStr("encCurrentN",  "%d");
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
   setLogStr("encTotalN",    "%d");
-  setLogStr("angleSensor",    "%d");
+  setLogStr("angleSensor",  "%d");
   setLogStr("modeCurve",    "%d");
+  setLogStr("motorpwmL",  "%d");
+  setLogStr("motorpwmR",  "%d");
   // setLogStr("tracePwm",    "%d");
   // setLogStr("speedPwm",    "%d");
   // strcat(columnTitle,"lSensorf_0,");
