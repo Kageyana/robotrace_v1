@@ -36,7 +36,7 @@ DRESULT SD_disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 
 #define TRUE  1
 #define FALSE 0
-#define bool BYTE
+//#define bool BYTE
 
 /* defines for the CS PIN */
 #define SD_CS_GPIO_Port CS_MSD_GPIO_Port

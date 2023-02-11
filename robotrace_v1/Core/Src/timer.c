@@ -62,14 +62,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             case 1:
                 
                 // getBNO055Acceleration();    // 加速度取得       
-                getBNO055Gyro();    // 角速度取得
-                calcDegrees();              // 角速度制御
-                motorControlYawRate();      // 角度制御
+                getBNO055Gyro();        // 角速度取得
+                calcDegrees();          // 角度計算
+                // motorControlYawRate();  // 角度制御
                 // motorControlYaw();
 
                 checkCurve();
                 break;
             case 2:
+                cMarker = checkMarker();    // マーカー検知
+                checkGoalMarker();          // ゴールマーカー処理
                 break;
             case 3:
                 break;
@@ -84,12 +86,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
-                cMarker = checkMarker();    // マーカー検知
-                checkGoalMarker();  // ゴールマーカー処理
+                
+                calcCurvatureRadius();      // 曲率半径を計算
 
-                getCurrent();               // 電流計測
+                // getCurrent();               // 電流計測
                 if (modeLOG == 1) writeLogBuffer(
-                    15,
+                    16,
                     cntLog,
                     patternTrace,
                     getMarkerSensor(),
@@ -99,10 +101,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // encTotalR,
                     // encTotalL,
                     encTotalN,
-                    (int32_t)(angleSensor*10000),
+                    (int32_t)(angleSensor*10),
                     modeCurve,
-                    motorpwmL,
                     motorpwmR,
+                    motorpwmL,
                     // tracePwm,
                     // speedPwm,
                     // (int32_t)lSensorf[0],
@@ -117,14 +119,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // (int32_t)lSensorf[9],
                     // (int32_t)lSensorf[10],
                     // (int32_t)lSensorf[11],
-                    // (int32_t)(angularVelocity[INDEX_X]*10),
-                    // (int32_t)(angularVelocity[INDEX_Y]*10),
+                    (int32_t)(angularVelocity[INDEX_X]*10000),
+                    (int32_t)(angularVelocity[INDEX_Y]*10000),
                     (int32_t)(angularVelocity[INDEX_Z]*10000),
-                    // (int32_t)(angle[INDEX_X]*10),
-                    // (int32_t)(angle[INDEX_Y]*10),
-                    (int32_t)(angle[INDEX_Z]*10),
-                    rawCurrentR,
-                    rawCurrentL
+                    // (int32_t)(angle[INDEX_X]*10000),
+                    // (int32_t)(angle[INDEX_Y]*10000),
+                    (int32_t)(angle[INDEX_Z]*10000),
+                    // rawCurrentR,
+                    // rawCurrentL,
+                     (int32_t)(CurvatureRadius*100)
                     );
                 cnt10ms = 0;
                 break;

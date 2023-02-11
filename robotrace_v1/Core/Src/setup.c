@@ -569,31 +569,34 @@ void setup( void )
 					dataTuningUD( &patternSensorGyro, 1 );
 					if ( patternSensorGyro == 7 ) patternSensorGyro = 1;
 					else if ( patternSensorGyro == 0 ) patternSensorGyro = 6;
+					if (swValTact == SW_PUSH) {
+						angle[INDEX_Z] = 0.0;
+					}
 
 					switch( patternSensorGyro ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_X]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_X]);
 							break;
 						case 2:
 							lcdRowPrintf(UPROW, "Y gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_Y]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_Y]);
 							break;
 						case 3:
 							lcdRowPrintf(UPROW, "Z gyro  ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angularVelocity[INDEX_Z]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_Z]);
 							break;
 						case 4:
 							lcdRowPrintf(UPROW, "X angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_X]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_X]);
 							break;
 						case 5:
 							lcdRowPrintf(UPROW, "Y angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_Y]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_Y]);
 							break;
 						case 6:
 							lcdRowPrintf(UPROW, "Z angle ");
-							lcdRowPrintf(LOWROW, "    %4.0f",angle[INDEX_Z]);
+							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_Z]);
 							break;
 					}
 					break;

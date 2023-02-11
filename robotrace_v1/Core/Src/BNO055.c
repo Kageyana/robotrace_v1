@@ -49,8 +49,8 @@ void writeBNO055(uint8_t reg, uint8_t data) {
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 initBNO055
-// 処理概要     指定レジスタへ書き込み
-// 引数         reg:レジスタアドレス data: 書き込むデータ
+// 処理概要     初期設定パラメータの書き込み
+// 引数         なし
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void initBNO055(void) {
@@ -61,12 +61,19 @@ void initBNO055(void) {
         // 加速
         writeBNO055(BNO055_ACC_CONFIG_ADDR, 0x17);    // 16G 250Hz
         // ジャイロ
-        writeBNO055(BNO055_GYR_CONFIG_0_ADDR, 0x00);  // 2000dps 523Hz 
+        writeBNO055(BNO055_GYR_CONFIG_0_ADDR, 0x00);  // 2000dps 523Hz
+
+        // 書き込んだパラメータを確認
+        printf("0x%x\n",readBNO055(BNO055_GYR_CONFIG_0_ADDR));
 
         // モード変更
         writeBNO055(BNO055_PAGE_ID_ADDR, 0x00);     // ページ0に変更
+        writeBNO055(BNO055_UNIT_SEL_ADDR, 0x82);    // 角速度の単位を[rad/s]に変更
         writeBNO055(BNO055_OPR_MODE_ADDR, 0x05);    // ノーマルモード
         HAL_Delay(50);    //変更まで待つ
+
+        // 書き込んだパラメータを確認
+        printf("0x%x\n",readBNO055(BNO055_UNIT_SEL_ADDR));
     }
 }
 /////////////////////////////////////////////////////////////////////
@@ -76,7 +83,7 @@ void initBNO055(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void getBNO055Acceleration(void) {
-	uint8_t rawData[8];
+	uint8_t rawData[6];
     readBNO055AxisData(BNO055_ACCEL_DATA_X_LSB_ADDR, rawData);
 
     accelVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
@@ -93,15 +100,15 @@ void getBNO055Acceleration(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void getBNO055Gyro(void) {
-    uint8_t rawData[8];
+    uint8_t rawData[6];
     readBNO055AxisData(BNO055_GYRO_DATA_X_LSB_ADDR, rawData);
 
-    gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
-    gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
-    gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    angularVelocity[INDEX_X] = (float)gyroVal[INDEX_X] / GYROLSB;
-    angularVelocity[INDEX_Y] = (float)gyroVal[INDEX_Y] / GYROLSB;
-    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB;   
+    gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
+    gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100) + rawData[2] ;
+    gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100) + rawData[4] ;
+    angularVelocity[INDEX_X] = (float)gyroVal[INDEX_X] / GYROLSB * 1.2;
+    angularVelocity[INDEX_Y] = (float)gyroVal[INDEX_Y] / GYROLSB * 1.2;
+    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB * 1.2;
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcDegrees

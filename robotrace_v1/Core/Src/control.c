@@ -218,7 +218,7 @@ void checkCurve(void) {
 
 	angleCurve += angularVelocity[INDEX_Z] * DEFF_TIME;
 
-	if (fabs(angularVelocity[INDEX_Z]) < 50.0f) {
+	if (fabs(angularVelocity[INDEX_Z]) < 1.9f) {
 		// ストレート時
 		checkRight = 0;
 		checkLeft = 0;
@@ -230,7 +230,7 @@ void checkCurve(void) {
 			modeCurve = 0;
 			angleCurve = 0;
 		}
-	} else if (angularVelocity[INDEX_Z] > 250.0f) {
+	} else if (angularVelocity[INDEX_Z] > 2.5f) {
 		// 左カーブ時
 		checkStraight = 0;
 		checkRight = 0;
@@ -241,7 +241,7 @@ void checkCurve(void) {
 		if(checkLeft == 1 && encCurve > encMM(20)){
 			modeCurve = 2;
 		}
-	} else if (angularVelocity[INDEX_Z] < -250.0f) {
+	} else if (angularVelocity[INDEX_Z] < -2.5f) {
 		// 右カーブ時
 		checkStraight = 0;
 		checkLeft = 0;

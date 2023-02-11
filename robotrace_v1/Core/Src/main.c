@@ -108,7 +108,6 @@ static void MX_TIM7_Init(void);
   */
 int main(void)
 {
-  uint8_t i=0;
   /* USER CODE BEGIN 1 */
 
 
@@ -1082,8 +1081,8 @@ void initLog(void) {
   setLogStr("encTotalN",    "%d");
   setLogStr("angleSensor",  "%d");
   setLogStr("modeCurve",    "%d");
-  setLogStr("motorpwmL",  "%d");
   setLogStr("motorpwmR",  "%d");
+  setLogStr("motorpwmL",  "%d");
   // setLogStr("tracePwm",    "%d");
   // setLogStr("speedPwm",    "%d");
   // strcat(columnTitle,"lSensorf_0,");
@@ -1098,14 +1097,15 @@ void initLog(void) {
   // strcat(columnTitle,"lSensorf_9,");
   // strcat(columnTitle,"lSensorf_10,");
   // strcat(columnTitle,"lSensorf_11,");
-  // setLogStr("gyroVal_X",   "%d");
-  // setLogStr("gyroVal_Y",   "%d");
+  setLogStr("gyroVal_X",   "%d");
+  setLogStr("gyroVal_Y",   "%d");
   setLogStr("gyroVal_Z",   "%d");
   // setLogStr("angle_X",   "%d");
   // setLogStr("angle_Y",   "%d");
   setLogStr("angle_Z",   "%d");
-  setLogStr("rawCurrentR",  "%d");
-  setLogStr("rawCurrentL",  "%d");
+  // setLogStr("rawCurrentR",  "%d");
+  // setLogStr("rawCurrentL",  "%d");
+  setLogStr("CurvatureRadius",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");

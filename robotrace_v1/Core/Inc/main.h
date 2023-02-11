@@ -59,7 +59,7 @@ extern "C" {
 #include "timer.h"
 #include "setup.h"
 #include "control.h"
-
+#include "courseAnalysis.h"
 
 /* USER CODE END Includes */
 

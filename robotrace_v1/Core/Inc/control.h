@@ -66,6 +66,7 @@ void initSystem (void);
 void loopSystem (void);
 void emargencyStop (uint8_t modeStop);
 void countDown (void);
+void checkCurve(void);
 void setTargetSpeed (uint8_t paramSpeed);
 
 #endif // CONTROL_H_

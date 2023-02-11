@@ -46,12 +46,7 @@ uint8_t checkMarker( void ) {
 		encMarker = encTotalN;
 	}
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(30)) {
-
-			// if ( nowMarker == 0 && encTotalN - encMarker <= encMM(15)) {
-			// 	checkStart = 0;
-			// 	return 0;
-			// }
+		if (encTotalN - encMarker <= encMM(25)) {
 			if (nowMarker > 0 && nowMarker != existMarker) {
 				// クロスライン
 				checkStart = 0;

@@ -12,7 +12,7 @@
 //====================================//
 #define KP1		19
 #define KI1		0
-#define KD1		60
+#define KD1		71
 
 #define KP1CURVE		8
 #define KI1CURVE		0

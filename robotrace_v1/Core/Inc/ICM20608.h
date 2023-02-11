@@ -21,7 +21,7 @@
 #define SPIRECEIVE_ARRY	        HAL_SPI_Receive(&hspi2,&val,6,1000)
 /*****************************************************************************************/
 #define ACCELLSB			4096		// 16[g]
-#define GYROLSB			    32.8		// 2000[deg/s]
+// #define GYROLSB			    32.8		// 2000[deg/s]
 #define TEMP_LSB			333.87	    // LSB/°C
 #define ROOMTEMPOFFSET	    0		    // 21°Cのとき0
 
