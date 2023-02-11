@@ -20,8 +20,8 @@ uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 uint8_t   insertMSD = 0;
 /////////////////////////////////////////////////////////////////////
-// モジュール名 calcCurvatureRadius
-// 処理概要     タイマー割り込み(1ms)
+// モジュール名 initMicroSD
+// 処理概要     SDカードの初期化
 // 引数         なし
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
@@ -48,7 +48,12 @@ void initMicroSD(void) {
     lcdRowPrintf(LOWROW,"     MSD");
   }
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 readLog
+// 処理概要     CSVファイルの読み込み
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void readLog(void) {
   TCHAR header[256];
   FIL       fil_Read;
@@ -72,7 +77,12 @@ void readLog(void) {
 
   f_close(&fil_Read);
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 initLog
+// 処理概要     ロギング初期設定
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void initLog(void) {
   FRESULT   fresult;
   DIR dir;                    // Directory
@@ -131,8 +141,8 @@ void initLog(void) {
   // strcat(columnTitle,"lSensorf_9,");
   // strcat(columnTitle,"lSensorf_10,");
   // strcat(columnTitle,"lSensorf_11,");
-  setLogStr("gyroVal_X",   "%d");
-  setLogStr("gyroVal_Y",   "%d");
+  // setLogStr("gyroVal_X",   "%d");
+  // setLogStr("gyroVal_Y",   "%d");
   setLogStr("gyroVal_Z",   "%d");
   // setLogStr("angle_X",   "%d");
   // setLogStr("angle_Y",   "%d");
@@ -147,7 +157,12 @@ void initLog(void) {
 
   cntLog = 0;
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 writeLogBuffer
+// 処理概要     保存する変数の値をバッファに転送する
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void writeLogBuffer (uint8_t valNum, ...) {
   va_list args;
   uint8_t count;
@@ -163,7 +178,12 @@ void writeLogBuffer (uint8_t valNum, ...) {
   logIndex++;
   va_end( args );
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 writeLogPut
+// 処理概要     バッファをSDカードに転送する
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void writeLogPut(void) {
   uint8_t str[32];
 
@@ -177,13 +197,23 @@ void writeLogPut(void) {
     sendLogNum++;
   }
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 endLog
+// 処理概要     ロギング終了処理
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void endLog(void) {
   modeLOG = 0;
   while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
   f_close(&fil_W);
 }
-
+/////////////////////////////////////////////////////////////////////
+// モジュール名 setLogStr
+// 処理概要     ログCSVファイルのヘッダーとprintfのフォーマット文字列を生成
+// 引数         column: ヘッダー文字列 format: フォーマット文字列
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
 void setLogStr(uint8_t* column, uint8_t* format) {
   uint8_t* columnStr[30], formatStr[30];
 

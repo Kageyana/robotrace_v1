@@ -29,9 +29,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         cnt10ms++;
         cntLog++;
         if (patternTrace > 10 && patternTrace < 100) {
-            if (fabs(angularVelocity[INDEX_X]) > 200.0f) cntAngleX++;
+            if (fabs(angularVelocity[INDEX_X]) > 2.0f) cntAngleX++;
             else    cntAngleX = 0;
-            if (fabs(angularVelocity[INDEX_Y]) > 200.0f) cntAngleY++;
+            if (fabs(angularVelocity[INDEX_Y]) > 2.0f) cntAngleY++;
             else    cntAngleY = 0;
             if (abs(encCurrentN) < 10) cntEncStop++;
             else    cntEncStop = 0;
@@ -86,12 +86,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
-                
                 calcCurvatureRadius();      // 曲率半径を計算
-
                 // getCurrent();               // 電流計測
+
                 if (modeLOG == 1) writeLogBuffer(
-                    16,
+                    14,
                     cntLog,
                     patternTrace,
                     getMarkerSensor(),
@@ -119,8 +118,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // (int32_t)lSensorf[9],
                     // (int32_t)lSensorf[10],
                     // (int32_t)lSensorf[11],
-                    (int32_t)(angularVelocity[INDEX_X]*10000),
-                    (int32_t)(angularVelocity[INDEX_Y]*10000),
+                    // (int32_t)(angularVelocity[INDEX_X]*10000),
+                    // (int32_t)(angularVelocity[INDEX_Y]*10000),
                     (int32_t)(angularVelocity[INDEX_Z]*10000),
                     // (int32_t)(angle[INDEX_X]*10000),
                     // (int32_t)(angle[INDEX_Y]*10000),

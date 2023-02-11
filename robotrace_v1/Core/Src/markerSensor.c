@@ -9,7 +9,7 @@ uint8_t     SGmarker = 0;
 uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0;
 
 int32_t		encMarker = 0;
-uint8_t     stateMarker = 0, checkStart = 0;
+uint8_t     checkStart = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
 // 処理概要     マーカーセンサの値を取得
