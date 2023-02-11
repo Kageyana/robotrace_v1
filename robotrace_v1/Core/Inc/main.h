@@ -39,7 +39,6 @@ extern "C" {
 #include <string.h>
 #include <stdarg.h>
 
-#include "fatfs_sd.h"
 #include "AQM0802A.h"
 // #include "ICM20608.h"
 #include "BNO055.h"
@@ -60,6 +59,7 @@ extern "C" {
 #include "setup.h"
 #include "control.h"
 #include "courseAnalysis.h"
+#include "SDcard.h"
 
 /* USER CODE END Includes */
 
@@ -85,15 +85,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
-// MicroSD
-void initMicroSD(void);
-void initLog(void);
-void endLog(void);
-void setLogStr(uint8_t* column, uint8_t* format);
-void writeLogBuffer (uint8_t valNum, ...);
-void writeLogPut(void);
-
-void readLog(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -129,10 +120,6 @@ void readLog(void);
 #define LED_B_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
-#define PERIOD_LOG  2
-#define BUFFER_SIZW_LOG  1024
-
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern DMA_HandleTypeDef hdma_adc1;

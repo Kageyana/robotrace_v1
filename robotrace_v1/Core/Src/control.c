@@ -40,6 +40,8 @@ uint32_t j=0;
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void initSystem (void) {
+	uint16_t i;
+	
 	// Encoder count
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
@@ -68,11 +70,29 @@ void initSystem (void) {
 	//initIMU();	// IMU initialize
 	initINA260();	// Current sensor initialize
 	initBNO055();	// BNO055(IMU) initialize
-
+	initMicroSD();  // microSD card initialize
+	
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim7);
 
+	// マウント状況指示LED
+	countdown = 1200;
+	i=0;
+	while(countdown >= 0) {
+		if (insertMSD == 1) {
+		ledOut(1);
+		} else {
+            if (countdown % 50 == 0) {
+                countdown--;
+                ledOut(i);
+                i++;
+            }
+		}
+	}
+	ledOut(0x0);
+
+	printf("boot Klic_RT_v1\n");
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemLoop
