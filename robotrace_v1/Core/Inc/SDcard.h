@@ -25,5 +25,6 @@ void setLogStr(uint8_t* column, uint8_t* format);
 void writeLogBuffer (uint8_t valNum, ...);
 void writeLogPut(void);
 void readLog(void);
+int cmpfloat(const void * n1, const void * n2);
 
 #endif // SDCARD_H_

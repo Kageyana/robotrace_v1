@@ -899,8 +899,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : Sidesensor1_Pin SW_MSD_Pin */
-  GPIO_InitStruct.Pin = Sidesensor1_Pin|SW_MSD_Pin;
+  /*Configure GPIO pins : Sidesensor1_Pin Input1_Pin SW_MSD_Pin */
+  GPIO_InitStruct.Pin = Sidesensor1_Pin|Input1_Pin|SW_MSD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -908,39 +908,27 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : Output1_Pin Output2_Pin */
   GPIO_InitStruct.Pin = Output1_Pin|Output2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Sidesensor2_Pin */
-  GPIO_InitStruct.Pin = Sidesensor2_Pin;
+  /*Configure GPIO pins : Sidesensor2_Pin Input2_Pin */
+  GPIO_InitStruct.Pin = Sidesensor2_Pin|Input2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(Sidesensor2_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Input2_Pin */
-  GPIO_InitStruct.Pin = Input2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Input2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CS_IMU_Pin CS_MSD_Pin LED_G_Pin LED_B_Pin */
   GPIO_InitStruct.Pin = CS_IMU_Pin|CS_MSD_Pin|LED_G_Pin|LED_B_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Input1_Pin */
-  GPIO_InitStruct.Pin = Input1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Input1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_R_Pin */
   GPIO_InitStruct.Pin = LED_R_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_R_GPIO_Port, &GPIO_InitStruct);
 

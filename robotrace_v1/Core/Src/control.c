@@ -71,26 +71,26 @@ void initSystem (void) {
 	initINA260();	// Current sensor initialize
 	initBNO055();	// BNO055(IMU) initialize
 	initMicroSD();  // microSD card initialize
-	
+
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim7);
 
-	// マウント状況指示LED
+	// SDカードマウント状況指示LED
 	countdown = 1200;
-	i=0;
-	while(countdown >= 0) {
+	for(i=0; i < countdown/50; i++) {
 		if (insertMSD == 1) {
-		ledOut(1);
+			ledOut(1);
+			HAL_Delay(countdown);
+			break;
 		} else {
-            if (countdown % 50 == 0) {
-                countdown--;
-                ledOut(i);
-                i++;
-            }
+			ledOut(i);
+			HAL_Delay(50);
 		}
 	}
 	ledOut(0x0);
+	
+	
 
 	printf("boot Klic_RT_v1\n");
 }

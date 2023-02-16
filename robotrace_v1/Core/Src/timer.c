@@ -86,17 +86,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
-                calcCurvatureRadius();      // 曲率半径を計算
+                ;      // 曲率半径を計算
                 // getCurrent();               // 電流計測
 
                 if (modeLOG == 1) writeLogBuffer(
-                    14,
+                    12,
                     cntLog,
-                    patternTrace,
                     getMarkerSensor(),
+                    encCurrentN,
+                    (int32_t)(angularVelocity[INDEX_Z]*10000),
+
                     encCurrentR,
                     encCurrentL,
-                    encCurrentN,
                     // encTotalR,
                     // encTotalL,
                     encTotalN,
@@ -120,13 +121,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // (int32_t)lSensorf[11],
                     // (int32_t)(angularVelocity[INDEX_X]*10000),
                     // (int32_t)(angularVelocity[INDEX_Y]*10000),
-                    (int32_t)(angularVelocity[INDEX_Z]*10000),
                     // (int32_t)(angle[INDEX_X]*10000),
                     // (int32_t)(angle[INDEX_Y]*10000),
-                    (int32_t)(angle[INDEX_Z]*10000),
+                    (int32_t)(angle[INDEX_Z]*10000)
                     // rawCurrentR,
                     // rawCurrentL,
-                     (int32_t)(CurvatureRadius*100)
+                    // (int32_t)(calcCurvatureRadius((float)encCurrentN, angularVelocity[INDEX_Z]) * 100)
                     );
                 cnt10ms = 0;
                 break;

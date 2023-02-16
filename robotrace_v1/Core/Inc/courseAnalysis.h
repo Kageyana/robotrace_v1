@@ -15,6 +15,6 @@ extern float CurvatureRadius;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void calcCurvatureRadius(void);
+float calcCurvatureRadius(float velo, float angvelo);
 
 #endif // COURSEANALYSIS_H_

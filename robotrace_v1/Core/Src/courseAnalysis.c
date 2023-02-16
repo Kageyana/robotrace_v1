@@ -9,15 +9,23 @@ float CurvatureRadius = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcCurvatureRadius
 // 処理概要     曲率半径の計算
-// 引数         なし
-// 戻り値       なし
+// 引数         velo: エンコーダカウント angvelo: 角速度[rad/s]
+// 戻り値       曲率半径[mm]
 /////////////////////////////////////////////////////////////////////
-void calcCurvatureRadius(void) {
-    float dl,drad;
-    dl = (float)encCurrentN / PALSE_MILLIMETER * 1000 * DELTATIME; // [pilse] → [mm/s] → [mm] 
-    drad = angularVelocity[INDEX_Z] * DELTATIME;            // [rad/s] → [rad]
-    CurvatureRadius = dl / drad;
-    if (fabs(CurvatureRadius) > 1000.0F) {
-        CurvatureRadius = 0.0;
+float calcCurvatureRadius(float velo, float angvelo) {
+    float dl, drad, ret;
+    dl = velo / PALSE_MILLIMETER * 1000 * DELTATIME; // [pilse] → [mm/s] → [mm] 
+    drad = angvelo * DELTATIME;            // [rad/s] → [rad]
+    ret = dl / drad;
+    if (fabs(ret) > 1500.0F) {
+        ret = 10000.0;
     }
+
+    return ret;
 }
+/////////////////////////////////////////////////////////////////////
+// モジュール名 calcCurvatureRadius
+// 処理概要     曲率半径の計算
+// 引数         velo: エンコーダカウント angvelo: 角速度[rad/s]
+// 戻り値       曲率半径[mm]
+/////////////////////////////////////////////////////////////////////

@@ -31,21 +31,21 @@ void initMicroSD(void) {
     // マウント成功
     insertMSD = 1;
     printf("SD CARD mounted successfully...\r\n");
-    lcdRowPrintf(UPROW,"insert  ");
-    lcdRowPrintf(LOWROW,"     MSD");
+    // lcdRowPrintf(UPROW,"insert  ");
+    // lcdRowPrintf(LOWROW,"     MSD");
 
     // 空き容量を計算
     f_getfree("", &fre_clust, &pfs); // cluster size
     total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
-    // printf("SD_SIZE: \t%lu\r\n", total);
+    printf("SD_SIZE: \t%lu\r\n", total);
     free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
-    // printf("SD free space: \t%lu\r\n", free_space);
+    printf("SD free space: \t%lu\r\n", free_space);
   } else {
     // マウント失敗
     insertMSD = 0;
     printf ("error in mounting SD CARD...\r\n");
-    lcdRowPrintf(UPROW,"Noinsert");
-    lcdRowPrintf(LOWROW,"     MSD");
+    // lcdRowPrintf(UPROW,"Noinsert");
+    // lcdRowPrintf(LOWROW,"     MSD");
   }
 }
 /////////////////////////////////////////////////////////////////////
@@ -55,25 +55,65 @@ void initMicroSD(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void readLog(void) {
-  TCHAR header[256];
+  // ファイル読み込み
   FIL       fil_Read;
-  int16_t   valNum = 0;
-  uint8_t formatLogRead[256] = "", *tmpStr;
+  
+  f_open(&fil_Read, "15.csv", FA_OPEN_ALWAYS | FA_READ);  // create file
 
-  f_open(&fil_Read, "308.csv", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);  // create file
-  // f_printf(&fil_Read, "Hello csv");
+  // ヘッダーの取得
+  TCHAR     header[256];
+  uint8_t   formatLogRead[256] = "", *tmpStr;
+
   f_gets(header,256,&fil_Read);
-  printf("%s\n",header);
-
+  printf("%s",header);
   tmpStr = header;
   while(*tmpStr != '\0') {
     if (*tmpStr == (uint8_t)',') {
-      valNum++;
       strcat(formatLogRead,"%d,");
     }
     tmpStr++;
   }
-  printf("%s\n",formatLogRead);
+  // printf("%s\n",formatLogRead);
+
+  // ログデータの取得
+  TCHAR     log[512];
+  int32_t   time, marker,velo,angVelo,null;
+  int32_t   i,numMarker=0,numCurRArry,cntCurR=0,cnt1 = 0;
+  uint8_t   beforeMarker;
+  float     CurR[100],CurRbuff[500];
+  float*    sortCurR;
+
+  // 前処理
+  // 配列初期化
+  for(i=0;i<sizeof(CurR)/sizeof(CurR[0]);i++) CurR[i] = 0.0F;
+
+  // 取得開始
+  while (f_gets(log,256,&fil_Read) != NULL) {
+    sscanf(log,"%d,%d,%d,%d",&time,&marker,&velo,&angVelo);
+    // 解析処理
+    // 曲率変化マーカーを通過したとき
+    if (marker == 0 && beforeMarker == 2) {
+      numCurRArry = cntCurR+1;  // マーカー間で曲率半径を計算した回数＝配列要素数
+      sortCurR = (float*)malloc(sizeof(float) * numCurRArry); // 計算した曲率半径カウント分の配列を作成
+      memcpy(sortCurR,CurRbuff,sizeof(float) * numCurRArry);  // 作成した配列に曲率半径をコピーする
+      qsort(sortCurR, numCurRArry, sizeof(float), cmpfloat); // ソート
+      if (numCurRArry % 2 == 0) {
+        CurR[numMarker] = (sortCurR[numCurRArry/2]+sortCurR[numCurRArry/2-1])/2;  // 中央値を記録(配列要素数が偶数のとき)
+      } else {
+        CurR[numMarker] = sortCurR[numCurRArry/2];
+      }
+      cntCurR = 0;  // 曲率半径用配列のカウント初期化
+      numMarker++;     // マーカーカウント加算
+    }
+    beforeMarker = marker;  // 前回マーカーを記録
+
+    // 曲率半径の計算
+    CurRbuff[cntCurR] = calcCurvatureRadius((float)velo, (float)angVelo/10000);
+    cntCurR++;  // 曲率半径用配列のカウント
+    cnt1++;
+    printf("%s",log);
+
+  }
 
   f_close(&fil_Read);
 }
@@ -115,11 +155,13 @@ void initLog(void) {
   fresult = f_open(&fil_W, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // create file 
 
   setLogStr("cntlog",       "%d");
-  setLogStr("patternTrace", "%d");
-  setLogStr("checkMarker",  "%d");
-  setLogStr("encCurrentR",  "%d");
-  setLogStr("encCurrentL",  "%d");
+  setLogStr("markerSensor",  "%d");
   setLogStr("encCurrentN",  "%d");
+  setLogStr("gyroVal_Z",   "%d");
+
+  // setLogStr("patternTrace", "%d");
+  setLogStr("encCurrentR",  "%d");
+  setLogStr("encCurrentL",  "%d");  
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
   setLogStr("encTotalN",    "%d");
@@ -142,14 +184,13 @@ void initLog(void) {
   // strcat(columnTitle,"lSensorf_10,");
   // strcat(columnTitle,"lSensorf_11,");
   // setLogStr("gyroVal_X",   "%d");
-  // setLogStr("gyroVal_Y",   "%d");
-  setLogStr("gyroVal_Z",   "%d");
+  // setLogStr("gyroVal_Y",   "%d");  
   // setLogStr("angle_X",   "%d");
   // setLogStr("angle_Y",   "%d");
   setLogStr("angle_Z",   "%d");
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
-  setLogStr("CurvatureRadius",  "%d");
+  // setLogStr("CurvatureRadius",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");
@@ -225,4 +266,15 @@ void setLogStr(uint8_t* column, uint8_t* format) {
   strcat(formatStr,",");
   strcat(columnTitle,columnStr);
   strcat(formatLog,formatStr);
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 cmpfloat
+// 処理概要     float型の比較
+// 引数         
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
+int cmpfloat(const void * n1, const void * n2) {
+	if (*(float *)n1 > *(float *)n2) return 1;
+	else if (*(float *)n1 < *(float *)n2) return -1;
+	else return 0;
 }
