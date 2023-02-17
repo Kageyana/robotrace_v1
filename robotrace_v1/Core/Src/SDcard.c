@@ -65,10 +65,10 @@ void initLog(void) {
   f_opendir(&dir,"/");  // directory open
   do {
     f_readdir(&dir,&fno);
-    if(fno.fname[0] != 0) {           // file exit
-      tp = strtok(fno.fname,".");     // delete file extension
-      if ( atoi(tp) > fileNumber ) {  // compare number
-        fileNumber = atoi(tp);        // transrate to number
+    if(fno.fname[0] != 0) {           // ファイルの有無を確認
+      tp = strtok(fno.fname,".");     // 拡張子削除
+      if ( atoi(tp) > fileNumber ) {  // 番号比較
+        fileNumber = atoi(tp);        // 文字列を数値に変換
       }
     }
   } while(fno.fname[0] != 0);

@@ -36,6 +36,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             if (abs(encCurrentN) < 10) cntEncStop++;
             else    cntEncStop = 0;
           
+            courseMarker = checkMarker();   // マーカー検知
+            checkGoalMarker();              // ゴールマーカー処理
+
+            if (courseMarker == 2 && beforeCourseMarker == 0) {
+                cntMarker++;    // マーカーカウント
+            }
+            beforeCourseMarker = courseMarker;
         }
         // if (trace_test) 
         if (patternTrace < 10 || patternTrace > 100) {
@@ -56,14 +63,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         // PWM
         motorControlTrace();
         motorControlSpeed();
-        
-        courseMarker = checkMarker();   // マーカー検知
-        checkGoalMarker();              // ゴールマーカー処理
-
-        if (courseMarker == 2 && beforeCourseMarker == 0) {
-            cntMarker++;
-        }
-        beforeCourseMarker = courseMarker;
 
         switch(cnt5ms) {
             case 1:

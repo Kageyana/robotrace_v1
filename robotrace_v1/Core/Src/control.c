@@ -8,7 +8,7 @@
 // モード関連
 uint8_t	patternTrace = 0;
 bool    modeLCD = true;		// LCD表示可否		false:消灯		true:表示
-bool modeLOG = false;	// ログ取得状況		false:ログ停止	true:ログ取得中
+bool 	modeLOG = false;	// ログ取得状況		false:ログ停止	true:ログ取得中
 uint8_t modeCurve = 0;		// カーブ判断		0:直線			1:カーブ進入
 uint8_t modeEMC = 0;
 
@@ -102,6 +102,7 @@ void initSystem (void) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void loopSystem (void) {
+	float Rap;
 
 	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
 		emargencyStop(STOP_ANGLE_X);	// X角度が一定値以上
@@ -127,7 +128,7 @@ void loopSystem (void) {
 			break;
 		case 1:
 			// カウントダウンスタート
-			lcdRowPrintf(UPROW, "ready   ");
+			lcdRowPrintf(UPROW, "READY   ");
 			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
 			if ( countdown == 0 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
@@ -150,25 +151,40 @@ void loopSystem (void) {
 			}
 			break;
 
-		case 2:
-			// 予備加速
-			setTargetSpeed(5);
-			motorPwmOutSynth( tracePwm, speedPwm );
-			if (encTotalN > encMM(200)) {
-				patternTrace = 11;
-			}
-			break;
       	case 11:
 			// 目標速度
-			if (modeCurve == 0) {
-				setTargetSpeed(paramSpeed[INDEX_STRAIGHT]);
+			if (!optimalTrace){
+				// 探索走行のとき
+				if (modeCurve == 0) {
+					setTargetSpeed(paramSpeed[INDEX_STRAIGHT]);
+				} else {
+					setTargetSpeed(paramSpeed[INDEX_CURVE]);
+				}
 			} else {
-				setTargetSpeed(paramSpeed[INDEX_CURVE]);
+                // 曲率半径ごとに速度を決める
+				Rap = fabs(CurvatureRadiuses[cntMarker]);
+                if ( Rap > 1500.0F ) boostSpeed = 30;
+                if ( Rap <= 1500.0F ) boostSpeed = 25;
+                if ( Rap <= 800.0F )  boostSpeed = 20;
+                if ( Rap <= 600.0F )  boostSpeed = 18;
+                if ( Rap <= 400.0F )  boostSpeed = 15;
+                if ( Rap <= 200.0F )  boostSpeed = 13;
+                
+                // 次のマーカー区間の曲率半径が小さい時、速度を抑える
+                if ( cntMarker < numMarkerLog && fabs(CurvatureRadiuses[cntMarker+1]) <= 400.0F ) {
+                    boostSpeed = boostSpeed - 5;
+                }
+                // 最低速度
+                if ( boostSpeed < 13 ) boostSpeed = 13;
+
+                // 目標速度に設定
+                setTargetSpeed(boostSpeed);
 			}
+			
 			// ライントレース
 			motorPwmOutSynth( tracePwm, speedPwm );
 	 
-			// ゴール
+			// ゴール判定
 			if (SGmarker >= COUNT_GOAL ) {
 				goalTime = cntRun;
 				enc1 = 0;

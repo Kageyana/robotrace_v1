@@ -66,7 +66,7 @@ int16_t cnttest = 0;
 void setup( void )
 {
 	uint8_t cntLed;
-	
+
 	// ディップスイッチで項目選択
 	switch ( swValRotary ) {
 		//------------------------------------------------------------------
@@ -622,37 +622,29 @@ void setup( void )
 			lcdRowPrintf(UPROW, "LOG     ");
 			if (insertMSD) {
 				lcdRowPrintf(LOWROW, "       %d", modeLOG);
+
+				switch (patternLog) {
+					case 1:
+						// ログ解析
+						if (swValTact == SW_UP) {
+							numMarkerLog = readLog(75);
+							if (numMarkerLog > 0) {
+								lcdRowPrintf(LOWROW, " success");
+								optimalTrace = true;
+							} else {
+								lcdRowPrintf(LOWROW, "   false");
+							}
+							HAL_Delay(1000);
+						}
+						break;
+				
+					default:
+						break;
+				}
 			} else {
 				lcdRowPrintf(LOWROW, "  no MSD");
 			}
 			
-
-			
-			switch (patternLog) {
-				case 1:
-					// ログ取得開始前
-					if (swValTact == SW_UP && insertMSD) {
-						// initLog();
-						// modeLOG = true;
-						// patternLog = 2;
-
-						
-						readLog(15);
-						HAL_Delay(1000);
-					}
-					break;
-				
-				case 2:
-					// ログ取得中
-					if (swValTact == SW_DOWN) {
-						endLog();
-						patternLog = 1;
-					}
-					break;
-				
-				default:
-					break;
-				}
 			break;
 		//------------------------------------------------------------------
 		// キャリブレーション(ラインセンサ) 

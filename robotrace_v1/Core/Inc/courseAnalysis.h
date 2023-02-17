@@ -12,12 +12,14 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern float CurvatureRadiuses[100];
-extern bool  optimalTrace;
+extern float    CurvatureRadiuses[100];
+extern bool     optimalTrace;
+extern uint8_t  boostSpeed;
+extern uint8_t  numMarkerLog;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-float calcCurvatureRadius(float velo, float angvelo);
-void readLog(int logNumber);
-int cmpfloat(const void * n1, const void * n2);
+float   calcCurvatureRadius(float velo, float angvelo);
+uint8_t readLog(int logNumber);
+int     cmpfloat(const void * n1, const void * n2);
 #endif // COURSEANALYSIS_H_
