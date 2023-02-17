@@ -7,8 +7,8 @@
 //====================================//
 // モード関連
 uint8_t	patternTrace = 0;
-uint8_t modeLCD = 1;		// LCD表示可否		0:消灯			1:表示
-uint8_t modeLOG = 0;		// ログ取得状況		0:ログ停止		 1:ログ取得中
+bool    modeLCD = true;		// LCD表示可否		false:消灯		true:表示
+bool modeLOG = false;	// ログ取得状況		false:ログ停止	true:ログ取得中
 uint8_t modeCurve = 0;		// カーブ判断		0:直線			1:カーブ進入
 uint8_t modeEMC = 0;
 
@@ -27,12 +27,13 @@ uint16_t analogVal[12];		// ADC結果格納配列
 int16_t countdown;
 
 // マーカー関連
-uint8_t cMarker;
+uint8_t courseMarker;
+uint8_t beforeCourseMarker;
+uint32_t cntMarker = 0;
+
 
 // ログ関連
 uint32_t goalTime = 0;
-uint32_t j=0;
-
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemInit
 // 処理概要     初期化処理
@@ -79,7 +80,7 @@ void initSystem (void) {
 	// SDカードマウント状況指示LED
 	countdown = 1200;
 	for(i=0; i < countdown/50; i++) {
-		if (insertMSD == 1) {
+		if (insertMSD) {
 			ledOut(1);
 			HAL_Delay(countdown);
 			break;
@@ -130,9 +131,9 @@ void loopSystem (void) {
 			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
 			if ( countdown == 0 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
-				modeLCD = 0;		// LCD OFF
+				modeLCD = false;		// LCD OFF
 				// Logファイル作成
-				if (insertMSD == 1) {
+				if (insertMSD) {
 					initLog();
 				}
 				powerLinesensors(1);	// ラインセンサ ON
@@ -144,7 +145,7 @@ void loopSystem (void) {
 				angle[INDEX_Y] = 0.0f;
 				angle[INDEX_Z] = 0.0f;
 
-				modeLOG = 1;    // log start
+				modeLOG = true;    // log start
 				patternTrace = 11;
 			}
 			break;
@@ -186,7 +187,7 @@ void loopSystem (void) {
 			
 			if (encCurrentN == 0 && enc1 >= encMM(500)) {
 				endLog();
-				modeLCD = 1;
+				modeLCD = true;
 				patternTrace = 102;
 			}
 			
@@ -197,7 +198,7 @@ void loopSystem (void) {
 			powerLinesensors(0);
 
 			lcdRowPrintf(UPROW, "TIME   %d",modeEMC);
-			lcdRowPrintf(LOWROW, "  %5ds",goalTime);
+			lcdRowPrintf(LOWROW, "  %5ds",cntMarker);
 			break;
     
       	default:
@@ -213,7 +214,7 @@ void loopSystem (void) {
 ///////////////////////////////////////////////////////////////////////////
 void emargencyStop (uint8_t modeStop) { 
 	endLog();
-	modeLCD = 1;
+	modeLCD = true;
 	modeEMC = modeStop;
 	patternTrace = 102;
 }

@@ -41,8 +41,8 @@
 //====================================//
 // パターン、モード関連
 extern uint8_t  patternTrace;	// パターン番号
-extern uint8_t  modeLCD;		// LCD表示選択
-extern uint8_t  modeLOG;        // ログ取得状況
+extern bool     modeLCD;		// LCD表示選択
+extern bool     modeLOG;        // ログ取得状況
 extern uint8_t  modeCurve;	    // カーブ判断 0:直線 1:カーブ進入
 extern int16_t  countdown;
 
@@ -53,7 +53,9 @@ extern uint8_t  paramAngle[10];
 extern uint16_t analogVal[12];         // ADC結果格納配列
 
 // マーカー関連
-extern uint8_t  cMarker;
+extern uint8_t  courseMarker;
+extern uint8_t  beforeCourseMarker;
+extern uint32_t cntMarker;
 
 // ログ関連
 extern uint16_t logMarker[10000];

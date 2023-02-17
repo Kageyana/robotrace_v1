@@ -4,6 +4,7 @@
 // インクルード
 //====================================//
 #include "main.h"
+
 //====================================//
 // シンボル定義
 //====================================//
@@ -11,10 +12,12 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern float CurvatureRadius;
+extern float CurvatureRadiuses[100];
+extern bool  optimalTrace;
 //====================================//
 // プロトタイプ宣言
 //====================================//
 float calcCurvatureRadius(float velo, float angvelo);
-
+void readLog(int logNumber);
+int cmpfloat(const void * n1, const void * n2);
 #endif // COURSEANALYSIS_H_

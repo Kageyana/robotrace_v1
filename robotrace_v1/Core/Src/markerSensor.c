@@ -38,15 +38,16 @@ uint8_t checkMarker( void ) {
 
 	nowMarker = getMarkerSensor();
 
-	if ( crossLine == 1 && encTotalN - encMarker >= encMM(50)) {
+	if ( crossLine == 1 && encTotalN - encMarker >= encMM(100)) {
+		// クロスライン通過後100mm以内はマーカー検知をしない
 		crossLine = 0;
 	} else if (nowMarker >= 1 && checkStart == 0) {
-		existMarker = nowMarker;
-		checkStart = 1;
-		encMarker = encTotalN;
+		existMarker = nowMarker;// 最初に検知したマーカーを記録
+		checkStart = 1;			// 読み飛ばし判定開始
+		encMarker = encTotalN;	// 距離計測開始
 	}
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(25)) {
+		if (encTotalN - encMarker <= encMM(30)) {
 			if (nowMarker > 0 && nowMarker != existMarker) {
 				// クロスライン
 				checkStart = 0;
@@ -70,7 +71,7 @@ uint8_t checkMarker( void ) {
 // 戻り値       0:マーカなし 0x1:右 0x2:左 0x3:クロスライン
 ///////////////////////////////////////////////////////////////////////////
 void checkGoalMarker (void) {
-	if ( cMarker == RIGHTMARKER ) {
+	if ( courseMarker == RIGHTMARKER ) {
 		if (encRightMarker > encMM(600) ) {	// 2回目以降
 			SGmarker++;
 			encRightMarker = 0;

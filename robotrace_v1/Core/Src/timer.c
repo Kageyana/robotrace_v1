@@ -47,7 +47,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             cntSwitchLR++;
         }
 
-        if (modeLCD == 1) lcdShowProcess();   // LCD
+        if (modeLCD) lcdShowProcess();   // LCD
         // if ( modeCalLinesensors == 1) calibrationLinesensor();
         // 仮想センサステア計算
         getAngleSensor();
@@ -57,6 +57,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         motorControlTrace();
         motorControlSpeed();
         
+        courseMarker = checkMarker();   // マーカー検知
+        checkGoalMarker();              // ゴールマーカー処理
+
+        if (courseMarker == 2 && beforeCourseMarker == 0) {
+            cntMarker++;
+        }
+        beforeCourseMarker = courseMarker;
 
         switch(cnt5ms) {
             case 1:
@@ -70,8 +77,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                 checkCurve();
                 break;
             case 2:
-                cMarker = checkMarker();    // マーカー検知
-                checkGoalMarker();          // ゴールマーカー処理
+                
                 break;
             case 3:
                 break;
@@ -86,11 +92,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         switch(cnt10ms) {
             case 10:
-                ;      // 曲率半径を計算
                 // getCurrent();               // 電流計測
 
-                if (modeLOG == 1) writeLogBuffer(
-                    12,
+                if (modeLOG) writeLogBuffer(
+                    13,
                     cntLog,
                     getMarkerSensor(),
                     encCurrentN,
@@ -123,10 +128,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     // (int32_t)(angularVelocity[INDEX_Y]*10000),
                     // (int32_t)(angle[INDEX_X]*10000),
                     // (int32_t)(angle[INDEX_Y]*10000),
-                    (int32_t)(angle[INDEX_Z]*10000)
+                    (int32_t)(angle[INDEX_Z]*10000),
                     // rawCurrentR,
                     // rawCurrentL,
                     // (int32_t)(calcCurvatureRadius((float)encCurrentN, angularVelocity[INDEX_Z]) * 100)
+                    cntMarker
                     );
                 cnt10ms = 0;
                 break;

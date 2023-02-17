@@ -135,10 +135,6 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
-
-// MicroSD
-extern uint8_t insertMSD;
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
