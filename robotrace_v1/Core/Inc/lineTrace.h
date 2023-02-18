@@ -10,9 +10,9 @@
 //====================================//
 // シンボル定義
 //====================================//
-#define KP1		19
+#define KP1		17
 #define KI1		0
-#define KD1		71
+#define KD1		55
 
 #define KP1CURVE		8
 #define KI1CURVE		0

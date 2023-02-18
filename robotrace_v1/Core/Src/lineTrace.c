@@ -29,7 +29,7 @@ void motorControlTrace( void ) {
 	// 	Dev = ((lSensor[3]*0.2) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.2));
 	// }
 	// Dev = ((lSensor[3]*0.8) + (lSensor[4]) + (lSensor[5]*0.5)) - ((lSensor[6]*0.5) + (lSensor[7]) + (lSensor[8]*0.8));
-	Dev = ((lSensor[3]*0.5) + (lSensor[4]) + (lSensor[5]*0.9)) - ((lSensor[6]*0.9) + (lSensor[7]) + (lSensor[8]*0.5));
+	Dev = ((lSensor[3]*0.5) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.5));
 	// Dev = ((lSensor[0]*0.2) + (lSensor[1]*0.3) + (lSensor[2]*0.4) + (lSensor[3]*0.5) + (lSensor[4]) + (lSensor[5]*0.9)) - ((lSensor[6]*0.9) + (lSensor[7]) + (lSensor[8]*0.5) + (lSensor[9]*0.4) + (lSensor[10]*0.3) + (lSensor[11]*0.2));
 	kp = kp1_buff;
 	ki = ki1_buff;
@@ -49,7 +49,7 @@ void motorControlTrace( void ) {
 	iRet = iRet >> 6;				// PWMを0～1000近傍に収める
 
 	// PWMの上限の設定
-	if ( iRet >  1000 ) iRet =  1000;
+	if ( iRet >  1000 ) iRet = 1000;
 	if ( iRet <  -1000 ) iRet = -1000;
 	
 	tracePwm = iRet;

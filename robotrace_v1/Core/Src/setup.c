@@ -485,7 +485,8 @@ void setup( void )
 
 					switch( patternSensorLine ) {
 						case 1:
-							lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
+							// lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
+							lcdRowPrintf(UPROW, "L1 %5d",lSensor[5]+lSensor[6]+lSensor[7]+lSensor[8]);
 							lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
 							break;
 
@@ -621,7 +622,11 @@ void setup( void )
 		case 0x8:
 			lcdRowPrintf(UPROW, "LOG     ");
 			if (insertMSD) {
-				lcdRowPrintf(LOWROW, "       %d", modeLOG);
+				lcdRowPrintf(LOWROW, "    %4d", fileNumbers[fileIndexLog]);
+
+				dataTuningLR( &fileIndexLog, 1 );
+				if (fileNumbers[fileIndexLog] == 0) fileIndexLog = 0;
+				if (fileIndexLog < 0) fileIndexLog = endFileIndex;
 
 				switch (patternLog) {
 					case 1:

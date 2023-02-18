@@ -38,25 +38,32 @@ uint8_t checkMarker( void ) {
 
 	nowMarker = getMarkerSensor();
 
-	if ( crossLine == 1 && encTotalN - encMarker >= encMM(100)) {
+	if ( crossLine == 1 && encTotalN - encMarker >= encMM(180)) {
 		// クロスライン通過後100mm以内はマーカー検知をしない
 		crossLine = 0;
-	} else if (nowMarker >= 1 && checkStart == 0) {
+	} else if (nowMarker >= 1 && checkStart == 0 && crossLine == 0) {
 		existMarker = nowMarker;// 最初に検知したマーカーを記録
 		checkStart = 1;			// 読み飛ばし判定開始
 		encMarker = encTotalN;	// 距離計測開始
 	}
+	// クロスライン判定
+	if (checkCrossLine() == true) {
+		crossLine = 1;
+		encMarker = encTotalN;
+		checkStart = 0;
+		ret = CROSSLINE;
+	}
+	// マーカー判定
 	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(30)) {
-			if (nowMarker > 0 && nowMarker != existMarker) {
-				// クロスライン
+		if (encTotalN - encMarker <= encMM(10)) {
+			if(nowMarker == 0) {
 				checkStart = 0;
-				crossLine = 1;
-				encMarker = encTotalN;
-				ret = CROSSLINE;
+				encMarker = encMarker;
+				ret = 0;
 			}
 		} else {
 			checkStart = 0;
+			// encMarker = 0;
 			ret = existMarker;
 		}
 	}
@@ -64,7 +71,24 @@ uint8_t checkMarker( void ) {
 
 	return ret;
 }
-///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+// モジュール名 checkCrossLine
+// 処理概要  	ラインセンサのAD値を正規化する
+// 引数     	なし
+// 戻り値    	なし
+/////////////////////////////////////////////////////////////////////
+bool checkCrossLine(void) {
+	int32_t valLine;
+	bool ret = false;
+
+	valLine = lSensor[5]+lSensor[6]+lSensor[7]+lSensor[8];
+
+	if (valLine < 1000) {
+		ret = true;
+	}
+
+	return ret;
+}/////////////////////////////////////////////////////////////
 // モジュール名 checkGoalMarker
 // 処理概要     クロスラインの読み飛ばし処理を含むマーカー検知
 // 引数         なし

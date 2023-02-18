@@ -17,9 +17,9 @@
 #define INDEX_CURVE                 3
 
 // パラメータ
-#define PARAM_STRAIGHT              20
-#define PARAM_CURVEBREAK            4
-#define PARAM_STOP                  4
+#define PARAM_STRAIGHT              17
+#define PARAM_CURVEBREAK            8
+#define PARAM_STOP                  8
 #define PARAM_CURVE                 13
 
 #define PARAM_ANGLE_CURVE           17

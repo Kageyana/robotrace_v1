@@ -19,6 +19,8 @@ uint8_t   columnTitle[512] = "", formatLog[256] = "";
 uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 bool      insertMSD = false;
+
+uint16_t fileNumbers[1000], fileIndexLog, endFileIndex;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 initMicroSD
 // 処理概要     SDカードの初期化
@@ -40,6 +42,8 @@ void initMicroSD(void) {
     printf("SD_SIZE: \t%lu\r\n", total);
     free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
     printf("SD free space: \t%lu\r\n", free_space);
+
+//    getFileNumbers();
   } else {
     // マウント失敗
     insertMSD = false;
@@ -72,7 +76,9 @@ void initLog(void) {
       }
     }
   } while(fno.fname[0] != 0);
+
   f_closedir(&dir);     // directory close
+
   if (fileNumber == 0) {
     // not file
     fileNumber = 1;
@@ -180,6 +186,35 @@ void endLog(void) {
   modeLOG = false;
   while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
   f_close(&fil_W);
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 getFileNumbers
+// 処理概要     ファイル名から番号を取得し配列に格納する
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
+void getFileNumbers(void) {
+  DIR dir;                    // Directory
+  FILINFO fno;                // File Info
+  uint8_t fileName[10];
+  uint8_t *tp, i;
+
+  // 配列初期化
+  for(i=0;i<sizeof(fileNumbers)/sizeof(fileNumbers[0]);i++) fileNumbers[i] = 0;
+
+  f_opendir(&dir,"/");  // directory open
+  do {
+    f_readdir(&dir,&fno);
+    if(fno.fname[0] != 0) {           // ファイルの有無を確認
+      tp = strtok(fno.fname,".");     // 拡張子削除
+      fileNumbers[endFileIndex] = atoi(tp);        // 文字列を数値に変換
+      endFileIndex++;
+    }
+  } while(fno.fname[0] != 0);
+
+  fileIndexLog = fileNumbers[endFileIndex];
+
+  f_closedir(&dir);     // directory close
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 setLogStr

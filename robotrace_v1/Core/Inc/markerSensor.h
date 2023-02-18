@@ -23,4 +23,5 @@ extern int32_t  encMarker;
 uint8_t getMarkerSensor ( void );
 uint8_t checkMarker( void );
 void checkGoalMarker(void);
+bool checkCrossLine(void);
 #endif // MARKERSENSOR_H_
