@@ -13,10 +13,16 @@ uint8_t modeCurve = 0;		// カーブ判断		0:直線			1:カーブ進入
 uint8_t modeEMC = 0;
 
 // 速度パラメータ関連
-uint8_t paramSpeed[10] = {	PARAM_STRAIGHT, 
+uint8_t paramSpeed[20] = {	PARAM_STRAIGHT, 
 							PARAM_CURVEBREAK,
 							PARAM_STOP,
-							PARAM_CURVE
+							PARAM_CURVE,
+							PARAM_BOOST_STRAIGHT,
+							PARAM_BOOST_1500,
+							PARAM_BOOST_800,
+							PARAM_BOOST_600,
+							PARAM_BOOST_400,
+							PARAM_BOOST_200
 							};
 
 uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
@@ -163,15 +169,15 @@ void loopSystem (void) {
 			} else {
                 // 曲率半径ごとに速度を決める
 				Rap = fabs(CurvatureRadiuses[cntMarker]);
-                if ( Rap > 1500.0F ) boostSpeed = 30;
-                if ( Rap <= 1500.0F ) boostSpeed = 25;
+                if ( Rap > 1500.0F ) boostSpeed = 25;
+                if ( Rap <= 1500.0F ) boostSpeed = 22;
                 if ( Rap <= 800.0F )  boostSpeed = 20;
-                if ( Rap <= 600.0F )  boostSpeed = 18;
-                if ( Rap <= 400.0F )  boostSpeed = 15;
-                if ( Rap <= 200.0F )  boostSpeed = 13;
+                if ( Rap <= 600.0F )  boostSpeed = 16;
+                if ( Rap <= 400.0F )  boostSpeed = 14;
+                if ( Rap <= 200.0F )  boostSpeed = 12;
                 
                 // 次のマーカー区間の曲率半径が小さい時、速度を抑える
-                if ( cntMarker < numMarkerLog && fabs(CurvatureRadiuses[cntMarker+1]) <= 400.0F ) {
+                if ( cntMarker < numMarkerLog && fabs(CurvatureRadiuses[cntMarker+1]) <= 200.0F ) {
                     boostSpeed = boostSpeed - 5;
                 }
                 // 最低速度

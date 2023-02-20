@@ -43,8 +43,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                 cntMarker++;    // マーカーカウント
             }
             beforeCourseMarker = courseMarker;
+            
         }
-        // if (trace_test) 
+        
         if (patternTrace < 10 || patternTrace > 100) {
             getSwitches();  // スイッチの入力を取得
             countDown();
@@ -61,8 +62,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         // Encoder
         getEncoder();
         // PWM
-        motorControlTrace();
-        motorControlSpeed();
+        
+        if (patternTrace > 10) {
+            motorControlTrace();
+            motorControlSpeed();
+        }
 
         switch(cnt5ms) {
             case 1:

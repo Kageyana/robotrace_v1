@@ -20,7 +20,7 @@ uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 bool      insertMSD = false;
 
-uint16_t fileNumbers[1000], fileIndexLog, endFileIndex;
+int16_t fileNumbers[1000], fileIndexLog = 0, endFileIndex = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 initMicroSD
 // 処理概要     SDカードの初期化
@@ -37,13 +37,13 @@ void initMicroSD(void) {
     // lcdRowPrintf(LOWROW,"     MSD");
 
     // 空き容量を計算
-    f_getfree("", &fre_clust, &pfs); // cluster size
-    total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
-    printf("SD_SIZE: \t%lu\r\n", total);
-    free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
-    printf("SD free space: \t%lu\r\n", free_space);
+    // f_getfree("", &fre_clust, &pfs); // cluster size
+    // total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
+    // printf("SD_SIZE: \t%lu\r\n", total);
+    // free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
+    // printf("SD free space: \t%lu\r\n", free_space);
 
-//    getFileNumbers();
+    getFileNumbers();
   } else {
     // マウント失敗
     insertMSD = false;
@@ -200,7 +200,7 @@ void getFileNumbers(void) {
   uint8_t *tp, i;
 
   // 配列初期化
-  for(i=0;i<sizeof(fileNumbers)/sizeof(fileNumbers[0]);i++) fileNumbers[i] = 0;
+//  for(i=0;i<sizeof(fileNumbers)/sizeof(fileNumbers[0]);i++) fileNumbers[i] = 0;
 
   f_opendir(&dir,"/");  // directory open
   do {
@@ -208,11 +208,12 @@ void getFileNumbers(void) {
     if(fno.fname[0] != 0) {           // ファイルの有無を確認
       tp = strtok(fno.fname,".");     // 拡張子削除
       fileNumbers[endFileIndex] = atoi(tp);        // 文字列を数値に変換
-      endFileIndex++;
+      endFileIndex += 1;
     }
   } while(fno.fname[0] != 0);
+  endFileIndex -= 1;
 
-  fileIndexLog = fileNumbers[endFileIndex];
+  fileIndexLog = endFileIndex;
 
   f_closedir(&dir);     // directory close
 }

@@ -15,12 +15,24 @@
 #define INDEX_CURVEBREAK            1
 #define INDEX_STOP                  2
 #define INDEX_CURVE                 3
+#define INDEX_BOOST_STRAIGHT        4
+#define INDEX_BOOST_1500            5
+#define INDEX_BOOST_800             6
+#define INDEX_BOOST_600             7
+#define INDEX_BOOST_400             8
+#define INDEX_BOOST_200             9
 
 // パラメータ
 #define PARAM_STRAIGHT              17
 #define PARAM_CURVEBREAK            8
 #define PARAM_STOP                  8
 #define PARAM_CURVE                 13
+#define PARAM_BOOST_STRAIGHT        25
+#define PARAM_BOOST_1500            22
+#define PARAM_BOOST_800             20
+#define PARAM_BOOST_600             16
+#define PARAM_BOOST_400             14
+#define PARAM_BOOST_200             12
 
 #define PARAM_ANGLE_CURVE           17
 #define INDEX_ANGLE_CURVE           0
@@ -47,7 +59,7 @@ extern uint8_t  modeCurve;	    // カーブ判断 0:直線 1:カーブ進入
 extern int16_t  countdown;
 
 // パラメータ関連
-extern uint8_t  paramSpeed[10];
+extern uint8_t  paramSpeed[20];
 extern uint8_t  paramAngle[10];
 
 extern uint16_t analogVal[12];         // ADC結果格納配列

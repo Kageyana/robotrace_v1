@@ -15,7 +15,7 @@
 //====================================//
 extern bool   insertMSD;
 
-extern uint16_t fileNumbers[1000], fileIndexLog, endFileIndex;
+extern int16_t fileNumbers[1000], fileIndexLog, endFileIndex;
 //====================================//
 // プロトタイプ宣言
 //====================================//

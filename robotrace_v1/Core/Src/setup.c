@@ -83,8 +83,8 @@ void setup( void )
 		case 0x1:
 			dataTuningLR( &patternParameter1, 1 );
 			
-			if ( patternParameter1 == 6 ) patternParameter1 = 1;
-			else if ( patternParameter1 == 0 ) patternParameter1 = 5;
+			if ( patternParameter1 == 12 ) patternParameter1 = 1;
+			else if ( patternParameter1 == 0 ) patternParameter1 = 11;
 			
 			switch( patternParameter1 ) {
 				case 1:
@@ -120,6 +120,48 @@ void setup( void )
 					lcdRowPrintf(LOWROW, "    %4d", paramAngle[INDEX_ANGLE_CURVE]);
 					
 					dataTuningUD( &paramAngle[INDEX_ANGLE_CURVE], 1 );
+					break;
+				case 6:
+					// 2次走行_直線
+					lcdRowPrintf(UPROW, "BST STRT");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_STRAIGHT] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_STRAIGHT], 1 );
+					break;
+				case 7:
+					// 2次走行_R1500
+					lcdRowPrintf(UPROW, "BST 1500");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_1500] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_1500], 1 );
+					break;
+				case 8:
+					// 2次走行_R800
+					lcdRowPrintf(UPROW, "BST  800");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_800] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_800], 1 );
+					break;
+				case 9:
+					// 2次走行_R1600
+					lcdRowPrintf(UPROW, "BST  600");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_600] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_600], 1 );
+					break;
+				case 10:
+					// 2次走行_R400
+					lcdRowPrintf(UPROW, "BST  400");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_400] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_400], 1 );
+					break;
+				case 11:
+					// 2次走行_R200
+					lcdRowPrintf(UPROW, "BST  200");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_200] / 10);
+					
+					dataTuningUD( &paramSpeed[INDEX_BOOST_200], 1 );
 					break;
 				
 			}
@@ -625,14 +667,15 @@ void setup( void )
 				lcdRowPrintf(LOWROW, "    %4d", fileNumbers[fileIndexLog]);
 
 				dataTuningLR( &fileIndexLog, 1 );
-				if (fileNumbers[fileIndexLog] == 0) fileIndexLog = 0;
-				if (fileIndexLog < 0) fileIndexLog = endFileIndex;
+				// fileIndexLog = endFileIndex;
+				if(fileIndexLog > endFileIndex) fileIndexLog = 0;
+				if(fileIndexLog < 0) fileIndexLog = endFileIndex;
 
 				switch (patternLog) {
 					case 1:
 						// ログ解析
 						if (swValTact == SW_UP) {
-							numMarkerLog = readLog(75);
+							numMarkerLog = readLog(fileNumbers[fileIndexLog]);
 							if (numMarkerLog > 0) {
 								lcdRowPrintf(LOWROW, " success");
 								optimalTrace = true;
