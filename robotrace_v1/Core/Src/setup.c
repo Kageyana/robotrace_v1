@@ -663,7 +663,7 @@ void setup( void )
 		//------------------------------------------------------------------
 		case 0x8:
 			lcdRowPrintf(UPROW, "LOG     ");
-			if (insertMSD) {
+			if (initMSD) {
 				lcdRowPrintf(LOWROW, "    %4d", fileNumbers[fileIndexLog]);
 
 				dataTuningLR( &fileIndexLog, 1 );

@@ -68,7 +68,7 @@ void readArry( uint8_t reg, uint8_t *val2 ) {
 // 引数         なし
 // 戻り値       1: 成功 0: 失敗
 ////////////////////////////////////////////////////////////////////
-uint8_t initIMU() {
+uint8_t initICM20608() {
     uint8_t ret;
 	ret = readByte(0x75);	//IMU動作確認　0xE0が送られてくればおｋ
 	

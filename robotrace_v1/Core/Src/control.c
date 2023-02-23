@@ -7,9 +7,13 @@
 //====================================//
 // モード関連
 uint8_t	patternTrace = 0;
-bool    modeLCD = true;		// LCD表示可否		false:消灯		true:表示
-bool 	modeLOG = false;	// ログ取得状況		false:ログ停止	true:ログ取得中
-uint8_t modeCurve = 0;		// カーブ判断		0:直線			1:カーブ進入
+bool    modeLCD = true;		// LCD表示可否			false:消灯		true:表示
+bool 	modeLOG = false;	// ログ取得状況			false:ログ停止	true:ログ取得中
+bool    initMSD = false;	// microSD初期化状況	false:初期化失敗	true:初期化成功
+bool    initLCD = false;    // LCD初期化状況		false:初期化失敗	true:初期化成功
+bool    initIMU = false;    // IMU初期化状況		false:初期化失敗	true:初期化成功
+bool    initCurrent = false;    // 電流センサ初期化状況		false:初期化失敗	true:初期化成功
+uint8_t modeCurve = 0;		// カーブ判断			0:直線			1:カーブ進入
 uint8_t modeEMC = 0;
 
 // 速度パラメータ関連
@@ -57,11 +61,11 @@ void initSystem (void) {
 	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK)	Error_Handler();
 
 	// PWM
-	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
-	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK)			Error_Handler();
-	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)			Error_Handler();
-	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK)			Error_Handler();
-	if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK)			Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK) Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK) Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK) Error_Handler();
+	if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
 
 	// MAX22201 sleep mode ON
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
@@ -71,13 +75,18 @@ void initSystem (void) {
 	// Line sensor OFF
 	powerLinesensors(0);
 
-	HAL_Delay(500);
+	HAL_Delay(100);
 
-	intiLcd();  	// character display initialize
-	//initIMU();	// IMU initialize
-	initINA260();	// Current sensor initialize
-	initBNO055();	// BNO055(IMU) initialize
-	initMicroSD();  // microSD card initialize
+	initLCD = intiLcd();  	// character display initialize
+	HAL_Delay(100);
+	initCurrent = initINA260();	// Current sensor initialize
+	HAL_Delay(100);
+	initIMU = initBNO055();	// BNO055(IMU) initialize
+	HAL_Delay(100);
+	initMSD = initMicroSD();  // microSD card initialize
+	HAL_Delay(100);
+	printf("init done %d\n",initLCD+initCurrent+initIMU+initMSD);
+	printf("initLCD %d initCurrent %d initIMU %d initMSD %d\n",initLCD, initCurrent, initIMU, initMSD);
 
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
@@ -86,12 +95,14 @@ void initSystem (void) {
 	// SDカードマウント状況指示LED
 	countdown = 1200;
 	for(i=0; i < countdown/50; i++) {
-		if (insertMSD) {
+		if (initLCD+initCurrent+initIMU+initMSD >= 4) {
 			ledOut(1);
 			HAL_Delay(countdown);
 			break;
 		} else {
 			ledOut(i);
+			lcdRowPrintf(UPROW,"INIT SYS");
+			lcdRowPrintf(LOWROW,"   FALSE");
 			HAL_Delay(50);
 		}
 	}
@@ -140,7 +151,7 @@ void loopSystem (void) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;		// LCD OFF
 				// Logファイル作成
-				if (insertMSD) {
+				if (initMSD) {
 					initLog();
 				}
 				powerLinesensors(1);	// ラインセンサ ON
@@ -247,7 +258,9 @@ void emargencyStop (uint8_t modeStop) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void countDown (void) { 
-	countdown--;
+	if (countdown > 0) {
+		countdown--;
+	}
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 checkCurve

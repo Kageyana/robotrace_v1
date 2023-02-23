@@ -48,7 +48,7 @@ extern float 		PichAngleIMU;		// Pich角度
 uint8_t readByte( uint8_t );
 void writeByte( uint8_t, uint8_t);
 void readArry( uint8_t reg, uint8_t *val);
-uint8_t initIMU(void);
+uint8_t initICM20608(void);
 void caribrateIMU(void);
 void readGyroData(void);
 void readAccelData(void);

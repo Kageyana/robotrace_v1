@@ -48,28 +48,33 @@ void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
 	int16_t overpwm;
 
-    if (sPwm >= 900) {
-        sPwm = 900;
-    } else if (sPwm <= -900) {
-        sPwm = -900;
-    }
-
-    if (sPwm + tPwm > 1000 || sPwm - tPwm < -1000) {
+    if (abs(sPwm + tPwm) > 1000) {
         // 合計制御量が1000を超えたとき
         overpwm = abs(sPwm) + abs(tPwm) - 1000; // 1000を超えた分の制御量を計算
 
         // トレースの内輪側から越えた分の制御量を引く
         if (tPwm > 0) {
-            motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
-            motorpwmL = 1000 * (tPwm/abs(tPwm));
+            if (sPwm > 0) {
+                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
+                motorpwmL = sPwm + tPwm;
+            } else {
+                motorpwmR = sPwm - tPwm;
+                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+            }
         } else {
-            motorpwmR = 1000 * (tPwm/abs(tPwm));
-            motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+            if (sPwm > 0) {
+                motorpwmR = sPwm - tPwm;
+                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+            } else {
+                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
+                motorpwmL = sPwm + tPwm;
+            }
+            
         }
     } else {
         motorpwmR = sPwm - tPwm;
 	    motorpwmL = sPwm + tPwm;
     }
-
+    
 	motorPwmOut(motorpwmL, motorpwmR);
 }

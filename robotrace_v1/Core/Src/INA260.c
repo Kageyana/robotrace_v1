@@ -15,9 +15,8 @@ int16_t rawCurrentR, rawCurrentL;
 //////////////////////////////////////////////////////////////////////////
 uint16_t readINA260( uint16_t addr, uint8_t reg )
 {
-    uint8_t rx_buf[2], tx_buf[1] = { reg };
-	I2C_INA260_SEND
-    I2C_INA260_READ
+    uint8_t rx_buf[2], rx_num = 2;
+	I2C_INA260_MEMREAD
 
     return (uint16_t)( rx_buf[0] * 0x100 + rx_buf[1] );
 }
@@ -29,8 +28,8 @@ uint16_t readINA260( uint16_t addr, uint8_t reg )
 //////////////////////////////////////////////////////////////////////////
 void writeINA260( uint16_t addr, uint8_t reg, uint16_t data )
 {
-    uint8_t tx_buf[2] = { reg, data};
-	I2C_INA260_SEND2
+    uint8_t tx_buf[1] = {data}, tx_num = 1;
+	I2C_INA260_MEMWRITE
 }
 //////////////////////////////////////////////////////////////////////////
 // モジュール名 initINA260
@@ -38,14 +37,26 @@ void writeINA260( uint16_t addr, uint8_t reg, uint16_t data )
 // 引数         なし
 // 戻り値       なし
 //////////////////////////////////////////////////////////////////////////
-void initINA260( void ) {
-    // Current  conversion time = 8.244 ms
-    // Vbus     conversion time = 1.1 ms
-    writeINA260( INA260_SLAVEADDRESS_R, 0x00, 0x6b27 );
-    HAL_Delay(50);
-	writeINA260( INA260_SLAVEADDRESS_L, 0x00, 0x6b27 );
-    HAL_Delay(50);
-}
+bool initINA260( void ) {
+    if (readINA260(INA260_SLAVEADDRESS_L, 0xFE) == INA260_Manufacturer_ID && readINA260(INA260_SLAVEADDRESS_R, 0xFE) == INA260_Manufacturer_ID) {
+        // Current  conversion time = 8.244 ms
+        // Vbus     conversion time = 1.1 ms
+        writeINA260( INA260_SLAVEADDRESS_R, 0x00, 0x6b27 );
+        HAL_Delay(50);
+        writeINA260( INA260_SLAVEADDRESS_L, 0x00, 0x6b27 );
+        HAL_Delay(50);
+
+        printf("Manufacturer ID 0x%x\n",readINA260(INA260_SLAVEADDRESS_R, 0xFE));
+        printf("Manufacturer ID 0x%x\n",readINA260(INA260_SLAVEADDRESS_L, 0xFE));
+
+        printf("Die ID Register ID 0x%x\n",readINA260(INA260_SLAVEADDRESS_R, 0xFF));
+        printf("Die ID Register ID 0x%x\n",readINA260(INA260_SLAVEADDRESS_L, 0xFF));
+
+        return true;
+    } else {
+        return false;
+    }
+} 
 //////////////////////////////////////////////////////////////////////////
 // モジュール名 readCurrent
 // 処理概要     電流値の取得

@@ -13,14 +13,12 @@
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern bool   insertMSD;
-
 extern int16_t fileNumbers[1000], fileIndexLog, endFileIndex;
 //====================================//
 // プロトタイプ宣言
 //====================================//
 // MicroSD
-void initMicroSD(void);
+bool initMicroSD(void);
 void initLog(void);
 void endLog(void);
 void setLogStr(uint8_t* column, uint8_t* format);

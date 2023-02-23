@@ -10,15 +10,12 @@
 FATFS     fs;
 FIL       fil_W;
 FIL       fil_R;
-FATFS     *pfs;
-DWORD     fre_clust;
-uint32_t  total, free_space;
+
 uint8_t   columnTitle[512] = "", formatLog[256] = "";
 
 // Log 
 uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
-bool      insertMSD = false;
 
 int16_t fileNumbers[1000], fileIndexLog = 0, endFileIndex = 0;
 /////////////////////////////////////////////////////////////////////
@@ -27,30 +24,38 @@ int16_t fileNumbers[1000], fileIndexLog = 0, endFileIndex = 0;
 // 引数         なし
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
-void initMicroSD(void) {
+bool initMicroSD(void) {
+  FATFS     *pfs;
+  DWORD     fre_clust;
+  uint32_t  total, free_space;
+
   f_mount(&fs, "", 0);    // SDcardをマウント
   if (!HAL_GPIO_ReadPin(SW_MSD_GPIO_Port,SW_MSD_Pin)) {
     // マウント成功
-    insertMSD = true;
+    initMSD = true;
     printf("SD CARD mounted successfully...\r\n");
     // lcdRowPrintf(UPROW,"insert  ");
     // lcdRowPrintf(LOWROW,"     MSD");
 
     // 空き容量を計算
-    // f_getfree("", &fre_clust, &pfs); // cluster size
-    // total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
-    // printf("SD_SIZE: \t%lu\r\n", total);
-    // free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
-    // printf("SD free space: \t%lu\r\n", free_space);
+    f_getfree("", &fre_clust, &pfs); // cluster size
+    total = (uint32_t)((pfs -> n_fatent - 2) * pfs -> csize * 0.5); // total capacity
+    printf("SD_SIZE: \t%lu\r\n", total);
+    free_space = (uint32_t)(fre_clust * pfs->csize*0.5);  // empty capacity
+    printf("SD free space: \t%lu\r\n", free_space);
 
     getFileNumbers();
+
+    return true;
   } else {
     // マウント失敗
-    insertMSD = false;
+    initMSD = false;
     printf ("error in mounting SD CARD...\r\n");
     // lcdRowPrintf(UPROW,"Noinsert");
     // lcdRowPrintf(LOWROW,"     MSD");
   }
+
+  return false;
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 initLog
@@ -79,16 +84,17 @@ void initLog(void) {
 
   f_closedir(&dir);     // directory close
 
+  // ファイルナンバー作成
   if (fileNumber == 0) {
-    // not file
+    // ファイルが無いとき
     fileNumber = 1;
   } else {
-    // exist file
+    // ファイルが有るとき
     fileNumber++;         // index pulus
   }
 
-  sprintf(fileName,"%d",fileNumber);  // transrate to str
-  strcat(fileName, ".csv");           // file name create
+  sprintf(fileName,"%d",fileNumber);  // 数値を文字列に変換
+  strcat(fileName, ".csv");           // 拡張子を追加
   fresult = f_open(&fil_W, fileName, FA_OPEN_ALWAYS | FA_WRITE);  // create file 
 
   setLogStr("cntlog",       "%d");
@@ -128,7 +134,8 @@ void initLog(void) {
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
   // setLogStr("CurvatureRadius",  "%d");
-  setLogStr("cntMarker",  "%d");
+  // setLogStr("cntMarker",  "%d");
+  setLogStr("targetSpeed",   "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");

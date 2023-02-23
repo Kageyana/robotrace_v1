@@ -23,6 +23,7 @@ extern uint16_t     cntEncStop;
 //====================================//
 // プロトタイプ宣言
 //====================================//
-void motorPwmOut(int16_t pwmL, int16_t pwmR);
+void Interrupt1ms(void);
+void Interrupt100us(void);
 
 #endif // TIMER_H_

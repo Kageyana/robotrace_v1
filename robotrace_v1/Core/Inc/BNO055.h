@@ -176,8 +176,8 @@
 
 #define DEFF_TIME       0.005
 /******************************** 自動生成関数 *********************************/
-#define I2C_BNO055_SEND HAL_I2C_Master_Transmit(&hi2c1,BNO055_SLAVEADDRESS,tx_buf,tx_num,100);
-#define I2C_BNO055_READ HAL_I2C_Master_Receive(&hi2c1,BNO055_SLAVEADDRESS|0x0001,rx_buf,rx_num,100);
+#define I2C_BNO055_MEMWRITE HAL_I2C_Mem_Write(&hi2c1,BNO055_SLAVEADDRESS,reg,I2C_MEMADD_SIZE_8BIT,tx_buf,tx_num,10);
+#define I2C_BNO055_MEMREAD  HAL_I2C_Mem_Read(&hi2c1,BNO055_SLAVEADDRESS|0x0001,reg,I2C_MEMADD_SIZE_8BIT,rx_buf,rx_num,10);
 /******************************************************************************/
 //====================================//
 // グローバル変数の宣言
@@ -190,9 +190,10 @@ extern float angle[3];               // 角度
 // プロトタイプ宣言
 //====================================//
 uint8_t readBNO055(uint8_t reg);
+void readBNO055OneAxisData(uint8_t reg, uint8_t *rx_buf );
 void readBNO055AxisData(uint8_t reg, uint8_t *rx_buf);
 void writeBNO055(uint8_t reg, uint8_t data);
-void initBNO055(void);
+bool initBNO055(void);
 void getBNO055Acceleration(void);
 void getBNO055Gyro(void);
 void calcDegrees(void);

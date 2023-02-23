@@ -935,10 +935,22 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if(htim->Instance == TIM6){
+      Interrupt1ms();
+    }
+    if(htim->Instance == TIM7){
+      Interrupt100us();
+      // cntRun++;
+    }
+}
+// ADC interpput
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
   getLineSensor();
 }
 
+// printf
 int _write(int file, char *ptr, int len)
 {
   int DataIdx;

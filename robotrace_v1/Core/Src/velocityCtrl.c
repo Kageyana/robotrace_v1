@@ -40,8 +40,8 @@ void motorControlSpeed( void ) {
 	iRet = iRet >> 1;
 	
 	// PWMの上限の設定
-	if ( iRet >  1000 ) iRet = 1000;
-	if ( iRet <  -1000 ) iRet = -1000;
+	if ( iRet >  900 ) iRet = 900;
+	if ( iRet <  -900 ) iRet = -900;
 	
 	speedPwm = iRet;
 	encoderBefore = Dev;

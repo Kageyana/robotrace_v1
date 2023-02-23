@@ -20,8 +20,7 @@
 #define LOWROW      1       // 2行目
 
 /******************************** 自動生成関数 *********************************/
-#define 	I2C_LCD_SEND	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,word,2,100);
-#define	    I2C_LCD_READ	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,command,2,100);
+#define I2C_LCD_SEND	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,tx_buf,2,1);
 /******************************************************************************/
 //====================================//
 // グローバル変数の宣言
@@ -31,12 +30,12 @@
 // プロトタイプ宣言
 //====================================//
 // LCD関連
-void lcdShowProcess ( void );
-void lcdPosition ( uint8_t x ,uint8_t y );
-void intiLcd ( void );
-void lcdCMD ( uint8_t cmd );
-void lcdPut ( uint8_t data );
-int lcdPrintf ( uint8_t *format, ... );
+void lcdShowProcess (void);
+void lcdPosition (uint8_t x ,uint8_t y);
+bool intiLcd (void);
+void writeLCDCMD (uint8_t cmd);
+void writeLCDData (uint8_t data);
+int lcdPrintf (uint8_t *format, ...);
 void lcdcursol (void);
 int lcdRowPrintf (uint8_t step, char *format, ...);
 
