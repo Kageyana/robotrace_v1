@@ -22,6 +22,8 @@ uint16_t    cntEncStop = 0;
 /////////////////////////////////////////////////////////////////////
 void Interrupt1ms(void) {
     // Interrupt 1ms
+
+    // countup
     cntRun++;
     cnt5ms++;
     cnt10ms++;

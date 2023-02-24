@@ -226,68 +226,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// ゲイン調整(カーブトレース)
-		//------------------------------------------------------------------
-		case 0x3:
-			lcdRowPrintf(UPROW, "kp ki kd");
-			
-			data_select( &trace_test, SW_PUSH );
-			// PUSHでトレースON/OFF
-			if ( trace_test == 1 ) {
-				motorPwmOutSynth( tracePwm, 0 );
-				powerLinesensors(1);
-			} else {
-				motorPwmOutSynth( 0, 0 );
-				powerLinesensors(0);
-			}
-			
-			dataTuningLR( &patternGain, 1 );
-			if ( patternGain == 4 ) patternGain = 1;
-			else if ( patternGain == 0 ) patternGain = 3;
-			
-			switch( patternGain ) {
-				case 1:
-					// kp
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki1Curve_buff, kd1Curve_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
-					}
-					
-					dataTuningUD ( &kp1Curve_buff, 1 );
-					break;
-				case 2:
-					// ki
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp1Curve_buff, kd1Curve_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
-					}
-					
-					dataTuningUD ( &ki1Curve_buff, 1 );
-					break;
-				case 3:
-					// kd
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp1Curve_buff, ki1Curve_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1Curve_buff, ki1Curve_buff, kd1Curve_buff);
-					}
-					
-					dataTuningUD ( &kd1Curve_buff, 1 );
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
 		// ゲイン調整(速度)
 		//------------------------------------------------------------------
-		case 0x4:
+		case 0x3:
 			lcdRowPrintf(UPROW, "kp ki kd");
 			
 			// data_select( &trace_test, SW_PUSH );
@@ -336,129 +277,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// ゲイン調整(角速度)
-		//------------------------------------------------------------------
-		case 0x5:
-			lcdRowPrintf(UPROW, "kp ki kd");
-			
-			targetAngularVelocity = 0;
-			targetSpeed = 0;
-			data_select( &trace_test, SW_PUSH );
-			// PUSHでトレースON/OFF
-			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawRatePwm, speedPwm );
-			} else {
-				motorPwmOutSynth( 0, 0 );
-			}
-			
-			dataTuningLR( &patternGain, 1 );
-			if ( patternGain == 4 ) patternGain = 1;
-			else if ( patternGain == 0 ) patternGain = 3;
-			
-			switch( patternGain ) {
-				case 1:
-					// kp
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki3_buff, kd3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &kp3_buff, 1 );
-					break;
-				case 2:
-					// ki
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp3_buff, kd3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &ki3_buff, 1 );
-					break;
-				case 3:
-					// kd
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp3_buff, ki3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &kd3_buff, 1 );
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
-		// ゲイン調整(角度)
-		//------------------------------------------------------------------
-		case 0x6:
-			lcdRowPrintf(UPROW, "kp ki kd");
-			
-			if (cntSetup2 < 1000) 	targetAngle = 45.0;
-			else 					targetAngle = -45.0;
-			if (cntSetup2 > 2000)	cntSetup2 = 0;
-			targetSpeed = 0;
-			data_select( &trace_test, SW_PUSH );
-			// PUSHでトレースON/OFF
-			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawPwm, speedPwm );
-			} else {
-				motorPwmOutSynth( 0, 0 );
-			}
-			
-			dataTuningLR( &patternGain, 1 );
-			if ( patternGain == 4 ) patternGain = 1;
-			else if ( patternGain == 0 ) patternGain = 3;
-			
-			switch( patternGain ) {
-				case 1:
-					// kp
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki4_buff, kd4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &kp4_buff, 1 );
-					break;
-				case 2:
-					// ki
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp4_buff, kd4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &ki4_buff, 1 );
-					break;
-				case 3:
-					// kd
-					//値を点滅
-					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp4_buff, ki4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &kd4_buff, 1 );
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
 		// Motor_test
 		//------------------------------------------------------------------
-		case 0x7:
+		case 0x4:
 			dataTuningLR( &patternSensors, 1 );
 			
 			if ( patternSensors == 11 ) patternSensors = 1;
@@ -661,7 +482,7 @@ void setup( void )
 		//------------------------------------------------------------------
 		// Log
 		//------------------------------------------------------------------
-		case 0x8:
+		case 0x5:
 			lcdRowPrintf(UPROW, "LOG     ");
 			if (initMSD) {
 				lcdRowPrintf(LOWROW, "    %4d", fileNumbers[fileIndexLog]);
@@ -692,12 +513,11 @@ void setup( void )
 			} else {
 				lcdRowPrintf(LOWROW, "  no MSD");
 			}
-			
 			break;
 		//------------------------------------------------------------------
 		// キャリブレーション(ラインセンサ) 
 		//------------------------------------------------------------------
-		case 0x9:
+		case 0x6:
 			switch (patternCalibration) {
 				case 1:
 					// スイッチ入力待ち
@@ -768,6 +588,127 @@ void setup( void )
 				default:
 					break;
 				}
+			break;
+
+		//------------------------------------------------------------------
+		// ゲイン調整(角速度)
+		//------------------------------------------------------------------
+		case 0x7:
+			lcdRowPrintf(UPROW, "kp ki kd");
+			
+			targetAngularVelocity = 0;
+			targetSpeed = 0;
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+			if ( trace_test == 1 ) {
+				motorPwmOutSynth( yawRatePwm, speedPwm );
+			} else {
+				motorPwmOutSynth( 0, 0 );
+			}
+			
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
+			
+			switch( patternGain ) {
+				case 1:
+					// kp
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "   %2d %2d", ki3_buff, kd3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &kp3_buff, 1 );
+					break;
+				case 2:
+					// ki
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d    %2d", kp3_buff, kd3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &ki3_buff, 1 );
+					break;
+				case 3:
+					// kd
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d %2d   ", kp3_buff, ki3_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
+					}
+					
+					dataTuningUD ( &kd3_buff, 1 );
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// ゲイン調整(角度)
+		//------------------------------------------------------------------
+		case 0x8:
+			lcdRowPrintf(UPROW, "kp ki kd");
+			
+			if (cntSetup2 < 1000) 	targetAngle = 45.0;
+			else 					targetAngle = -45.0;
+			if (cntSetup2 > 2000)	cntSetup2 = 0;
+			targetSpeed = 0;
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+			if ( trace_test == 1 ) {
+				motorPwmOutSynth( yawPwm, speedPwm );
+			} else {
+				motorPwmOutSynth( 0, 0 );
+			}
+			
+			dataTuningLR( &patternGain, 1 );
+			if ( patternGain == 4 ) patternGain = 1;
+			else if ( patternGain == 0 ) patternGain = 3;
+			
+			switch( patternGain ) {
+				case 1:
+					// kp
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "   %2d %2d", ki4_buff, kd4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &kp4_buff, 1 );
+					break;
+				case 2:
+					// ki
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d    %2d", kp4_buff, kd4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &ki4_buff, 1 );
+					break;
+				case 3:
+					// kd
+					//値を点滅
+					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
+					if ( cntSetup1 < 250 && trace_test == 0 ) {
+						lcdRowPrintf(LOWROW, "%2d %2d   ", kp4_buff, ki4_buff);
+					} else {
+						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					}
+					
+					dataTuningUD ( &kd4_buff, 1 );
+					break;
+			}
 			break;
 
 	default:

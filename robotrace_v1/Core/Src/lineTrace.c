@@ -7,7 +7,6 @@
 //====================================//
 int16_t		tracePwm;		// 白線トレースサーボPWM
 uint8_t		kp1_buff = KP1, ki1_buff = KI1, kd1_buff = KD1;
-uint8_t		kp1Curve_buff = KP1CURVE, ki1Curve_buff = KI1CURVE, kd1Curve_buff = KD1CURVE;
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 motorControlTrace

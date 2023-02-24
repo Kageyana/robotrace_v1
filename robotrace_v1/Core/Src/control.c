@@ -118,7 +118,10 @@ void loopSystem (void) {
 	float Rap;
 
 	// 緊急停止処理
-	if (emcStop > 0) emargencyStop();
+	if (patternTrace > 10 && patternTrace < 100 && emcStop > 0) {
+		goalTime = cntRun;
+		emargencyStop();
+	}
 	
 	switch (patternTrace) {
       	case 0:
@@ -140,9 +143,9 @@ void loopSystem (void) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;		// LCD OFF
 				// Logファイル作成
-				if (initMSD) {
-					initLog();
-				}
+				if (initMSD) initLog();
+
+				lcdClear();
 				
 				// 変数初期化
 				encTotalN = 0;
@@ -205,12 +208,10 @@ void loopSystem (void) {
 				setTargetSpeed(paramSpeed[INDEX_STOP]);
 			}
 			motorPwmOutSynth( tracePwm, speedPwm );
-
 			
 			if (encCurrentN == 0 && enc1 >= encMM(500)) {
-				if (modeLOG) endLog();
-				modeLCD = true;
-				patternTrace = 102;
+				emargencyStop();
+				break;
 			}
 			
 			break;
@@ -219,8 +220,8 @@ void loopSystem (void) {
 			motorPwmOutSynth( 0, 0 );
 			powerLinesensors(0);
 
-			lcdRowPrintf(UPROW, "Time   %d",emcStop);
-			lcdRowPrintf(LOWROW, "%2d %2.1fs",cntMarker, (float)goalTime/1000);
+			lcdRowPrintf(UPROW, "T  %2.2fs",(float)goalTime/1000);
+			lcdRowPrintf(LOWROW, "M%02d E%d ",cntMarker, emcStop);
 			break;
     
       	default:
@@ -235,7 +236,6 @@ void loopSystem (void) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void emargencyStop (void) { 
-	enc1 = 0;
 	if (modeLOG) endLog();
 	modeLCD = true;
 	patternTrace = 102;

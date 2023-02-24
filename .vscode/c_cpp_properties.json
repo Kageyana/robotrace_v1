@@ -4,8 +4,6 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/robotrace_v1/Core/Inc/**",
-                "${workspaceFolder}/robotrace_v1/Core/Src/**"
             ],
             "defines": [
                 "_DEBUG",

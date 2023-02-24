@@ -33,6 +33,7 @@
 void lcdShowProcess (void);
 void lcdPosition (uint8_t x ,uint8_t y);
 bool intiLcd (void);
+void lcdClear(void);
 void writeLCDCMD (uint8_t cmd);
 void writeLCDData (uint8_t data);
 int lcdPrintf (uint8_t *format, ...);
