@@ -78,26 +78,25 @@ void initSystem (void) {
 	HAL_Delay(100);
 
 	initLCD = intiLcd();  	// character display initialize
-	HAL_Delay(100);
 	initCurrent = initINA260();	// Current sensor initialize
-	HAL_Delay(100);
 	initIMU = initBNO055();	// BNO055(IMU) initialize
-	HAL_Delay(100);
 	initMSD = initMicroSD();  // microSD card initialize
-	HAL_Delay(100);
-	printf("init done %d\n",initLCD+initCurrent+initIMU+initMSD);
+
+	printf("init done\n");
 	printf("initLCD %d initCurrent %d initIMU %d initMSD %d\n",initLCD, initCurrent, initIMU, initMSD);
 
 	// Timer interrupt
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim7);
 
-	// SDカードマウント状況指示LED
-	countdown = 1200;
+	// 初期化状況指示LED
+	countdown = 2000;
 	for(i=0; i < countdown/50; i++) {
 		if (initLCD+initCurrent+initIMU+initMSD >= 4) {
 			ledOut(1);
-			HAL_Delay(countdown);
+			lcdRowPrintf(UPROW,"INIT SYS");
+			lcdRowPrintf(LOWROW," SUCCESS");
+			HAL_Delay(1000);
 			break;
 		} else {
 			ledOut(i);
@@ -107,8 +106,6 @@ void initSystem (void) {
 		}
 	}
 	ledOut(0x0);
-	
-	
 
 	printf("boot Klic_RT_v1\n");
 }
@@ -139,7 +136,7 @@ void loopSystem (void) {
 
 			if (start) {
 				cntRun = 0;
-				countdown = 5000;		// カウントダウンスタート
+				countdown = 6000;		// カウントダウンスタート
 				patternTrace = 1;
 			}
 			break;
@@ -147,7 +144,7 @@ void loopSystem (void) {
 			// カウントダウンスタート
 			lcdRowPrintf(UPROW, "READY   ");
 			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
-			if ( countdown == 0 ) {
+			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;		// LCD OFF
 				// Logファイル作成

@@ -71,11 +71,11 @@ void Interrupt1ms(void) {
     switch(cnt5ms) {
         case 1:
             if (initIMU) {
-                getBNO055Acceleration();    // 加速度取得       
+                // getBNO055Acceleration();    // 加速度取得       
                 getBNO055Gyro();        // 角速度取得
                 calcDegrees();          // 角度計算
-                motorControlYawRate();  // 角度制御
-                motorControlYaw();
+                // motorControlYawRate();  // 角度制御
+                // motorControlYaw();
                 checkCurve();
             }
             break;
@@ -98,10 +98,9 @@ void Interrupt1ms(void) {
             if (initCurrent) {
                 // getCurrent();               // 電流計測
             }
-            
 
             if (modeLOG) writeLogBuffer(
-                14,
+                13,
                 cntLog,
                 getMarkerSensor(),
                 encCurrentN,

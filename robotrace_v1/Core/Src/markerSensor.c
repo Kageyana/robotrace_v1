@@ -6,10 +6,7 @@
 // グローバル変数の宣言
 //====================================//
 uint8_t     SGmarker = 0;
-uint8_t		nowMarker = 0, existMarker = 0, crossLine = 0;
 
-int32_t		encMarker = 0;
-uint8_t     checkStart = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
 // 処理概要     マーカーセンサの値を取得
@@ -35,45 +32,62 @@ uint8_t getMarkerSensor ( void ) {
 ///////////////////////////////////////////////////////////////////////////
 uint8_t checkMarker( void ) {
 	uint8_t ret = 0;
+	static uint8_t	checkStart, nowMarker, existMarker, crossLine;
+	static int32_t	encMarker;
 
-	nowMarker = getMarkerSensor();
-
-	if ( crossLine == 1 && encTotalN - encMarker >= encMM(180)) {
-		// クロスライン通過後100mm以内はマーカー検知をしない
-		crossLine = 0;
-	} else if (nowMarker >= 1 && checkStart == 0 && crossLine == 0) {
-		existMarker = nowMarker;// 最初に検知したマーカーを記録
-		checkStart = 1;			// 読み飛ばし判定開始
-		encMarker = encTotalN;	// 距離計測開始
-	}
 	// クロスライン判定
 	if (checkCrossLine() == true) {
 		crossLine = 1;
 		encMarker = encTotalN;
 		checkStart = 0;
 		ret = CROSSLINE;
-	}
-	// マーカー判定
-	if (checkStart == 1) {
-		if (encTotalN - encMarker <= encMM(10)) {
-			if(nowMarker == 0) {
-				checkStart = 0;
-				encMarker = encMarker;
-				ret = 0;
-			}
+	} else {
+		nowMarker = getMarkerSensor();	// マーカーセンサ値を取得
+
+		if (crossLine == 1 && encTotalN - encMarker >= encMM(180)) {
+			// クロスライン通過後180mm(ラインセンサからマーカーセンサまで80mm)以内はマーカー検知をしない
+			crossLine = 0;
 		} else {
-			checkStart = 0;
-			// encMarker = 0;
-			ret = existMarker;
-		}
+			if (nowMarker > 0 && checkStart == 0) {
+				existMarker = nowMarker;// 最初に検知したマーカーを記録
+				checkStart = 1;			// 読み飛ばし判定開始
+				encMarker = encTotalN;	// 距離計測開始
+			}
+			
+			// マーカー判定
+			if (checkStart == 1) {
+				if (encTotalN - encMarker <= encMM(40)) {
+					if (encTotalN - encMarker <= encMM(10)) {
+						// 誤検出防止判定
+						if(nowMarker == 0) {
+							ret = 100;
+						}
+					}
+					// 反対側のマーカーが反応したらクロスライン
+					if(nowMarker != existMarker && nowMarker > 0) {
+						crossLine = 1;
+						ret = CROSSLINE;
+					}
+				} else {
+					ret = existMarker;
+				}
+				// マーカー検知終了処理
+				if (ret > 0) {
+					checkStart = 0;
+					encMarker = encTotalN;
+					if (ret == 100) {
+						ret = 0;
+					}
+				}
+			}
+		}	
 	}
 	
-
 	return ret;
 }
 ///////////////////////////////////////////////////////////////////////////////////
 // モジュール名 checkCrossLine
-// 処理概要  	ラインセンサのAD値を正規化する
+// 処理概要  	ラインセンサのAD値からクロスラインを判定する
 // 引数     	なし
 // 戻り値    	なし
 /////////////////////////////////////////////////////////////////////
