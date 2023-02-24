@@ -39,15 +39,6 @@
 
 // ゴール
 #define COUNT_GOAL              2       // ゴールマーカーを読む回数
-// 緊急停止関連
-#define STOP_ANGLE_X            1
-#define STOP_ANGLE_Y            2
-#define STOP_ENCODER_CURRENT    3
-
-#define STOP_COUNT_ENCODER_CURRENT	100		// エンコーダ停止
-#define STOP_COUNT_ANGLE_X	100		// X方向の角速度変化
-#define STOP_COUNT_ANGLE_Y	100		// Y方向の角速度変化
-#define STOP_COUNT_TIME		1000	// 時間停止
 //====================================//
 // グローバル変数の宣言
 //====================================//
@@ -82,7 +73,7 @@ extern uint16_t logEncoder[10000];
 //====================================//
 void initSystem (void);
 void loopSystem (void);
-void emargencyStop (uint8_t modeStop);
+void emargencyStop (void);
 void countDown (void);
 void checkCurve(void);
 void setTargetSpeed (uint8_t paramSpeed);

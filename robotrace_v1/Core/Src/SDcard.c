@@ -134,8 +134,8 @@ void initLog(void) {
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
   // setLogStr("CurvatureRadius",  "%d");
-  // setLogStr("cntMarker",  "%d");
   setLogStr("targetSpeed",   "%d");
+  setLogStr("cntMarker",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");

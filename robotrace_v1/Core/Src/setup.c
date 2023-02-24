@@ -528,7 +528,7 @@ void setup( void )
 					switch( patternSensorLine ) {
 						case 1:
 							// lcdRowPrintf(UPROW, "L1  %4d",lSensor[0]);
-							lcdRowPrintf(UPROW, "L1 %5d",lSensor[5]+lSensor[6]+lSensor[7]+lSensor[8]);
+							lcdRowPrintf(UPROW, "L1 %5d",lSensor[5]+lSensor[6]);
 							lcdRowPrintf(LOWROW, "L2  %4d",lSensor[1]);
 							break;
 

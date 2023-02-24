@@ -27,19 +27,16 @@ void Interrupt1ms(void) {
     cnt10ms++;
     cntLog++;
     if (patternTrace > 10 && patternTrace < 100) {
-        if (fabs(angularVelocity[INDEX_X]) > 2.0f) cntAngleX++;
-        else    cntAngleX = 0;
-        if (fabs(angularVelocity[INDEX_Y]) > 2.0f) cntAngleY++;
-        else    cntAngleY = 0;
-        if (abs(encCurrentN) < 10) cntEncStop++;
-        else    cntEncStop = 0;
+        // 緊急停止処理
+        if (cntEmcStopAngleX()) emcStop = STOP_ANGLE_X;
+        if (cntEmcStopAngleY()) emcStop = STOP_ANGLE_Y;
+        if (cntEmcStopEncStop()) emcStop = STOP_ENCODER_STOP;
+        if (cntEmcStopLineSensor()) emcStop = STOP_LINESENSOR;
         
         courseMarker = checkMarker();   // マーカー検知
         checkGoalMarker();              // ゴールマーカー処理
 
-        if (courseMarker == 2 && beforeCourseMarker == 0) {
-            cntMarker++;    // マーカーカウント
-        }
+        if (courseMarker == 2 && beforeCourseMarker == 0) cntMarker++;    // マーカーカウント
         beforeCourseMarker = courseMarker;
         
     }
@@ -53,9 +50,8 @@ void Interrupt1ms(void) {
         cntSwitchLR++;
     }
 
-    if (modeLCD && initLCD) {
-        lcdShowProcess();   // LCD表示
-    }
+    if (modeLCD && initLCD) lcdShowProcess();   // LCD表示
+
     // if ( modeCalLinesensors == 1) calibrationLinesensor();
     // 仮想センサステア計算
     getAngleSensor();
@@ -63,10 +59,8 @@ void Interrupt1ms(void) {
     getEncoder();
     // PWM
     
-    // if (patternTrace > 10) {
-        motorControlTrace();
-        motorControlSpeed();
-    // }
+    motorControlTrace();
+    motorControlSpeed();
 
     switch(cnt5ms) {
         case 1:
@@ -100,7 +94,7 @@ void Interrupt1ms(void) {
             }
 
             if (modeLOG) writeLogBuffer(
-                13,
+                14,
                 cntLog,
                 getMarkerSensor(),
                 encCurrentN,
@@ -136,7 +130,8 @@ void Interrupt1ms(void) {
                 // rawCurrentR,
                 // rawCurrentL,
                 // (int32_t)(calcCurvatureRadius((float)encCurrentN, angularVelocity[INDEX_Z]) * 100)
-                targetSpeed
+                targetSpeed,
+                cntMarker
                 );
             cnt10ms = 0;
             break;

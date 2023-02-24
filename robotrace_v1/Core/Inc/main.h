@@ -60,6 +60,7 @@ extern "C" {
 #include "control.h"
 #include "courseAnalysis.h"
 #include "SDcard.h"
+#include "emergencyStop.h"
 
 /* USER CODE END Includes */
 

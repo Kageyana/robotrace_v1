@@ -14,7 +14,6 @@ bool    initLCD = false;    // LCD初期化状況		false:初期化失敗	true:�
 bool    initIMU = false;    // IMU初期化状況		false:初期化失敗	true:初期化成功
 bool    initCurrent = false;    // 電流センサ初期化状況		false:初期化失敗	true:初期化成功
 uint8_t modeCurve = 0;		// カーブ判断			0:直線			1:カーブ進入
-uint8_t modeEMC = 0;
 
 // 速度パラメータ関連
 uint8_t paramSpeed[20] = {	PARAM_STRAIGHT, 
@@ -118,17 +117,8 @@ void initSystem (void) {
 void loopSystem (void) {
 	float Rap;
 
-	if (cntAngleX > STOP_COUNT_ANGLE_Y) {
-		emargencyStop(STOP_ANGLE_X);	// X角度が一定値以上
-	} else if (cntAngleY > STOP_COUNT_ANGLE_Y) {
-		emargencyStop(STOP_ANGLE_Y);	// Y角度が一定値以上
-	} else if (cntEncStop > STOP_COUNT_ENCODER_CURRENT) {
-		emargencyStop(STOP_ENCODER_CURRENT);	// エンコーダ停止
-	}
-
-	// if (encTotalN >= encMM(19) ) {
-	// 	emargencyStop(STOP_DISTANCE);
-	// }
+	// 緊急停止処理
+	if (emcStop > 0) emargencyStop();
 	
 	switch (patternTrace) {
       	case 0:
@@ -137,13 +127,15 @@ void loopSystem (void) {
 			if (start) {
 				cntRun = 0;
 				countdown = 6000;		// カウントダウンスタート
+				powerLinesensors(1);	// ラインセンサ ON
 				patternTrace = 1;
 			}
 			break;
 		case 1:
 			// カウントダウンスタート
-			lcdRowPrintf(UPROW, "READY   ");
+			lcdRowPrintf(UPROW, "Ready   ");
 			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
+			motorPwmOutSynth( tracePwm, 0 );
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;		// LCD OFF
@@ -151,7 +143,7 @@ void loopSystem (void) {
 				if (initMSD) {
 					initLog();
 				}
-				powerLinesensors(1);	// ラインセンサ ON
+				
 				// 変数初期化
 				encTotalN = 0;
 				encRightMarker = encMM(600);
@@ -166,7 +158,7 @@ void loopSystem (void) {
 			break;
 
       	case 11:
-			// 目標速度
+			// 目標速度設定
 			if (!optimalTrace){
 				// 探索走行のとき
 				if (modeCurve == 0) {
@@ -216,7 +208,7 @@ void loopSystem (void) {
 
 			
 			if (encCurrentN == 0 && enc1 >= encMM(500)) {
-				endLog();
+				if (modeLOG) endLog();
 				modeLCD = true;
 				patternTrace = 102;
 			}
@@ -227,8 +219,8 @@ void loopSystem (void) {
 			motorPwmOutSynth( 0, 0 );
 			powerLinesensors(0);
 
-			lcdRowPrintf(UPROW, "TIME   %d",modeEMC);
-			lcdRowPrintf(LOWROW, "  %5ds",cntMarker);
+			lcdRowPrintf(UPROW, "Time   %d",emcStop);
+			lcdRowPrintf(LOWROW, "%2d %2.1fs",cntMarker, (float)goalTime/1000);
 			break;
     
       	default:
@@ -242,10 +234,10 @@ void loopSystem (void) {
 // 引数         なし
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void emargencyStop (uint8_t modeStop) { 
-	endLog();
+void emargencyStop (void) { 
+	enc1 = 0;
+	if (modeLOG) endLog();
 	modeLCD = true;
-	modeEMC = modeStop;
 	patternTrace = 102;
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -255,9 +247,7 @@ void emargencyStop (uint8_t modeStop) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void countDown (void) { 
-	if (countdown > 0) {
-		countdown--;
-	}
+	if (countdown > 0) countdown--;
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 checkCurve
