@@ -19,7 +19,7 @@
 #define KD2		0
 
 #define KP3		4
-#define KI3		110
+#define KI3		55
 #define KD3		3
 
 #define KP4		1
@@ -27,9 +27,9 @@
 #define KD4		0
 
 typedef struct {
-    uint8_t kp;
-    uint8_t ki;
-    uint8_t kd;
+    int16_t kp;
+    int16_t ki;
+    int16_t kd;
     int16_t pwm;
 } pidParam;
 

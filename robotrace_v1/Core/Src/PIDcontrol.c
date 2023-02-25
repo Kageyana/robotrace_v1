@@ -112,7 +112,7 @@ void motorControlYawRate(void) {
 	Int += Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット
 	// else if ( Int3 < -5000 ) Int3 = -5000;s
-	Dif = ( Dev - angularVelocityBefore ) * 1;	// dゲイン1/1000倍
+	Dif = ( Dev - angularVelocityBefore ) * 2;	// dゲイン1/500倍
 
 	iP = kp * Dev;	// 比例
 	iI = ki * Int;	// 積分

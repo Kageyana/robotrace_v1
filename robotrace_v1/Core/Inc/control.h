@@ -24,15 +24,15 @@
 #define COUNT_GOAL              2       // ゴールマーカーを読む回数
 
 typedef struct {
-    uint8_t straight;
-    uint8_t curve;
-    uint8_t stop;
-    uint8_t boostStraight;
-    uint8_t boost1500;
-    uint8_t boost800;
-    uint8_t boost600;
-    uint8_t boost400;
-    uint8_t boost200;
+    int16_t straight;
+    int16_t curve;
+    int16_t stop;
+    int16_t boostStraight;
+    int16_t boost1500;
+    int16_t boost800;
+    int16_t boost600;
+    int16_t boost400;
+    int16_t boost200;
 } speedParam;
 //====================================//
 // グローバル変数の宣言
