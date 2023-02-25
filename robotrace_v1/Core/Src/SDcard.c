@@ -11,13 +11,18 @@ FATFS     fs;
 FIL       fil_W;
 FIL       fil_R;
 
+// ログヘッダー
 uint8_t   columnTitle[512] = "", formatLog[256] = "";
 
-// Log 
+// ログバッファ
 uint32_t  logBuffer[BUFFER_SIZW_LOG];
 uint32_t  logIndex = 0 , sendLogNum = 0;
 
+// ログファイルナンバー
 int16_t fileNumbers[1000], fileIndexLog = 0, endFileIndex = 0;
+
+// カウンタ
+uint32_t    cntLog = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 initMicroSD
 // 処理概要     SDカードの初期化

@@ -107,7 +107,7 @@ void motorControlYawRate(void) {
 	ki = yawRateCtrl.ki;
 	kd = yawRateCtrl.kd;
 
-	Dev = angularVelocity[INDEX_Z] - targetAngularVelocity;	// 目標値-現在値
+	Dev = BNO055val.gyro.z - targetAngularVelocity;	// 目標値-現在値
 	// I成分積算
 	Int += Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット
@@ -144,7 +144,7 @@ void motorControlYaw(void) {
 	ki = yawCtrl.ki;
 	kd = yawCtrl.kd;
 
-	Dev = (angle[INDEX_Z] - targetAngle) * 10;	// 目標値-現在値
+	Dev = (BNO055val.angle.z - targetAngle) * 10;	// 目標値-現在値
 	// I成分積算
 	Int += Dev * 0.005;
 	// if ( Int3 > 5000 ) Int3 = 5000;		// I成分リミット

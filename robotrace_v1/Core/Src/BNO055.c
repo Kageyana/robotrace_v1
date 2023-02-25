@@ -2,11 +2,14 @@
 // インクルード
 //====================================//
 #include "BNO055.h"
+//====================================//
+// グローバル変数の宣言
+//====================================//
+axis accele = { 0.0F, 0.0F, 0.0F};
+axis gyro = { 0.0F, 0.0F, 0.0F};
+axis angle = { 0.0F, 0.0F, 0.0F};
+IMUval 	BNO055val;
 
-float acceleration[3] = {0,0,0};
-float angularVelocity[3] = {0,0,0};
-float angle[3] = {0,0,0};
-int16_t accelVal[3], gyroVal[3];
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readBNO055
 // 処理概要     指定レジスタの読み出し
@@ -97,14 +100,17 @@ bool initBNO055(void) {
 /////////////////////////////////////////////////////////////////////
 void getBNO055Acceleration(void) {
 	uint8_t rawData[6];
+    int16_t accelVal[3];
+
+    // 加速度の生データを取得
     readBNO055AxisData(BNO055_ACCEL_DATA_X_LSB_ADDR, rawData);
 
-    accelVal[INDEX_X] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
-    accelVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
-    accelVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
-    acceleration[INDEX_X] = (float)accelVal[INDEX_X] / ACCELELSB;
-    acceleration[INDEX_Y] = (float)accelVal[INDEX_Y] / ACCELELSB;
-    acceleration[INDEX_Z] = (float)accelVal[INDEX_Z] / ACCELELSB;  
+    accelVal[0] = (int16_t)( rawData[1] * 0x100 + rawData[0] );
+    accelVal[1] = (int16_t)( rawData[3] * 0x100 + rawData[2] );
+    accelVal[2] = (int16_t)( rawData[5] * 0x100 + rawData[4] );
+    BNO055val.accele.x = (float)accelVal[0] / ACCELELSB;
+    BNO055val.accele.y = (float)accelVal[1] / ACCELELSB;
+    BNO055val.accele.z = (float)accelVal[2] / ACCELELSB;  
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getGyro
@@ -114,21 +120,22 @@ void getBNO055Acceleration(void) {
 /////////////////////////////////////////////////////////////////////
 void getBNO055Gyro(void) {
     uint8_t rawData[6];
+    int16_t gyroVal[3];
+
+    // 角速度の生データを取得
     // readBNO055AxisData(BNO055_GYRO_DATA_X_LSB_ADDR, rawData);
 
-    // gyroVal[INDEX_X] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
-    // gyroVal[INDEX_Y] = (int16_t)( rawData[3] * 0x100) + rawData[2] ;
-    // gyroVal[INDEX_Z] = (int16_t)( rawData[5] * 0x100) + rawData[4] ;
-    // angularVelocity[INDEX_X] = (float)gyroVal[INDEX_X] / GYROLSB * 1.2;
-    // angularVelocity[INDEX_Y] = (float)gyroVal[INDEX_Y] / GYROLSB * 1.2;
-    // angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB * 1.2;
+    // gyroVal[0] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
+    // gyroVal[1] = (int16_t)( rawData[3] * 0x100) + rawData[2] ;
+    // gyroVal[2] = (int16_t)( rawData[5] * 0x100) + rawData[4] ;
+    // BNO055val.gyro.x = (float)gyroVal[0] / GYROLSB * 1.2;
+    // BNO055val.gyro.y = (float)gyroVal[1] / GYROLSB * 1.2;
+    // BNO055val.gyro.z = (float)gyroVal[2] / GYROLSB * 1.2;
 
     readBNO055OneAxisData(BNO055_GYRO_DATA_Z_LSB_ADDR, rawData);
     
-    gyroVal[INDEX_Z] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
-    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB * 1.07;
-
-    // readBNO055(BNO055_GYRO_DATA_Z_LSB_ADDR);
+    gyroVal[2] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
+    BNO055val.gyro.z = (float)gyroVal[2] / GYROLSB * 1.07;
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcDegrees
@@ -137,7 +144,7 @@ void getBNO055Gyro(void) {
 // 戻り値       なし
 /////////////////////////////////////////////////////////////////////
 void calcDegrees(void) {
-    angle[INDEX_X] += angularVelocity[INDEX_X] * DEFF_TIME;
-    angle[INDEX_Y] += angularVelocity[INDEX_Y] * DEFF_TIME;
-    angle[INDEX_Z] += angularVelocity[INDEX_Z] * DEFF_TIME;   
+    BNO055val.angle.x += BNO055val.gyro.x * DEFF_TIME;
+    BNO055val.angle.y += BNO055val.gyro.y * DEFF_TIME;
+    BNO055val.angle.z += BNO055val.gyro.z * DEFF_TIME;   
 }

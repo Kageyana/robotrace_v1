@@ -5,15 +5,8 @@
 //====================================//
 // グローバル変数の宣
 //====================================//
-uint32_t    cntRun = 0;
 uint32_t    cnt5ms = 0;
 uint32_t    cnt10ms = 0;
-uint32_t    cntLog = 0;
-// Emergency stop
-uint16_t    cntEmc1 = 0;
-uint16_t    cntAngleX = 0;
-uint16_t    cntAngleY = 0;
-uint16_t    cntEncStop = 0;
 /////////////////////////////////////////////////////////////////////
 // モジュール名 Interrupt1ms
 // 処理概要     タイマー割り込み(1ms)
@@ -92,7 +85,7 @@ void Interrupt1ms(void) {
     switch(cnt10ms) {
         case 10:
             if (initCurrent) {
-                // getCurrent();               // 電流計測
+                getCurrent();               // 電流計測
             }
 
             if (modeLOG) writeLogBuffer(
@@ -100,7 +93,7 @@ void Interrupt1ms(void) {
                 cntLog,
                 getMarkerSensor(),
                 encCurrentN,
-                (int32_t)(angularVelocity[INDEX_Z]*10000),
+                (int32_t)(BNO055val.gyro.z*10000),
                 encCurrentR,
                 encCurrentL,
                 // encTotalR,
@@ -124,14 +117,14 @@ void Interrupt1ms(void) {
                 // (int32_t)lSensorf[9],
                 // (int32_t)lSensorf[10],
                 // (int32_t)lSensorf[11],
-                // (int32_t)(angularVelocity[INDEX_X]*10000),
-                // (int32_t)(angularVelocity[INDEX_Y]*10000),
-                // (int32_t)(angle[INDEX_X]*10000),
-                // (int32_t)(angle[INDEX_Y]*10000),
-                (int32_t)(angle[INDEX_Z]*10000),
+                // (int32_t)(BNO055val.gyro.x*10000),
+                // (int32_t)(BNO055val.gyro.y*10000),
+                // (int32_t)(BNO055val.angle.x*10000),
+                // (int32_t)(BNO055val.angle.y*10000),
+                (int32_t)(BNO055val.angle.z*10000),
                 // rawCurrentR,
                 // rawCurrentL,
-                // (int32_t)(calcCurvatureRadius((float)encCurrentN, angularVelocity[INDEX_Z]) * 100)
+                // (int32_t)(calcCurvatureRadius((float)encCurrentN, BNO055val.gyro.z) * 100)
                 targetSpeed,
                 cntMarker
                 );

@@ -17,7 +17,7 @@ bool cntEmcStopAngleX(void) {
     static uint16_t cntAngleX;
 
     // 緊急停止条件
-    if (fabs(angularVelocity[INDEX_X]) > 2.0f) cntAngleX++;
+    if (fabs(BNO055val.gyro.x) > 2.0f) cntAngleX++;
     else    cntAngleX = 0;
 
     if (cntAngleX > STOP_COUNT_ANGLE_X) return true;
@@ -33,7 +33,7 @@ bool cntEmcStopAngleY(void) {
     static uint16_t cntAngleY;
 
     // 緊急停止条件
-    if (fabs(angularVelocity[INDEX_Y]) > 2.0f) cntAngleY++;
+    if (fabs(BNO055val.gyro.y) > 2.0f) cntAngleY++;
     else    cntAngleY = 0;
 
     if (cntAngleY > STOP_COUNT_ANGLE_Y) return true;

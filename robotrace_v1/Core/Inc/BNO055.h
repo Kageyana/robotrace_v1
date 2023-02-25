@@ -179,13 +179,20 @@
 #define I2C_BNO055_MEMWRITE HAL_I2C_Mem_Write(&hi2c1,BNO055_SLAVEADDRESS,reg,I2C_MEMADD_SIZE_8BIT,tx_buf,tx_num,10);
 #define I2C_BNO055_MEMREAD  HAL_I2C_Mem_Read(&hi2c1,BNO055_SLAVEADDRESS|0x0001,reg,I2C_MEMADD_SIZE_8BIT,rx_buf,rx_num,10);
 /******************************************************************************/
+typedef struct {
+    float x;
+    float y;
+    float z;
+}axis;
+typedef struct {
+    axis accele;
+    axis gyro;
+    axis angle;
+} IMUval;
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern int16_t accelVal[3], gyroVal[3];
-extern float acceleration[3];        // 加速度
-extern float angularVelocity[3];     // 角速度
-extern float angle[3];               // 角度
+extern IMUval 	BNO055val;
 //====================================//
 // プロトタイプ宣言
 //====================================//

@@ -341,15 +341,15 @@ void setup( void )
 					switch( patternSensorAccele ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_X]);
+							lcdRowPrintf(LOWROW, "    %4.0f",BNO055val.accele.x);
 							break;
 						case 2:
 							lcdRowPrintf(UPROW, "Y accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_Y]);
+							lcdRowPrintf(LOWROW, "    %4.0f",BNO055val.accele.y);
 							break;
 						case 3:
 							lcdRowPrintf(UPROW, "Z accele");
-							lcdRowPrintf(LOWROW, "    %4.0f",acceleration[INDEX_Z]);
+							lcdRowPrintf(LOWROW, "    %4.0f",BNO055val.accele.z);
 							break;
 					}
 					break;
@@ -358,34 +358,34 @@ void setup( void )
 					dataTuningUD( &patternSensorGyro, 1, 1, 6 );
 
 					if (swValTact == SW_PUSH) {
-						angle[INDEX_Z] = 0.0;
+						BNO055val.angle.z = 0.0;
 					}
 					useIMU = true;		// IMU 使用開始
 
 					switch( patternSensorGyro ) {
 						case 1:
 							lcdRowPrintf(UPROW, "X gyro  ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_X]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.gyro.x);
 							break;
 						case 2:
 							lcdRowPrintf(UPROW, "Y gyro  ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_Y]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.gyro.y);
 							break;
 						case 3:
 							lcdRowPrintf(UPROW, "Z gyro  ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angularVelocity[INDEX_Z]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.gyro.z);
 							break;
 						case 4:
 							lcdRowPrintf(UPROW, "X angle ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_X]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.angle.x);
 							break;
 						case 5:
 							lcdRowPrintf(UPROW, "Y angle ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_Y]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.angle.y);
 							break;
 						case 6:
 							lcdRowPrintf(UPROW, "Z angle ");
-							lcdRowPrintf(LOWROW, "   %3.2f",angle[INDEX_Z]);
+							lcdRowPrintf(LOWROW, "   %3.2f",BNO055val.angle.z);
 							break;
 					}
 					break;

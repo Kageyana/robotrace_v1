@@ -28,18 +28,20 @@ speedParam targetParam = {	PARAM_STRAIGHT,
 							PARAM_BOOST_200
 							};
 
-uint16_t analogVal[12];		// ADC結果格納配列
+uint16_t 	analogVal[12];		// ADC結果格納配列
 
-int16_t countdown;
+// タイマ関連
+uint32_t 	cntRun = 0;
+int16_t 	countdown;
 
 // マーカー関連
-uint8_t courseMarker;
-uint8_t beforeCourseMarker;
-uint32_t cntMarker = 0;
+uint8_t 	courseMarker;
+uint8_t 	beforeCourseMarker;
+uint32_t 	cntMarker = 0;
 
 
 // ログ関連
-uint32_t goalTime = 0;
+uint32_t 	goalTime = 0;
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 systemInit
 // 処理概要     初期化処理
@@ -149,9 +151,9 @@ void loopSystem (void) {
 				encTotalN = 0;
 				encRightMarker = encMM(600);
 				cntRun = 0;
-				angle[INDEX_X] = 0.0f;
-				angle[INDEX_Y] = 0.0f;
-				angle[INDEX_Z] = 0.0f;
+				BNO055val.angle.x = 0.0f;
+				BNO055val.angle.y = 0.0f;
+				BNO055val.angle.z = 0.0f;
 
 				modeLOG = true;    // log start
 				patternTrace = 11;
@@ -258,9 +260,9 @@ void checkCurve(void) {
 	static uint8_t 	checkStraight, checkRight, checkLeft;
 	static float	angleCurve;
 
-	angleCurve += angularVelocity[INDEX_Z] * DEFF_TIME;
+	angleCurve += BNO055val.gyro.z * DEFF_TIME;
 
-	if (fabs(angularVelocity[INDEX_Z]) < 1.9f) {
+	if (fabs(BNO055val.gyro.z) < 1.9f) {
 		// ストレート時
 		checkRight = 0;
 		checkLeft = 0;
@@ -272,7 +274,7 @@ void checkCurve(void) {
 			modeCurve = 0;
 			angleCurve = 0;
 		}
-	} else if (angularVelocity[INDEX_Z] > 2.5f) {
+	} else if (BNO055val.gyro.z > 2.5f) {
 		// 左カーブ時
 		checkStraight = 0;
 		checkRight = 0;
@@ -283,7 +285,7 @@ void checkCurve(void) {
 		if(checkLeft == 1 && encCurve > encMM(20)){
 			modeCurve = 2;
 		}
-	} else if (angularVelocity[INDEX_Z] < -2.5f) {
+	} else if (BNO055val.gyro.z < -2.5f) {
 		// 右カーブ時
 		checkStraight = 0;
 		checkLeft = 0;
