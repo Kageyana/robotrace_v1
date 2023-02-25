@@ -284,7 +284,10 @@ void setup( void )
 			
 			if ( patternSensors == 11 ) patternSensors = 1;
 			else if ( patternSensors == 0 ) patternSensors = 10;
-			powerLinesensors(1);
+
+			if(patternSensors != 8) useIMU = false;
+			if(patternSensors == 6 || patternSensors == 9 || patternSensors == 10) powerLinesensors(1);
+			else powerLinesensors(0);
 
 			switch( patternSensors ) {
 				case 1:
@@ -376,35 +379,6 @@ void setup( void )
 							lcdRowPrintf(UPROW, "R5  %4d",lSensor[7]);
 							lcdRowPrintf(LOWROW, "R6  %4d",lSensor[6]);
 							break;
-
-						// case 1:
-						// 	lcdRowPrintf(UPROW, "L1  %1.2f",lSensorf[0]);
-						// 	lcdRowPrintf(LOWROW, "L2  %1.2f",lSensorf[1]);
-						// 	break;
-
-						// case 2:
-						// 	lcdRowPrintf(UPROW, "L3  %1.2f",lSensorf[2]);
-						// 	lcdRowPrintf(LOWROW, "L4  %1.2f",lSensorf[3]);
-						// 	break;
-						// case 3:
-						// 	lcdRowPrintf(UPROW, "L5  %1.2f",lSensorf[4]);
-						// 	lcdRowPrintf(LOWROW, "L6  %1.2f",lSensorf[5]);
-						// 	break;
-						
-						// case 4:
-						// 	lcdRowPrintf(UPROW, "R1  %1.2f",lSensorf[11]);
-						// 	lcdRowPrintf(LOWROW, "R2  %1.2f",lSensorf[10]);
-						// 	break;
-
-						// case 5:
-						// 	lcdRowPrintf(UPROW, "R3  %1.2f",lSensorf[9]);
-						// 	lcdRowPrintf(LOWROW, "R4  %1.2f",lSensorf[8]);
-						// 	break;
-
-						// case 6:
-						// 	lcdRowPrintf(UPROW, "R5  %1.2f",lSensorf[7]);
-						// 	lcdRowPrintf(LOWROW, "R6  %1.2f",lSensorf[6]);
-						// 	break;
 					}
 					break;
 				case 7:
@@ -436,6 +410,7 @@ void setup( void )
 					if (swValTact == SW_PUSH) {
 						angle[INDEX_Z] = 0.0;
 					}
+					useIMU = true;		// IMU 使用開始
 
 					switch( patternSensorGyro ) {
 						case 1:

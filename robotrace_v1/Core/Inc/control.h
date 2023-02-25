@@ -49,6 +49,7 @@ extern bool     modeLOG;        // ログ取得状況
 extern bool     initMSD;        // microSD初期化状況
 extern bool     initLCD;        // LCD初期化状況
 extern bool     initIMU;        // IMU初期化状況
+extern bool     useIMU;         // IMU使用状況
 extern bool     initCurrent;    // 電流センサ初期化状況
 extern uint8_t  modeCurve;	    // カーブ判断 0:直線 1:カーブ進入
 extern int16_t  countdown;

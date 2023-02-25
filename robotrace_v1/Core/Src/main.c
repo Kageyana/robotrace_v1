@@ -140,10 +140,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    loopSystem();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    loopSystem();
   }
   /* USER CODE END 3 */
 }

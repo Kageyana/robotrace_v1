@@ -54,7 +54,7 @@ void Interrupt1ms(void) {
 
     if (modeLCD && initLCD) lcdShowProcess();   // LCD表示
 
-    // if ( modeCalLinesensors == 1) calibrationLinesensor();
+    if ( modeCalLinesensors == 1) calibrationLinesensor();
     // 仮想センサステア計算
     getAngleSensor();
     // Encoder
@@ -66,10 +66,10 @@ void Interrupt1ms(void) {
 
     switch(cnt5ms) {
         case 1:
-            if (initIMU) {
+            if (initIMU && useIMU) {
                 // getBNO055Acceleration();    // 加速度取得       
-                getBNO055Gyro();        // 角速度取得
-                calcDegrees();          // 角度計算
+                getBNO055Gyro();            // 角速度取得
+                calcDegrees();              // 角度計算
                 // motorControlYawRate();  // 角度制御
                 // motorControlYaw();
                 checkCurve();

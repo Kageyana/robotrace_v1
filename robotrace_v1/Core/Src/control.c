@@ -12,6 +12,7 @@ bool 	modeLOG = false;	// ログ取得状況			false:ログ停止	true:ログ取
 bool    initMSD = false;	// microSD初期化状況	false:初期化失敗	true:初期化成功
 bool    initLCD = false;    // LCD初期化状況		false:初期化失敗	true:初期化成功
 bool    initIMU = false;    // IMU初期化状況		false:初期化失敗	true:初期化成功
+bool    useIMU = false; 	// IMU使用状況			false:使用停止		true:使用中
 bool    initCurrent = false;    // 電流センサ初期化状況		false:初期化失敗	true:初期化成功
 uint8_t modeCurve = 0;		// カーブ判断			0:直線			1:カーブ進入
 
@@ -141,7 +142,8 @@ void loopSystem (void) {
 			motorPwmOutSynth( tracePwm, 0 );
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
-				modeLCD = false;		// LCD OFF
+				modeLCD = false;	// LCD OFF
+				useIMU = true;		// IMU 使用開始
 				// Logファイル作成
 				if (initMSD) initLog();
 
@@ -237,6 +239,7 @@ void loopSystem (void) {
 ///////////////////////////////////////////////////////////////////////////
 void emargencyStop (void) { 
 	if (modeLOG) endLog();
+	useIMU = false;		// IMU 使用開始
 	modeLCD = true;
 	patternTrace = 102;
 }

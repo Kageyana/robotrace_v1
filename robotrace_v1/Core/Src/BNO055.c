@@ -126,7 +126,7 @@ void getBNO055Gyro(void) {
     readBNO055OneAxisData(BNO055_GYRO_DATA_Z_LSB_ADDR, rawData);
     
     gyroVal[INDEX_Z] = (int16_t)( rawData[1] * 0x100) + rawData[0] ;
-    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB * 1.2;
+    angularVelocity[INDEX_Z] = (float)gyroVal[INDEX_Z] / GYROLSB * 1.07;
 
     // readBNO055(BNO055_GYRO_DATA_Z_LSB_ADDR);
 }
