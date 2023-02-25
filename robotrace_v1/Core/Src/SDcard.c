@@ -39,8 +39,6 @@ bool initMicroSD(void) {
     // マウント成功
     initMSD = true;
     printf("SD CARD mounted successfully...\r\n");
-    // lcdRowPrintf(UPROW,"insert  ");
-    // lcdRowPrintf(LOWROW,"     MSD");
 
     // 空き容量を計算
     f_getfree("", &fre_clust, &pfs); // cluster size
@@ -56,8 +54,6 @@ bool initMicroSD(void) {
     // マウント失敗
     initMSD = false;
     printf ("error in mounting SD CARD...\r\n");
-    // lcdRowPrintf(UPROW,"Noinsert");
-    // lcdRowPrintf(LOWROW,"     MSD");
   }
 
   return false;
