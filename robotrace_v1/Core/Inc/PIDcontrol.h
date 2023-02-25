@@ -14,19 +14,42 @@
 #define KI1		0
 #define KD1		55
 
-#define KP1CURVE		8
-#define KI1CURVE		0
-#define KD1CURVE		40
+#define KP2		12
+#define KI2		17
+#define KD2		0
+
+#define KP3		4
+#define KI3		110
+#define KD3		3
+
+#define KP4		1
+#define KI4		0
+#define KD4		0
+
+typedef struct {
+    uint8_t kp;
+    uint8_t ki;
+    uint8_t kd;
+    int16_t pwm;
+} pidParam;
 
 //====================================//
 // グローバル変数の宣言
 //====================================//
-extern int16_t 	tracePwm;	// 白線トレースサーボPWM
-extern uint8_t  kp1_buff, ki1_buff, kd1_buff;
-extern uint8_t	modeCalLinesensors;
+extern int16_t	targetSpeed;	// 目標速度
+extern float 	targetAngle;
+extern float    targetAngularVelocity;
+
+extern pidParam lineTraceCtrl;
+extern pidParam veloCtrl;
+extern pidParam yawRateCtrl;
+extern pidParam yawCtrl;
 //====================================//
 // プロトタイプ宣言
 //====================================//
 void motorControlTrace( void );
+void motorControlSpeed( void );
+void motorControlYawRate( void );
+void motorControlYaw( void );
 
 #endif // LINETRACE_H_

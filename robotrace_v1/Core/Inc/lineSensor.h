@@ -17,6 +17,7 @@
 extern uint16_t		lSensor[12];
 extern float        angleSensor;
 extern float		lSensorf[NUM_SENSORS];
+extern uint8_t      modeCalLinesensors;
 
 //====================================//
 // プロトタイプ宣言

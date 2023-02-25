@@ -112,8 +112,8 @@ void initLog(void) {
   setLogStr("modeCurve",    "%d");
   setLogStr("motorpwmR",  "%d");
   setLogStr("motorpwmL",  "%d");
-  // setLogStr("tracePwm",    "%d");
-  // setLogStr("speedPwm",    "%d");
+  // setLogStr("lineTraceCtrl.pwm",    "%d");
+  // setLogStr("veloCtrl.pwm",    "%d");
   // strcat(columnTitle,"lSensorf_0,");
   // strcat(columnTitle,"lSensorf_1,");
   // strcat(columnTitle,"lSensorf_2,");

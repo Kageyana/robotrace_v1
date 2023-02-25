@@ -89,79 +89,57 @@ void setup( void )
 			switch( patternParameter1 ) {
 				case 1:
 					// 通常走行速度
+					dataTuningUD( &targetParam.straight, 1 );
 					lcdRowPrintf(UPROW, "STRAIGHT");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_STRAIGHT] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_STRAIGHT], 1 );
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.straight / 10);
 					break;
 				case 2:
 					// 停止速度
+					dataTuningUD( &targetParam.curve, 1 );
 					lcdRowPrintf(UPROW, "CURVE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_CURVE] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_CURVE], 1 );
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.curve / 10);
 					break;
 				case 3:
-					// カーブブレーキ
-					lcdRowPrintf(UPROW, "BRAKE   ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_CURVEBREAK] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_CURVEBREAK], 1 );
+					// 停止速度
+					dataTuningUD( &targetParam.stop, 1 );
+					lcdRowPrintf(UPROW, "STOP    ");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.stop / 10);
 					break;
 				case 4:
-					// 停止速度
-					lcdRowPrintf(UPROW, "STOP    ");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_STOP] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_STOP], 1 );
+					// 2次走行_直線
+					dataTuningUD( &targetParam.boostStraight, 1 );
+					lcdRowPrintf(UPROW, "BST STRT");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boostStraight / 10);
 					break;
 				case 5:
-					lcdRowPrintf(UPROW, "ANGLECUR");
-					lcdRowPrintf(LOWROW, "    %4d", paramAngle[INDEX_ANGLE_CURVE]);
-					
-					dataTuningUD( &paramAngle[INDEX_ANGLE_CURVE], 1 );
+					// 2次走行_R1500
+					dataTuningUD( &targetParam.boost1500, 1 );
+					lcdRowPrintf(UPROW, "BST 1500");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boost1500 / 10);
 					break;
 				case 6:
-					// 2次走行_直線
-					lcdRowPrintf(UPROW, "BST STRT");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_STRAIGHT] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_STRAIGHT], 1 );
+					// 2次走行_R800
+					dataTuningUD( &targetParam.boost800, 1 );
+					lcdRowPrintf(UPROW, "BST  800");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boost800 / 10);
 					break;
 				case 7:
-					// 2次走行_R1500
-					lcdRowPrintf(UPROW, "BST 1500");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_1500] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_1500], 1 );
+					// 2次走行_R1600
+					dataTuningUD( &targetParam.boost600, 1 );
+					lcdRowPrintf(UPROW, "BST  600");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boost600 / 10);
 					break;
 				case 8:
-					// 2次走行_R800
-					lcdRowPrintf(UPROW, "BST  800");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_800] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_800], 1 );
+					// 2次走行_R400
+					dataTuningUD( &targetParam.boost400, 1 );
+					lcdRowPrintf(UPROW, "BST  400");
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boost400 / 10);
 					break;
 				case 9:
-					// 2次走行_R1600
-					lcdRowPrintf(UPROW, "BST  600");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_600] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_600], 1 );
-					break;
-				case 10:
-					// 2次走行_R400
-					lcdRowPrintf(UPROW, "BST  400");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_400] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_400], 1 );
-					break;
-				case 11:
 					// 2次走行_R200
+					dataTuningUD( &targetParam.boost200, 1 );
 					lcdRowPrintf(UPROW, "BST  200");
-					lcdRowPrintf(LOWROW, "  %3gm/s", (float)paramSpeed[INDEX_BOOST_200] / 10);
-					
-					dataTuningUD( &paramSpeed[INDEX_BOOST_200], 1 );
+					lcdRowPrintf(LOWROW, "  %3gm/s", (float)targetParam.boost200 / 10);
 					break;
 				
 			}
@@ -175,7 +153,7 @@ void setup( void )
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( tracePwm, 0 );
+				motorPwmOutSynth( lineTraceCtrl.pwm, 0 );
 				powerLinesensors(1);
 			} else {
 				motorPwmOutSynth( 0, 0 );
@@ -189,39 +167,27 @@ void setup( void )
 			switch( patternGain ) {
 				case 1:
 					// kp
+					dataTuningUD ( &lineTraceCtrl.kp, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki1_buff, kd1_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
-					}
-					
-					dataTuningUD ( &kp1_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "   %2d %2d", lineTraceCtrl.ki, lineTraceCtrl.kd);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
 					break;
 				case 2:
 					// ki
+					dataTuningUD ( &lineTraceCtrl.ki, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp1_buff, kd1_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
-					}
-					
-					dataTuningUD ( &ki1_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "%2d    %2d", lineTraceCtrl.kp, lineTraceCtrl.kd);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
 					break;
 				case 3:
 					// kd
+					dataTuningUD ( &lineTraceCtrl.kd, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp1_buff, ki1_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp1_buff, ki1_buff, kd1_buff);
-					}
-					
-					dataTuningUD ( &kd1_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "%2d %2d   ", lineTraceCtrl.kp, lineTraceCtrl.ki);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
 					break;
 			}
 			break;
@@ -240,39 +206,27 @@ void setup( void )
 			switch( patternGain ) {
 				case 1:
 					// kp
+					dataTuningUD ( &veloCtrl.kp, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki2_buff, kd2_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
-					}
-					
-					dataTuningUD ( &kp2_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "   %2d %2d", veloCtrl.ki, veloCtrl.kd);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
 					break;
 				case 2:
 					// ki
+					dataTuningUD ( &veloCtrl.ki, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp2_buff, kd2_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
-					}
-					
-					dataTuningUD ( &ki2_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "%2d    %2d", veloCtrl.kp, veloCtrl.kd);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
 					break;
 				case 3:
 					// kd
+					dataTuningUD ( &veloCtrl.kd, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp2_buff, ki2_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp2_buff, ki2_buff, kd2_buff);
-					}
-					
-					dataTuningUD ( &kd3_buff, 1 );
+					if ( cntSetup1 < 250 ) 	lcdRowPrintf(LOWROW, "%2d %2d   ", veloCtrl.kp, veloCtrl.ki);
+					else 					lcdRowPrintf(LOWROW, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
 					break;
 			}
 			break;
@@ -442,15 +396,14 @@ void setup( void )
 				case 9:
 					// PID制御量
 					targetSpeed = 120;
-					lcdRowPrintf(UPROW, "tra%5d",tracePwm);
-					lcdRowPrintf(LOWROW, "vel%5d",yawPwm);
+					lcdRowPrintf(UPROW, "tra%5d",lineTraceCtrl.pwm);
+					lcdRowPrintf(LOWROW, "vel%5d",yawCtrl.pwm);
 					break;
 				case 10:
 					// 仮想センサ角度
 					targetSpeed = 120;
 					lcdRowPrintf(UPROW, "Anglesen");
 					lcdRowPrintf(LOWROW, "   %3.1f", angleSensor);
-					// lcdRowPrintf(LOWROW, "      %2d", angleSensor);
 					break;
 			} // switch patternSensors
 			break;
@@ -499,7 +452,7 @@ void setup( void )
 					dataTuningUD( &calTimes, 1 );
 
 					targetSpeed = 0;
-					motorPwmOutSynth( 0, speedPwm );
+					motorPwmOutSynth( 0, veloCtrl.pwm );
 					lcdRowPrintf(UPROW, "Calibrat");
 					lcdRowPrintf(LOWROW, "%d  times", calTimes);
 					if (swValTact == SW_PUSH) {
@@ -524,7 +477,7 @@ void setup( void )
 				case 3:
 					// 前進
 					targetSpeed = 0.4*PALSE_MILLIMETER;
-					motorPwmOutSynth( 0, speedPwm );
+					motorPwmOutSynth( 0, veloCtrl.pwm );
 					if (enc1 > encMM(100)) {
 						cntSetup1 = 0;
 						enc1 = 0;
@@ -535,7 +488,7 @@ void setup( void )
 				case 4:
 					// 後退
 					targetSpeed = -0.4*PALSE_MILLIMETER;
-					motorPwmOutSynth( 0, speedPwm );
+					motorPwmOutSynth( 0, veloCtrl.pwm );
 					if (enc1 < -encMM(100)) {
 						modeCalLinesensors = 0;		// キャリブレーション停止
 						powerLinesensors(0);
@@ -547,7 +500,7 @@ void setup( void )
 				case 5:
 					// 停止
 					targetSpeed = 0;
-					motorPwmOutSynth( 0, speedPwm );
+					motorPwmOutSynth( 0, veloCtrl.pwm );
 					if (abs(encCurrentN) < 2) {
 						calTimesNow++;
 						enc1 = 0;
@@ -576,7 +529,7 @@ void setup( void )
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawRatePwm, speedPwm );
+				motorPwmOutSynth( yawRateCtrl.pwm, veloCtrl.pwm );
 			} else {
 				motorPwmOutSynth( 0, 0 );
 			}
@@ -588,39 +541,27 @@ void setup( void )
 			switch( patternGain ) {
 				case 1:
 					// kp
+					dataTuningUD ( &yawRateCtrl.kp, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki3_buff, kd3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &kp3_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "   %2d %2d", yawRateCtrl.ki, yawRateCtrl.kd);
+					else 										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawRateCtrl.kp, yawRateCtrl.ki, yawRateCtrl.kd);
 					break;
 				case 2:
 					// ki
+					dataTuningUD ( &yawRateCtrl.ki, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp3_buff, kd3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &ki3_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "%2d    %2d", yawRateCtrl.kp, yawRateCtrl.kd);
+					else 										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawRateCtrl.kp, yawRateCtrl.ki, yawRateCtrl.kd);
 					break;
 				case 3:
 					// kd
+					dataTuningUD ( &yawRateCtrl.kd, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp3_buff, ki3_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp3_buff, ki3_buff, kd3_buff);
-					}
-					
-					dataTuningUD ( &kd3_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "%2d %2d   ", yawRateCtrl.kp, yawRateCtrl.ki);
+					else										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawRateCtrl.kp, yawRateCtrl.ki, yawRateCtrl.kd);
 					break;
 			}
 			break;
@@ -637,7 +578,7 @@ void setup( void )
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawPwm, speedPwm );
+				motorPwmOutSynth( yawCtrl.pwm, veloCtrl.pwm );
 			} else {
 				motorPwmOutSynth( 0, 0 );
 			}
@@ -649,39 +590,27 @@ void setup( void )
 			switch( patternGain ) {
 				case 1:
 					// kp
+					dataTuningUD ( &yawCtrl.kp, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "   %2d %2d", ki4_buff, kd4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &kp4_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "   %2d %2d", yawCtrl.ki, yawCtrl.kd);
+					else 										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawCtrl.kp, yawCtrl.ki, yawCtrl.kd);
 					break;
 				case 2:
 					// ki
+					dataTuningUD ( &yawCtrl.ki, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d    %2d", kp4_buff, kd4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &ki4_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "%2d    %2d", yawCtrl.kp, yawCtrl.kd);
+					else 										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawCtrl.kp, yawCtrl.ki, yawCtrl.kd);
 					break;
 				case 3:
 					// kd
+					dataTuningUD ( &yawCtrl.kd, 1 );
 					//値を点滅
 					if ( cntSetup1 >= 500 ) cntSetup1 = 0;
-					if ( cntSetup1 < 250 && trace_test == 0 ) {
-						lcdRowPrintf(LOWROW, "%2d %2d   ", kp4_buff, ki4_buff);
-					} else {
-						lcdRowPrintf(LOWROW, "%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
-					}
-					
-					dataTuningUD ( &kd4_buff, 1 );
+					if ( cntSetup1 < 250 && trace_test == 0 ) 	lcdRowPrintf(LOWROW, "%2d %2d   ", yawCtrl.kp, yawCtrl.ki);
+					else 										lcdRowPrintf(LOWROW, "%2d %2d %2d", yawCtrl.kp, yawCtrl.ki, yawCtrl.kd);
 					break;
 			}
 			break;
@@ -786,99 +715,4 @@ void dataTuningLR ( void *data, uint8_t add )
 		}
 		cntSwitchLR = 0;
 	}
-}
-/////////////////////////////////////////////////////////////////////////////////
-// モジュール名 fixSpeedSetting
-// 処理概要     速度パラメータを固定値にする
-// 引数         なし
-// 戻り値       0: 速度一定にしない　1: 速度一定にする
-/////////////////////////////////////////////////////////////////////////////////
-uint8_t fixSpeedSetting ( void )
-{
-	uint8_t ret = 0;
-	
-	// if ( setting1meter == 1 ) {
-	// 	speed_straight		= 10;
-	// 	speed_curve_brake	= 10;
-	// 	speed_curve_r600	= 10;
-	// 	speed_curve_r450	= 10;
-	// 	speed_curve_straight	= 10;
-		
-	// 	speed_crossline		= 10;
-	// 	speed_ckank_trace	= 10;
-	// 	speed_rightclank_curve	= 10;
-	// 	speed_rightclank_escape	= 10;
-	// 	speed_leftclank_curve	= 10;
-	// 	speed_leftclank_escape	= 10;
-		
-	// 	speed_halfine		= 10;
-	// 	speed_rightchange_trace = 10;
-	// 	speed_rightchange_curve	= 10;
-	// 	speed_rightchange_escape= 10;
-	// 	speed_leftchange_trace 	= 10;
-	// 	speed_leftchange_curve	= 10;
-	// 	speed_leftchange_escape	= 10;
-		
-	// 	speed_slope_brake	= 10;
-	// 	speed_slope_trace	= 10;
-		
-	// 	fixSpeed = 1;
-	// 	ret = 1;
-	// } else if ( setting2meter == 1 ) {
-	// 	speed_straight		= 20;
-	// 	speed_curve_brake	= 20;
-	// 	speed_curve_r600	= 20;
-	// 	speed_curve_r450	= 20;
-	// 	speed_curve_straight	= 20;
-		
-	// 	speed_crossline		= 20;
-	// 	speed_ckank_trace	= 16;
-	// 	speed_rightclank_curve	= 16;
-	// 	speed_rightclank_escape	= 20;
-	// 	speed_leftclank_curve	= 16;
-	// 	speed_leftclank_escape	= 20;
-		
-	// 	speed_halfine		= 20;
-	// 	speed_rightchange_trace = 20;
-	// 	speed_rightchange_curve	= 20;
-	// 	speed_rightchange_escape= 20;
-	// 	speed_leftchange_trace 	= 20;
-	// 	speed_leftchange_curve	= 20;
-	// 	speed_leftchange_escape	= 20;
-		
-	// 	speed_slope_brake	= 20;
-	// 	speed_slope_trace	= 20;
-		
-	// 	fixSpeed = 1;
-	// 	ret = 1;
-	// } else if ( setting3meter == 1 ) {
-	// 	speed_straight		= 30;
-	// 	speed_curve_brake	= 30;
-	// 	speed_curve_r600	= 30;
-	// 	speed_curve_r450	= 30;
-	// 	speed_curve_straight	= 30;
-		
-	// 	speed_crossline		= 25;
-	// 	speed_ckank_trace	= 16;
-	// 	speed_rightclank_curve	= 16;
-	// 	speed_rightclank_escape	= 30;
-	// 	speed_leftclank_curve	= 16;
-	// 	speed_leftclank_escape	= 30;
-		
-	// 	speed_halfine		= 30;
-	// 	speed_rightchange_trace = 30;
-	// 	speed_rightchange_curve	= 30;
-	// 	speed_rightchange_escape= 30;
-	// 	speed_leftchange_trace 	= 30;
-	// 	speed_leftchange_curve	= 30;
-	// 	speed_leftchange_escape	= 30;
-		
-	// 	speed_slope_brake	= 20;
-	// 	speed_slope_trace	= 30;
-		
-	// 	fixSpeed = 1;
-	// 	ret = 1;
-	// }
-	
-	return ret;
 }

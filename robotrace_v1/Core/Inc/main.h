@@ -50,17 +50,15 @@ extern "C" {
 #include "lineSensor.h"
 #include "INA260.h"
 
-#include "lineTrace.h"
-#include "velocityCtrl.h"
-#include "yawRateCtrl.h"
-#include "yawCtrl.h"
+#include "PIDcontrol.h"
 
 #include "timer.h"
 #include "setup.h"
-#include "control.h"
 #include "courseAnalysis.h"
 #include "SDcard.h"
 #include "emergencyStop.h"
+
+#include "control.h"
 
 /* USER CODE END Includes */
 
@@ -121,6 +119,7 @@ void Error_Handler(void);
 #define LED_B_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern DMA_HandleTypeDef hdma_adc1;
@@ -136,6 +135,7 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

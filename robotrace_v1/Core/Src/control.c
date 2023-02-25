@@ -17,19 +17,15 @@ bool    initCurrent = false;    // 電流センサ初期化状況		false:初期�
 uint8_t modeCurve = 0;		// カーブ判断			0:直線			1:カーブ進入
 
 // 速度パラメータ関連
-uint8_t paramSpeed[20] = {	PARAM_STRAIGHT, 
-							PARAM_CURVEBREAK,
-							PARAM_STOP,
+speedParam targetParam = {	PARAM_STRAIGHT, 
 							PARAM_CURVE,
+							PARAM_STOP,
 							PARAM_BOOST_STRAIGHT,
 							PARAM_BOOST_1500,
 							PARAM_BOOST_800,
 							PARAM_BOOST_600,
 							PARAM_BOOST_400,
 							PARAM_BOOST_200
-							};
-
-uint8_t paramAngle[10] = {	PARAM_ANGLE_CURVE
 							};
 
 uint16_t analogVal[12];		// ADC結果格納配列
@@ -139,7 +135,7 @@ void loopSystem (void) {
 			// カウントダウンスタート
 			lcdRowPrintf(UPROW, "Ready   ");
 			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
-			motorPwmOutSynth( tracePwm, 0 );
+			motorPwmOutSynth( lineTraceCtrl.pwm, 0 );
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;	// LCD OFF
@@ -167,9 +163,9 @@ void loopSystem (void) {
 			if (!optimalTrace){
 				// 探索走行のとき
 				if (modeCurve == 0) {
-					setTargetSpeed(paramSpeed[INDEX_STRAIGHT]);
+					setTargetSpeed(targetParam.straight);
 				} else {
-					setTargetSpeed(paramSpeed[INDEX_CURVE]);
+					setTargetSpeed(targetParam.curve);
 				}
 			} else {
                 // 曲率半径ごとに速度を決める
@@ -193,7 +189,7 @@ void loopSystem (void) {
 			}
 			
 			// ライントレース
-			motorPwmOutSynth( tracePwm, speedPwm );
+			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm );
 	 
 			// ゴール判定
 			if (SGmarker >= COUNT_GOAL ) {
@@ -207,9 +203,9 @@ void loopSystem (void) {
 			if (enc1 >= encMM(500)) {
 				setTargetSpeed(0);
 			} else {
-				setTargetSpeed(paramSpeed[INDEX_STOP]);
+				setTargetSpeed(targetParam.stop);
 			}
-			motorPwmOutSynth( tracePwm, speedPwm );
+			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm );
 			
 			if (encCurrentN == 0 && enc1 >= encMM(500)) {
 				emargencyStop();
@@ -307,6 +303,6 @@ void checkCurve(void) {
 // 引数         目標速度の整数倍値
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void setTargetSpeed (uint8_t paramSpeed) {
-	targetSpeed = (float)paramSpeed*PALSE_MILLIMETER/10;
+void setTargetSpeed (uint8_t speed) {
+	targetSpeed = (float)speed*PALSE_MILLIMETER/10;
 }

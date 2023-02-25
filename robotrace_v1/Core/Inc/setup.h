@@ -38,6 +38,5 @@ extern uint8_t trace_test;
 // プロトタイプ宣言
 //======================================//
 void setup(void);
-uint8_t fixSpeedSetting ( void );
 
 #endif /* SETUP_H_ */
