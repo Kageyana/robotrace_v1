@@ -207,16 +207,16 @@ void getFileNumbers(void) {
   uint8_t fileName[10];
   uint8_t *tp, i;
 
-  // 配列初期化
-//  for(i=0;i<sizeof(fileNumbers)/sizeof(fileNumbers[0]);i++) fileNumbers[i] = 0;
-
   f_opendir(&dir,"/");  // directory open
   do {
     f_readdir(&dir,&fno);
     if(fno.fname[0] != 0) {           // ファイルの有無を確認
-      tp = strtok(fno.fname,".");     // 拡張子削除
-      fileNumbers[endFileIndex] = atoi(tp);        // 文字列を数値に変換
-      endFileIndex += 1;
+      if (strstr(fno.fname,".CSV") != NULL) {
+        // csvファイルのとき
+        tp = strtok(fno.fname,".");     // 拡張子削除
+        fileNumbers[endFileIndex] = atoi(tp);        // 文字列を数値に変換
+        endFileIndex += 1;
+      }
     }
   } while(fno.fname[0] != 0);
   endFileIndex -= 1;

@@ -47,12 +47,13 @@ uint8_t readLog(int logNumber) {
     fresult = f_open(&fil_Read, fileName, FA_OPEN_ALWAYS | FA_READ);  // csvファイルを開く
 
     if (fresult == FR_OK) {
+        printf("Analysis start\n");
+
         // ヘッダーの取得
         TCHAR     header[256];
         uint8_t   formatLogRead[256] = "", *tmpStr;
 
         f_gets(header,256,&fil_Read);
-        printf("%s",header);
         tmpStr = header;
         while(*tmpStr != '\0') {
             if (*tmpStr == (uint8_t)',') {
@@ -60,7 +61,6 @@ uint8_t readLog(int logNumber) {
             }
             tmpStr++;
         }
-        // printf("%s\n",formatLogRead);
 
         // ログデータの取得
         TCHAR     log[512];

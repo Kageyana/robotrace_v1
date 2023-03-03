@@ -10,15 +10,15 @@
 // 機体諸元
 
 // 速度パラメータ関連
-#define PARAM_STRAIGHT              17
-#define PARAM_CURVE                 13
+#define PARAM_STRAIGHT              10
+#define PARAM_CURVE                 10
 #define PARAM_STOP                  8
-#define PARAM_BOOST_STRAIGHT        23
-#define PARAM_BOOST_1500            20
-#define PARAM_BOOST_800             18
-#define PARAM_BOOST_600             14
-#define PARAM_BOOST_400             14
-#define PARAM_BOOST_200             12
+#define PARAM_BOOST_STRAIGHT        20
+#define PARAM_BOOST_1500            18
+#define PARAM_BOOST_800             15
+#define PARAM_BOOST_600             13
+#define PARAM_BOOST_400             12
+#define PARAM_BOOST_200             10
 
 // ゴール
 #define COUNT_GOAL              2       // ゴールマーカーを読む回数

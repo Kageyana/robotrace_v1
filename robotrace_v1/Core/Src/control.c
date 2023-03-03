@@ -177,11 +177,11 @@ void loopSystem (void) {
                 if ( Rap <= 800.0F )  boostSpeed = 20;
                 if ( Rap <= 600.0F )  boostSpeed = 16;
                 if ( Rap <= 400.0F )  boostSpeed = 14;
-                if ( Rap <= 200.0F )  boostSpeed = 12;
+                if ( Rap <= 200.0F )  boostSpeed = 13;
                 
                 // 次のマーカー区間の曲率半径が小さい時、速度を抑える
                 if ( cntMarker < numMarkerLog && fabs(CurvatureRadiuses[cntMarker+1]) <= 200.0F ) {
-                    boostSpeed = boostSpeed - 5;
+                    boostSpeed = boostSpeed - 4;
                 }
                 // 最低速度
                 if ( boostSpeed < 13 ) boostSpeed = 13;

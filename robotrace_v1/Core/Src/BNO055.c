@@ -75,17 +75,11 @@ bool initBNO055(void) {
         // ジャイロ
         writeBNO055(BNO055_GYR_CONFIG_0_ADDR, 0x00);  // 2000dps 523Hz
 
-        // 書き込んだパラメータを確認
-        printf("0x%x\n",readBNO055(BNO055_GYR_CONFIG_0_ADDR));
-
         // モード変更
         writeBNO055(BNO055_PAGE_ID_ADDR, 0x00);     // ページ0に変更
         writeBNO055(BNO055_UNIT_SEL_ADDR, 0x82);    // 角速度の単位を[rad/s]に変更
         writeBNO055(BNO055_OPR_MODE_ADDR, 0x05);    // 加速度、角速度計測モードに変更
         HAL_Delay(50);    //変更まで待つ
-
-        // 書き込んだパラメータを確認
-        printf("0x%x\n",readBNO055(BNO055_UNIT_SEL_ADDR));
 
         return true;
     } else {
