@@ -75,8 +75,8 @@ void writeLCDCMD( uint8_t cmd ) {
 // 戻り値       なし
 //////////////////////////////////////////////////////////////////////////
 void lcdClear(void) {
-    lcdRowPrintf(UPROW, "        ");
-	lcdRowPrintf(LOWROW, "        ");
+    lcdRowPrintf(UPPER, "        ");
+	lcdRowPrintf(LOWER, "        ");
     // writeLCDCMD(0x01);
 }
 //////////////////////////////////////////////////////////////////////////
@@ -197,9 +197,9 @@ int lcdRowPrintf(uint8_t step, char *format, ...) {
     volatile uint8_t    *p;
     volatile uint16_t     ret = 0;
 
-	if(step == UPROW){
+	if(step == UPPER){
 		lcdPosition( 0, 0 );
-	} else if (step == LOWROW){
+	} else if (step == LOWER){
 		lcdPosition( 0, 1 );
 	}
 

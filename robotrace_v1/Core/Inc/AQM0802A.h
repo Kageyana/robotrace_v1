@@ -16,8 +16,8 @@
 #define LCD_MAX_Y	2		// 表示文字数 縦  2 or  4
 #define RSBIT0		0x00	// コマンド送信ビット
 #define RSBIT1		0x40	// データ送信ビット
-#define UPROW       0       // 1行目
-#define LOWROW      1       // 2行目
+#define UPPER       0       // 1行目
+#define LOWER      1       // 2行目
 
 /******************************** 自動生成関数 *********************************/
 #define I2C_LCD_SEND	HAL_I2C_Master_Transmit(&hi2c1,LCD_SLAVEADDRESS,tx_buf,2,1);

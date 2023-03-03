@@ -92,14 +92,14 @@ void initSystem (void) {
 	for(i=0; i < countdown/50; i++) {
 		if (initLCD+initCurrent+initIMU+initMSD >= 4) {
 			ledOut(1);
-			lcdRowPrintf(UPROW,"INIT SYS");
-			lcdRowPrintf(LOWROW," SUCCESS");
+			lcdRowPrintf(UPPER,"INIT SYS");
+			lcdRowPrintf(LOWER," SUCCESS");
 			HAL_Delay(1000);
 			break;
 		} else {
 			ledOut(i);
-			lcdRowPrintf(UPROW,"INIT SYS");
-			lcdRowPrintf(LOWROW,"   FALSE");
+			lcdRowPrintf(UPPER,"INIT SYS");
+			lcdRowPrintf(LOWER,"   FALSE");
 			HAL_Delay(50);
 		}
 	}
@@ -135,8 +135,8 @@ void loopSystem (void) {
 			break;
 		case 1:
 			// カウントダウンスタート
-			lcdRowPrintf(UPROW, "Ready   ");
-			lcdRowPrintf(LOWROW, "       %d",countdown/1000);
+			lcdRowPrintf(UPPER, "Ready   ");
+			lcdRowPrintf(LOWER, "       %d",countdown/1000);
 			motorPwmOutSynth( lineTraceCtrl.pwm, 0 );
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
@@ -220,8 +220,8 @@ void loopSystem (void) {
 			motorPwmOutSynth( 0, 0 );
 			powerLinesensors(0);
 
-			lcdRowPrintf(UPROW, "T  %2.2fs",(float)goalTime/1000);
-			lcdRowPrintf(LOWROW, "M%02d E%d ",cntMarker, emcStop);
+			lcdRowPrintf(UPPER, "T  %2.2fs",(float)goalTime/1000);
+			lcdRowPrintf(LOWER, "M%02d E%d ",cntMarker, emcStop);
 			break;
     
       	default:
