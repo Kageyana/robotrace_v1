@@ -85,7 +85,7 @@ void Interrupt1ms(void) {
     switch(cnt10ms) {
         case 10:
             if (initCurrent) {
-                getCurrent();               // 電流計測
+                // getCurrent();               // 電流計測
             }
 
             if (modeLOG) {
@@ -95,11 +95,11 @@ void Interrupt1ms(void) {
                     getMarkerSensor(),
                     encCurrentN,
                     (int32_t)(BNO055val.gyro.z*10000),
+                    encTotalN,
                     encCurrentR,
                     encCurrentL,
                     // encTotalR,
                     // encTotalL,
-                    encTotalN,
                     (int32_t)(angleSensor*10),
                     modeCurve,
                     motorpwmR,
@@ -125,7 +125,7 @@ void Interrupt1ms(void) {
                     (int32_t)(BNO055val.angle.z*10000),
                     // rawCurrentR,
                     // rawCurrentL,
-                    // (int32_t)(calcCurvatureRadius((float)encCurrentN, BNO055val.gyro.z) * 100)
+                    // (int32_t)(calcROC((float)encCurrentN, BNO055val.gyro.z) * 100)
                     targetSpeed,
                     cntMarker
                 );

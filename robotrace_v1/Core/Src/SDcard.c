@@ -102,13 +102,13 @@ void initLog(void) {
   setLogStr("markerSensor",  "%d");
   setLogStr("encCurrentN",  "%d");
   setLogStr("gyroVal_Z",   "%d");
+  setLogStr("encTotalN",    "%d");
 
   // setLogStr("patternTrace", "%d");
   setLogStr("encCurrentR",  "%d");
   setLogStr("encCurrentL",  "%d");  
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
-  setLogStr("encTotalN",    "%d");
   setLogStr("angleSensor",  "%d");
   setLogStr("modeCurve",    "%d");
   setLogStr("motorpwmR",  "%d");

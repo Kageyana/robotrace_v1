@@ -417,13 +417,17 @@ void setup( void )
 					case 1:
 						// ログ解析
 						if (swValTact == SW_UP) {
-							numMarkerLog = readLog(fileNumbers[fileIndexLog]);
+							numMarkerLog = readLogMarker(fileNumbers[fileIndexLog]);
 							if (numMarkerLog > 0) {
 								lcdRowPrintf(LOWER, " success");
 								optimalTrace = true;
 							} else {
 								lcdRowPrintf(LOWER, "   false");
 							}
+							HAL_Delay(1000);
+						} else if (swValTact == SW_DOWN) {
+							readLogDistance(fileNumbers[fileIndexLog]);
+							lcdRowPrintf(LOWER, " success");
 							HAL_Delay(1000);
 						}
 						break;

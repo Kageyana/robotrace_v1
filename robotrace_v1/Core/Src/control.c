@@ -170,17 +170,9 @@ void loopSystem (void) {
 					setTargetSpeed(targetParam.curve);
 				}
 			} else {
-                // 曲率半径ごとに速度を決める
-				Rap = fabs(CurvatureRadiuses[cntMarker]);
-                if ( Rap > 1500.0F ) boostSpeed = 25;
-                if ( Rap <= 1500.0F ) boostSpeed = 22;
-                if ( Rap <= 800.0F )  boostSpeed = 20;
-                if ( Rap <= 600.0F )  boostSpeed = 16;
-                if ( Rap <= 400.0F )  boostSpeed = 14;
-                if ( Rap <= 200.0F )  boostSpeed = 13;
-                
+				boostSpeed = boostSpeeds[cntMarker];
                 // 次のマーカー区間の曲率半径が小さい時、速度を抑える
-                if ( cntMarker < numMarkerLog && fabs(CurvatureRadiuses[cntMarker+1]) <= 200.0F ) {
+                if ( cntMarker < numMarkerLog && fabs(ROCmarker[cntMarker+1]) <= 200.0F ) {
                     boostSpeed = boostSpeed - 4;
                 }
                 // 最低速度
