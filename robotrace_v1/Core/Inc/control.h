@@ -10,8 +10,8 @@
 // 機体諸元
 
 // 速度パラメータ関連
-#define PARAM_STRAIGHT              10
-#define PARAM_CURVE                 10
+#define PARAM_STRAIGHT              15
+#define PARAM_CURVE                 15
 #define PARAM_STOP                  8
 #define PARAM_BOOST_STRAIGHT        20
 #define PARAM_BOOST_1500            18

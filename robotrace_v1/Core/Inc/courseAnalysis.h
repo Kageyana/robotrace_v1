@@ -11,13 +11,18 @@
 #define ANALYSISBUFFSIZE    256
 #define DELTATIME           0.01F
 #define CALCDISTANCE        30
+#define MACHINEACCELE       2.5F
+#define MACHINEDECREACE     -2.5F
 
 typedef struct {
-    int32_t distance;
+    int32_t time;
     uint8_t marker;
+    float   velocity;
+    float   angularVelocity;
+    int32_t distance;
     float   ROC;
-    uint8_t speed;
-}log;
+    float   boostSpeed;
+} AnalysisData;
 //====================================//
 // グローバル変数の宣言
 //====================================//

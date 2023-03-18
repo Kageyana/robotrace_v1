@@ -56,14 +56,15 @@ void initSystem (void) {
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
 	// ADC
-	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK)	Error_Handler();
+	// if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK)	Error_Handler();
+	if (HAL_ADC_Start_IT(&hadc1) != HAL_OK)	Error_Handler();
 
 	// PWM
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2) != HAL_OK) Error_Handler();
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK) Error_Handler();
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4) != HAL_OK) Error_Handler();
-	if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
+	if (HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
 
 	// MAX22201 sleep mode ON
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);

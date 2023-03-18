@@ -183,7 +183,7 @@ typedef struct {
     float x;
     float y;
     float z;
-}axis;
+} axis;
 typedef struct {
     axis accele;
     axis gyro;

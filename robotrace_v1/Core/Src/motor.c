@@ -18,24 +18,24 @@ void motorPwmOut(int16_t pwmL, int16_t pwmR) {
     if (abs(pwmL) < 10) {
         // スリープモードへの移行を防ぐためにduty比を10にする
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 10);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, (int16_t)((float)COUNTERPERIOD*0.02));
     } else if (pwmL > 0) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pwmL);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, (int16_t)((float)pwmL/1000*COUNTERPERIOD));
     } else if (pwmL < 0){
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, abs(pwmL));
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, (int16_t)((float)abs(pwmL)/1000*COUNTERPERIOD));
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);
     }
     
     if (abs(pwmR) < 10) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 10);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int16_t)((float)COUNTERPERIOD*0.02));
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
     } else if (pwmR > 0) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwmR);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int16_t)((float)pwmR/1000*COUNTERPERIOD));
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
     } else if (pwmR < 0) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, abs(pwmR));
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, (int16_t)((float)abs(pwmR)/1000*COUNTERPERIOD));
     }
 
 }

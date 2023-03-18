@@ -27,7 +27,7 @@ void powerLinesensors(uint8_t onoff) {
 	if (onoff == 0) {
 		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 	} else if ( onoff == 1 ) {
-		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 500);
+		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 337);
 	}
 }
 /////////////////////////////////////////////////////////////////////
