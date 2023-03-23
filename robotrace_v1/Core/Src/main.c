@@ -80,7 +80,7 @@ static void MX_TIM6_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
-
+uint8_t pindir = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -225,7 +225,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ENABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
@@ -623,7 +623,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 11;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 674;
+  htim2.Init.Period = 1124;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
@@ -914,11 +914,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Sidesensor2_Pin Input2_Pin */
-  GPIO_InitStruct.Pin = Sidesensor2_Pin|Input2_Pin;
+  /*Configure GPIO pin : Sidesensor2_Pin */
+  GPIO_InitStruct.Pin = Sidesensor2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(Sidesensor2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Input2_Pin */
+  GPIO_InitStruct.Pin = Input2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Input2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CS_IMU_Pin CS_MSD_Pin LED_G_Pin LED_B_Pin */
   GPIO_InitStruct.Pin = CS_IMU_Pin|CS_MSD_Pin|LED_G_Pin|LED_B_Pin;
@@ -952,18 +958,48 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 // ADC interpput
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
   getLineSensor();
+
+  if (pindir)
+  {
+    HAL_GPIO_WritePin(input2_GPIO_Port, input2_Pin, GPIO_PIN_RESET);
+  }
+  else
+  {
+    HAL_GPIO_WritePin(input2_GPIO_Port, input2_Pin, GPIO_PIN_SET);
+  }
+  pindir = !pindir;
 }
 
+// PWM interpput for line sensors
+// void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+// {
+//   if (htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+//   {
+//     // PWM rsing edge
+//     // if (lsenState == true) IRLEDbright = true;
+//     // HAL_GPIO_WritePin(input2_GPIO_Port, input2_Pin, GPIO_PIN_RESET);
+//     // if (pindir)
+//     // {
+//     //   HAL_GPIO_WritePin(input2_GPIO_Port, input2_Pin, GPIO_PIN_RESET);
+//     // }
+//     // else
+//     // {
+//     //   HAL_GPIO_WritePin(input2_GPIO_Port, input2_Pin, GPIO_PIN_SET);
+//     // }
+//     // pindir = !pindir;
+//   }
+// }
+
 // printf
-int _write(int file, char *ptr, int len)
-{
-  int DataIdx;
-  for(DataIdx=0; DataIdx<len; DataIdx++)
-  {
-    ITM_SendChar(*ptr++);
-  }
-  return len;
-}
+//int _write(int file, char *ptr, int len)
+//{
+//  int DataIdx;
+//  for(DataIdx=0; DataIdx<len; DataIdx++)
+//  {
+//    ITM_SendChar(*ptr++);
+//  }
+//  return len;
+//}
 /* USER CODE END 4 */
 
 /**

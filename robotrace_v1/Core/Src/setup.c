@@ -40,6 +40,7 @@ uint8_t motor_test = 0;
 uint8_t trace_test = 0;
 uint8_t	calTimes = 1;
 uint8_t	calTimesNow = 0;
+uint8_t bright = 0;
 
 // パラメータ関連
 int16_t motorTestPwm = 200;
@@ -230,11 +231,11 @@ void setup( void )
 			if(patternSensors != 8) {
 				useIMU = false;
 			}
-			if(patternSensors == 6 || patternSensors == 9 || patternSensors == 10) {
-				powerLinesensors(1);
-			} else {
-				powerLinesensors(0);
-			}
+			// if(patternSensors == 6 || patternSensors == 9 || patternSensors == 10) {
+			// 	powerLinesensors(1);
+			// } else {
+			// 	powerLinesensors(0);
+			// }
 
 			switch( patternSensors ) {
 				case 1:
@@ -301,11 +302,20 @@ void setup( void )
 				case 6:
 					// ラインセンサ
 					dataTuningUD( &patternSensorLine, 1, 1, 6 );
+					if (bright == 1) {
+						powerLinesensors(1);
+						// ledOut(1);
+					} else {
+						powerLinesensors(0);
+						// ledOut(0);
+					}
+
+					data_select( &bright, SW_PUSH );
 
 					switch( patternSensorLine ) {
 						case 1:
-							// lcdRowPrintf(UPPER, "L1  %4d",lSensor[0]);
-							lcdRowPrintf(UPPER, "L1 %5d",lSensor[5]+lSensor[6]);
+							lcdRowPrintf(UPPER, "L1  %4d",lSensor[0]);
+							// lcdRowPrintf(UPPER, "L1 %5d",lSensor[5]+lSensor[6]);
 							lcdRowPrintf(LOWER, "L2  %4d",lSensor[1]);
 							break;
 

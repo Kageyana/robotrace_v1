@@ -183,6 +183,7 @@ uint8_t readLogDistance(int logNumber) {
             beforeMarker = marker;  // 前回マーカーを記録
             
             if (analysis == true) {
+                // スタートマーカー通過後から解析開始
                 // 一定距離ごとに処理
                 if ( distance-startEnc >= encMM(CALCDISTANCE)) {
                     sortROC = (float*)malloc(sizeof(float) * cntCurR); // 計算した曲率半径カウント分の配列を作成
@@ -219,20 +220,22 @@ uint8_t readLogDistance(int logNumber) {
         }
 
         printf("fix velocity\n");
-        // 目標速度配列の整形
+        // 目標速度配列の整形 加減速が間に合うように距離を調整する
         float acceleration, elapsedTime, vt = 0;
 
         printf("%f\n",vt);
-        for (i=1;i<=numD;i++) {
-            // 加速
+        for (i=0;i<=numD;i++) {
+            
             elapsedTime = (float)(resultD[i].time - resultD[i-1].time)/1000;
             acceleration = (resultD[i].boostSpeed - resultD[i-1].boostSpeed)/elapsedTime;
             vt = resultD[i].boostSpeed;
             if (acceleration > 0) {
+                // 加速
                 if (acceleration > MACHINEACCELE) {
                     vt = resultD[i-1].boostSpeed + (MACHINEACCELE*elapsedTime);
                 }
             } else {
+                // 減速
                 if (acceleration < MACHINEDECREACE) {
                     vt = resultD[i-1].boostSpeed + (MACHINEDECREACE*elapsedTime);
                 }
@@ -240,6 +243,8 @@ uint8_t readLogDistance(int logNumber) {
             
             printf("%f\n",vt);
         }
+
+        ret = numD-1;
     }
     f_close(&fil_Read);
 
