@@ -103,14 +103,15 @@ void initLog(void) {
   setLogStr("encCurrentN",  "%d");
   setLogStr("gyroVal_Z",   "%d");
   setLogStr("encTotalN",    "%d");
+  setLogStr("targetSpeed",    "%d");
 
   // setLogStr("patternTrace", "%d");
-  setLogStr("encCurrentR",  "%d");
-  setLogStr("encCurrentL",  "%d");  
+  // setLogStr("encCurrentR",  "%d");
+  // setLogStr("encCurrentL",  "%d");  
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
   setLogStr("angleSensor",  "%d");
-  setLogStr("modeCurve",    "%d");
+  // setLogStr("modeCurve",    "%d");
   setLogStr("motorpwmR",  "%d");
   setLogStr("motorpwmL",  "%d");
   // setLogStr("lineTraceCtrl.pwm",    "%d");
@@ -135,8 +136,8 @@ void initLog(void) {
   // setLogStr("rawCurrentR",  "%d");
   // setLogStr("rawCurrentL",  "%d");
   // setLogStr("CurvatureRadius",  "%d");
-  setLogStr("targetSpeed",   "%d");
   setLogStr("cntMarker",  "%d");
+  setLogStr("optimalIndex",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");

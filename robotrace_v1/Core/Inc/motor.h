@@ -18,6 +18,6 @@ extern int16_t motorpwmR;
 // プロトタイプ宣言
 //====================================//
 void motorPwmOut(int16_t pwmL, int16_t pwmR);
-void motorPwmOutSynth(int16_t tPwm, int16_t sPwm);
+void motorPwmOutSynth(int16_t tPwm, int16_t sPwm, int16_t yrPwm, int16_t yPwm);
 
 #endif // MOTOR_H_

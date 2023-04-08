@@ -138,7 +138,7 @@ void loopSystem (void) {
 			// カウントダウンスタート
 			lcdRowPrintf(UPPER, "Ready   ");
 			lcdRowPrintf(LOWER, "       %d",countdown/1000);
-			motorPwmOutSynth( lineTraceCtrl.pwm, 0 );
+			motorPwmOutSynth( lineTraceCtrl.pwm, 0, 0, 0);
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;	// LCD OFF
@@ -150,11 +150,15 @@ void loopSystem (void) {
 				
 				// 変数初期化
 				encTotalN = 0;
+				distanceStart = 0;
 				encRightMarker = encMM(600);
 				cntRun = 0;
 				BNO055val.angle.x = 0.0f;
 				BNO055val.angle.y = 0.0f;
 				BNO055val.angle.z = 0.0f;
+				veloCtrl.Int = 0.0;
+				yawRateCtrl.Int = 0.0;
+				yawCtrl.Int = 0.0;
 
 				modeLOG = true;    // log start
 				patternTrace = 11;
@@ -163,17 +167,18 @@ void loopSystem (void) {
 
       	case 11:
 			// 目標速度設定
-			if (!optimalTrace){
+			if (optimalTrace == 0){
 				// 探索走行のとき
 				if (modeCurve == 0) {
 					setTargetSpeed(targetParam.straight);
 				} else {
 					setTargetSpeed(targetParam.curve);
 				}
-			} else {
-				boostSpeed = boostSpeeds[cntMarker];
+			} else if (optimalTrace == BOOST_MARKER) {
+				// マーカー基準2次走行
+				boostSpeed = analysisMarker[cntMarker].boostSpeed;
                 // 次のマーカー区間の曲率半径が小さい時、速度を抑える
-                if ( cntMarker < numMarkerLog && fabs(ROCmarker[cntMarker+1]) <= 200.0F ) {
+                if ( cntMarker < numOptimalArry && fabs(ROCmarker[cntMarker+1]) <= 200.0F ) {
                     boostSpeed = boostSpeed - 4;
                 }
                 // 最低速度
@@ -181,10 +186,31 @@ void loopSystem (void) {
 
                 // 目標速度に設定
                 setTargetSpeed(boostSpeed);
+			} else if (optimalTrace == BOODT_DISTANCE) {
+				// 距離基準2次走行
+				// スタートマーカーを超えた時から距離計測開始
+				if (SGmarker > 0 && distanceStart == 0) {
+					distanceStart = encTotalN;
+				}
+				// 一定区間ごとにインデックスを更新
+				if (distanceStart > 0) {
+					if (encTotalN - distanceStart >= encMM(CALCDISTANCE)) {
+						boostSpeed = analysisDistance[optimalIndex].boostSpeed;	// 目標速度を更新
+						distanceStart = encTotalN;	// 距離計測位置を更新
+						if (optimalIndex+1 <= numOptimalArry) {
+							// 配列要素数を超えない範囲でインデックスを更新する
+							optimalIndex++;
+						}
+					}
+				} else if (distanceStart == 0) {
+					boostSpeed = targetParam.boostStraight;
+				}
+				// 目標速度に設定
+				setTargetSpeed(boostSpeed);
 			}
 			
 			// ライントレース
-			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm );
+			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm, 0, 0);
 	 
 			// ゴール判定
 			if (SGmarker >= COUNT_GOAL ) {
@@ -200,7 +226,7 @@ void loopSystem (void) {
 			} else {
 				setTargetSpeed(targetParam.stop);
 			}
-			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm );
+			motorPwmOutSynth( lineTraceCtrl.pwm, veloCtrl.pwm, 0, 0);
 			
 			if (encCurrentN == 0 && enc1 >= encMM(500)) {
 				emargencyStop();
@@ -210,7 +236,7 @@ void loopSystem (void) {
 			break;
 
       	case 102:
-			motorPwmOutSynth( 0, 0 );
+			motorPwmOutSynth( 0, 0, 0, 0);
 			powerLinesensors(0);
 
 			lcdRowPrintf(UPPER, "T  %2.2fs",(float)goalTime/1000);
@@ -291,13 +317,4 @@ void checkCurve(void) {
 		}
 	}
 	
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 setTargetSpeed
-// 処理概要     目標速度の設定
-// 引数         目標速度の整数倍値
-// 戻り値       なし
-///////////////////////////////////////////////////////////////////////////
-void setTargetSpeed (uint8_t speed) {
-	targetSpeed = (float)speed*PALSE_MILLIMETER/10;
 }

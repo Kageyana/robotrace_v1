@@ -45,35 +45,35 @@ void motorPwmOut(int16_t pwmL, int16_t pwmR) {
 // 引数         tPwm: トレースのPID制御量 sPwm: 速度のPID制御量
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
-void motorPwmOutSynth(int16_t tPwm, int16_t sPwm) {
+void motorPwmOutSynth(int16_t tPwm, int16_t sPwm, int16_t yrPwm, int16_t yPwm) {
 	int16_t overpwm;
 
-    if (abs(sPwm + tPwm) > 1000) {
-        // 合計制御量が1000を超えたとき
+    if (abs(sPwm + tPwm) > 1000 || abs(sPwm - tPwm) > 1000) {
+        // ライントレースと速度制御の合計制御量が1000を超えたとき
         overpwm = abs(sPwm) + abs(tPwm) - 1000; // 1000を超えた分の制御量を計算
 
-        // トレースの内輪側から越えた分の制御量を引く
+        // トレースの内輪側から越えた分の制御量を引く 正負はtPwmと同じ
         if (tPwm > 0) {
             if (sPwm > 0) {
-                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
-                motorpwmL = sPwm + tPwm;
+                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm))) - yrPwm - yPwm;
+                motorpwmL = 1000;
             } else {
-                motorpwmR = sPwm - tPwm;
-                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+                motorpwmR = -1000;
+                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm))) + yrPwm + yPwm;
             }
         } else {
             if (sPwm > 0) {
-                motorpwmR = sPwm - tPwm;
-                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm)));
+                motorpwmR = 1000;
+                motorpwmL = sPwm + tPwm + (overpwm * (tPwm/abs(tPwm))) + yrPwm + yPwm;
             } else {
-                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm)));
-                motorpwmL = sPwm + tPwm;
+                motorpwmR = sPwm - tPwm - (overpwm * (tPwm/abs(tPwm))) - yrPwm - yPwm;
+                motorpwmL = -1000;
             }
             
         }
     } else {
-        motorpwmR = sPwm - tPwm;
-	    motorpwmL = sPwm + tPwm;
+        motorpwmR = sPwm - tPwm - yrPwm - yPwm;
+	    motorpwmL = sPwm + tPwm + yrPwm + yPwm;
     }
     
 	motorPwmOut(motorpwmL, motorpwmR);

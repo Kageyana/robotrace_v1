@@ -21,6 +21,8 @@ void Interrupt1ms(void) {
     cnt5ms++;
     cnt10ms++;
     cntLog++;
+
+    // 走行中に処理
     if (patternTrace > 10 && patternTrace < 100) {
         // 緊急停止処理
         if (cntEmcStopAngleX()) emcStop = STOP_ANGLE_X;
@@ -36,6 +38,7 @@ void Interrupt1ms(void) {
         
     }
     
+    // 走行前に処理
     if (patternTrace < 10 || patternTrace > 100) {
         getSwitches();  // スイッチの入力を取得
         countDown();
@@ -43,17 +46,21 @@ void Interrupt1ms(void) {
         cntSetup2++;
         cntSwitchUD++;
         cntSwitchLR++;
+
+        motorControlYawRate();
+        motorControlYaw();
     }
 
-    if (modeLCD && initLCD) lcdShowProcess();   // LCD表示
+    // LCD表示
+    if (modeLCD && initLCD) lcdShowProcess();
 
-    if ( modeCalLinesensors == 1) calibrationLinesensor();
     // 仮想センサステア計算
     getAngleSensor();
+
     // Encoder
     getEncoder();
-    // PWM
-    
+
+    // PID制御処理
     motorControlTrace();
     motorControlSpeed();
 
@@ -90,18 +97,19 @@ void Interrupt1ms(void) {
 
             if (modeLOG) {
                 writeLogBuffer(
-                    14,
+                    12,
                     cntLog,
                     getMarkerSensor(),
                     encCurrentN,
                     (int32_t)(BNO055val.gyro.z*10000),
                     encTotalN,
-                    encCurrentR,
-                    encCurrentL,
+                    targetSpeed,
+                    // encCurrentR,
+                    // encCurrentL,
                     // encTotalR,
                     // encTotalL,
                     (int32_t)(angleSensor*10),
-                    modeCurve,
+                    // modeCurve,
                     motorpwmR,
                     motorpwmL,
                     // lineTraceCtrl.pwm,
@@ -126,8 +134,8 @@ void Interrupt1ms(void) {
                     // rawCurrentR,
                     // rawCurrentL,
                     // (int32_t)(calcROC((float)encCurrentN, BNO055val.gyro.z) * 100)
-                    targetSpeed,
-                    cntMarker
+                    cntMarker,
+                    optimalIndex
                 );
             }
             cnt10ms = 0;

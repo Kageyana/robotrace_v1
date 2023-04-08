@@ -10,29 +10,29 @@
 // 機体諸元
 
 // 速度パラメータ関連
-#define PARAM_STRAIGHT              15
-#define PARAM_CURVE                 15
-#define PARAM_STOP                  8
-#define PARAM_BOOST_STRAIGHT        20
-#define PARAM_BOOST_1500            18
-#define PARAM_BOOST_800             15
-#define PARAM_BOOST_600             13
-#define PARAM_BOOST_400             12
-#define PARAM_BOOST_200             10
+#define PARAM_STRAIGHT              1.5F
+#define PARAM_CURVE                 1.2F
+#define PARAM_STOP                  0.8F
+#define PARAM_BOOST_STRAIGHT        2.5F
+#define PARAM_BOOST_1500            2.0F
+#define PARAM_BOOST_800             1.8F
+#define PARAM_BOOST_600             1.6F
+#define PARAM_BOOST_400             1.4F
+#define PARAM_BOOST_200             1.2F
 
 // ゴール
 #define COUNT_GOAL              2       // ゴールマーカーを読む回数
 
 typedef struct {
-    int16_t straight;
-    int16_t curve;
-    int16_t stop;
-    int16_t boostStraight;
-    int16_t boost1500;
-    int16_t boost800;
-    int16_t boost600;
-    int16_t boost400;
-    int16_t boost200;
+    float straight;
+    float curve;
+    float stop;
+    float boostStraight;
+    float boost1500;
+    float boost800;
+    float boost600;
+    float boost400;
+    float boost200;
 } speedParam;
 //====================================//
 // グローバル変数の宣言
@@ -68,6 +68,5 @@ void loopSystem (void);
 void emargencyStop (void);
 void countDown (void);
 void checkCurve(void);
-void setTargetSpeed (uint8_t speed);
 
 #endif // CONTROL_H_

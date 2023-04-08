@@ -59,7 +59,7 @@ void setup( void )
 		//------------------------------------------------------------------
 		// スタート待ち
 		//------------------------------------------------------------------
-		case 0x0:
+		case HEX_START:
 			data_select( &start, SW_PUSH );
 			lcdRowPrintf(UPPER, "start   ");
 			lcdRowPrintf(LOWER, "        ");
@@ -67,175 +67,75 @@ void setup( void )
 		//------------------------------------------------------------------
 		// パラメータ調整(通常トレース)
 		//------------------------------------------------------------------
-		case 0x1:
+		case HEX_SPEED_PARAM:
 			dataTuningLR( &patternParameter1, 1, 1, 9);
 			
 			switch( patternParameter1 ) {
 				case 1:
 					// 通常走行速度
-					dataTuningUD( &targetParam.straight, 1, 0, 100 );
+					dataTuningUDF( &targetParam.straight, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "STRAIGHT");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.straight / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.straight);
 					break;
 				case 2:
 					// 停止速度
-					dataTuningUD( &targetParam.curve, 1, 0, 100 );
+					dataTuningUDF( &targetParam.curve, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "CURVE   ");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.curve / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.curve);
 					break;
 				case 3:
 					// 停止速度
-					dataTuningUD( &targetParam.stop, 1, 0, 100 );
+					dataTuningUDF( &targetParam.stop, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "STOP    ");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.stop / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.stop);
 					break;
 				case 4:
 					// 2次走行_直線
-					dataTuningUD( &targetParam.boostStraight, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boostStraight, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST STRT");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boostStraight / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boostStraight);
 					break;
 				case 5:
 					// 2次走行_R1500
-					dataTuningUD( &targetParam.boost1500, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boost1500, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST 1500");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boost1500 / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost1500);
 					break;
 				case 6:
 					// 2次走行_R800
-					dataTuningUD( &targetParam.boost800, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boost800, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  800");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boost800 / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost800);
 					break;
 				case 7:
 					// 2次走行_R1600
-					dataTuningUD( &targetParam.boost600, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boost600, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  600");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boost600 / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost600);
 					break;
 				case 8:
 					// 2次走行_R400
-					dataTuningUD( &targetParam.boost400, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boost400, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  400");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boost400 / 10);
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost400);
 					break;
 				case 9:
 					// 2次走行_R200
-					dataTuningUD( &targetParam.boost200, 1, 0, 100 );
+					dataTuningUDF( &targetParam.boost200, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  200");
-					lcdRowPrintf(LOWER, "  %3gm/s", (float)targetParam.boost200 / 10);
-					break;
-				
-			}
-			break;
-		//------------------------------------------------------------------
-		// ゲイン調整(直線トレース)
-		//------------------------------------------------------------------
-		case 0x2:
-			lcdRowPrintf(UPPER, "kp ki kd");
-			
-			data_select( &trace_test, SW_PUSH );
-			// PUSHでトレースON/OFF
-			if ( trace_test == 1 ) {
-				motorPwmOutSynth( lineTraceCtrl.pwm, 0 );
-				powerLinesensors(1);
-			} else {
-				motorPwmOutSynth( 0, 0 );
-				powerLinesensors(0);
-			}
-			
-			dataTuningLR( &patternGain, 1, 1, 3);
-			
-			switch( patternGain ) {
-				case 1:
-					// kp
-					dataTuningUD ( &lineTraceCtrl.kp, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "   %2d %2d", lineTraceCtrl.ki, lineTraceCtrl.kd);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
-					}
-					break;
-				case 2:
-					// ki
-					dataTuningUD ( &lineTraceCtrl.ki, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "%2d    %2d", lineTraceCtrl.kp, lineTraceCtrl.kd);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
-					}
-					break;
-				case 3:
-					// kd
-					dataTuningUD ( &lineTraceCtrl.kd, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "%2d %2d   ", lineTraceCtrl.kp, lineTraceCtrl.ki);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
-					}
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost200);
 					break;
 			}
 			break;
 		//------------------------------------------------------------------
-		// ゲイン調整(速度)
+		// Sensors test
 		//------------------------------------------------------------------
-		case 0x3:
-			lcdRowPrintf(UPPER, "kp ki kd");
-			
-			// data_select( &trace_test, SW_PUSH );
-			
-			dataTuningLR( &patternGain, 1, 1, 3);
-			
-			switch( patternGain ) {
-				case 1:
-					// kp
-					dataTuningUD ( &veloCtrl.kp, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "   %2d %2d", veloCtrl.ki, veloCtrl.kd);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
-					}
-					break;
-				case 2:
-					// ki
-					dataTuningUD ( &veloCtrl.ki, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "%2d    %2d", veloCtrl.kp, veloCtrl.kd);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
-					}
-					break;
-				case 3:
-					// kd
-					dataTuningUD ( &veloCtrl.kd, 1, 0, 99 );
-					//値を点滅
-					if ( (cntSetup1 / 250) % 2 == 0 ) {
-						lcdRowPrintf(LOWER, "%2d %2d   ", veloCtrl.kp, veloCtrl.ki);
-					} else {
-						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
-					}
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
-		// Motor_test
-		//------------------------------------------------------------------
-		case 0x4:
+		case HEX_SENSORS:
 			dataTuningLR( &patternSensors, 1, 1, 10 );
 
 			if(patternSensors != 8) {
 				useIMU = false;
 			}
-			// if(patternSensors == 6 || patternSensors == 9 || patternSensors == 10) {
-			// 	powerLinesensors(1);
-			// } else {
-			// 	powerLinesensors(0);
-			// }
 
 			switch( patternSensors ) {
 				case 1:
@@ -304,46 +204,44 @@ void setup( void )
 					dataTuningUD( &patternSensorLine, 1, 1, 6 );
 					if (bright == 1) {
 						powerLinesensors(1);
-						// ledOut(1);
 					} else {
 						powerLinesensors(0);
-						// ledOut(0);
 					}
 
 					data_select( &bright, SW_PUSH );
 
 					switch( patternSensorLine ) {
 						case 1:
-							lcdRowPrintf(UPPER, "L1  %4d",lSensor[0]);
-							// lcdRowPrintf(UPPER, "L1 %5d",lSensor[5]+lSensor[6]);
-							lcdRowPrintf(LOWER, "L2  %4d",lSensor[1]);
+							lcdRowPrintf(UPPER, "L1  %4d",lSensorCari[0]);
+							lcdRowPrintf(LOWER, "L2  %4d",lSensorCari[1]);
 							break;
 
 						case 2:
-							lcdRowPrintf(UPPER, "L3  %4d",lSensor[2]);
-							lcdRowPrintf(LOWER, "L4  %4d",lSensor[3]);
+							lcdRowPrintf(UPPER, "L3  %4d",lSensorCari[2]);
+							lcdRowPrintf(LOWER, "L4  %4d",lSensorCari[3]);
 							break;
 						case 3:
-							lcdRowPrintf(UPPER, "L5  %4d",lSensor[4]);
-							lcdRowPrintf(LOWER, "L6  %4d",lSensor[5]);
+							lcdRowPrintf(UPPER, "L5  %4d",lSensorCari[4]);
+							lcdRowPrintf(LOWER, "L6  %4d",lSensorCari[5]);
 							break;
 						
 						case 4:
-							lcdRowPrintf(UPPER, "R1  %4d",lSensor[11]);
-							lcdRowPrintf(LOWER, "R2  %4d",lSensor[10]);
+							lcdRowPrintf(UPPER, "R1  %4d",lSensorCari[11]);
+							lcdRowPrintf(LOWER, "R2  %4d",lSensorCari[10]);
 							break;
 
 						case 5:
-							lcdRowPrintf(UPPER, "R3  %4d",lSensor[9]);
-							lcdRowPrintf(LOWER, "R4  %4d",lSensor[8]);
+							lcdRowPrintf(UPPER, "R3  %4d",lSensorCari[9]);
+							lcdRowPrintf(LOWER, "R4  %4d",lSensorCari[8]);
 							break;
 
 						case 6:
-							lcdRowPrintf(UPPER, "R5  %4d",lSensor[7]);
-							lcdRowPrintf(LOWER, "R6  %4d",lSensor[6]);
+							lcdRowPrintf(UPPER, "R5  %4d",lSensorCari[7]);
+							lcdRowPrintf(LOWER, "R6  %4d",lSensorCari[6]);
 							break;
 					}
 					break;
+
 				case 7:
 					// 加速度
 					dataTuningUD( &patternSensorAccele, 1, 1, 3 );
@@ -363,6 +261,7 @@ void setup( void )
 							break;
 					}
 					break;
+
 				case 8:
 					// 角速度
 					dataTuningUD( &patternSensorGyro, 1, 1, 6 );
@@ -407,7 +306,12 @@ void setup( void )
 					break;
 				case 10:
 					// 仮想センサ角度
-					targetSpeed = 120;
+					if (bright == 1) {
+						powerLinesensors(1);
+					} else {
+						powerLinesensors(0);
+					}
+					
 					lcdRowPrintf(UPPER, "Anglesen");
 					lcdRowPrintf(LOWER, "   %3.1f", angleSensor);
 					break;
@@ -416,7 +320,7 @@ void setup( void )
 		//------------------------------------------------------------------
 		// Log
 		//------------------------------------------------------------------
-		case 0x5:
+		case HEX_LOG:
 			lcdRowPrintf(UPPER, "LOG     ");
 			if (initMSD) {
 				lcdRowPrintf(LOWER, "    %4d", fileNumbers[fileIndexLog]);
@@ -427,17 +331,27 @@ void setup( void )
 					case 1:
 						// ログ解析
 						if (swValTact == SW_UP) {
-							numMarkerLog = readLogMarker(fileNumbers[fileIndexLog]);
-							if (numMarkerLog > 0) {
+							// マーカー基準解析
+							numOptimalArry = readLogMarker(fileNumbers[fileIndexLog]);
+							if (numOptimalArry > 0) {
+								lcdRowPrintf(UPPER, "Marker  ");
 								lcdRowPrintf(LOWER, " success");
-								optimalTrace = true;
+								optimalTrace = BOOST_MARKER;
 							} else {
 								lcdRowPrintf(LOWER, "   false");
 							}
 							HAL_Delay(1000);
 						} else if (swValTact == SW_DOWN) {
-							readLogDistance(fileNumbers[fileIndexLog]);
-							lcdRowPrintf(LOWER, " success");
+							// 距離基準解析
+							numOptimalArry = readLogDistance(fileNumbers[fileIndexLog]);
+							if (numOptimalArry > 0) {
+								lcdRowPrintf(UPPER, "Distance");
+								lcdRowPrintf(LOWER, " success");
+								optimalTrace = BOODT_DISTANCE;
+								optimalIndex = 0;
+							} else {
+								lcdRowPrintf(LOWER, "   false");
+							}
 							HAL_Delay(1000);
 						}
 						break;
@@ -452,19 +366,20 @@ void setup( void )
 		//------------------------------------------------------------------
 		// キャリブレーション(ラインセンサ) 
 		//------------------------------------------------------------------
-		case 0x6:
+		case HEX_CALIBRATION:
 			switch (patternCalibration) {
 				case 1:
 					// スイッチ入力待ち
 					dataTuningUD( &calTimes, 1, 1, 9);
 
-					targetSpeed = 0;
-					motorPwmOutSynth( 0, veloCtrl.pwm );
+					setTargetSpeed(0);
+					motorPwmOutSynth( 0, veloCtrl.pwm, 0, 0);
 					lcdRowPrintf(UPPER, "Calibrat");
 					lcdRowPrintf(LOWER, "%d  times", calTimes);
 					if (swValTact == SW_PUSH) {
 						cntSetup1 = 0;
 						enc1 = 0;
+						powerLinesensors(1);	// 先に点灯させて安定させる
 						patternCalibration = 2;
 					}
 					break;
@@ -473,72 +388,191 @@ void setup( void )
 					// 開始準備
 					lcdRowPrintf(LOWER, "%4d",cntSetup1);
 					if (cntSetup1 > 1000) {
-						powerLinesensors(1);
-						cntSetup1 = 0;
+						BNO055val.angle.z = 0.0;	// 角度リセット
+						yawRateCtrl.Int = 0.0;		// I成分リセット
+						useIMU = true;
+						setTargetSpeed(0);			// 目標速度0[m/s]
 						enc1 = 0;
 						modeCalLinesensors = 1; 	// キャリブレーション開始
 						patternCalibration = 3;
 					}
 					break;
-				
+
 				case 3:
-					// 前進
-					targetSpeed = 0.4*PALSE_MILLIMETER;
-					motorPwmOutSynth( 0, veloCtrl.pwm );
-					if (enc1 > encMM(100)) {
-						cntSetup1 = 0;
-						enc1 = 0;
+					// 左旋回
+					setTargetAngularVelocity(CALIBRATIONSPEED);
+					motorPwmOutSynth(0, veloCtrl.pwm, yawRateCtrl.pwm, 0);
+					if (BNO055val.angle.z > 0.8) {
 						patternCalibration = 4;
 					}
 					break;
 
 				case 4:
-					// 後退
-					targetSpeed = -0.4*PALSE_MILLIMETER;
-					motorPwmOutSynth( 0, veloCtrl.pwm );
-					if (enc1 < -encMM(100)) {
-						modeCalLinesensors = 0;		// キャリブレーション停止
-						powerLinesensors(0);
-						cntSetup1 = 0;
+					// 停止
+					setTargetSpeed(0);
+					motorPwmOutSynth(0, veloCtrl.pwm, 0, 0);
+					if (abs(encCurrentN) == 0) {
 						patternCalibration = 5;
 					}
 					break;
 
 				case 5:
+					// 右旋回
+					setTargetAngularVelocity(-CALIBRATIONSPEED);
+					motorPwmOutSynth(0, veloCtrl.pwm, yawRateCtrl.pwm, 0);
+					if (BNO055val.angle.z < -0.8) {
+						patternCalibration = 6;
+					}
+					break;
+
+				case 6:
 					// 停止
-					targetSpeed = 0;
-					motorPwmOutSynth( 0, veloCtrl.pwm );
-					if (abs(encCurrentN) < 2) {
+					setTargetSpeed(0);
+					motorPwmOutSynth(0, veloCtrl.pwm, 0, 0);
+					if (abs(encCurrentN) == 0) {
+						patternCalibration = 7;
+					}
+					break;
+
+				case 7:
+					// 初期位置に戻る
+					setTargetAngularVelocity(CALIBRATIONSPEED);
+					motorPwmOutSynth(0, veloCtrl.pwm, yawRateCtrl.pwm, 0);
+					if (BNO055val.angle.z > 0) {
+						modeCalLinesensors = 0;
+						patternCalibration = 8;
+					}
+					break;
+
+				case 8:
+					// 停止
+					motorPwmOutSynth( 0, veloCtrl.pwm, 0, 0);
+					if (abs(encCurrentN) == 0) {
 						calTimesNow++;
-						enc1 = 0;
 						if (calTimesNow >= calTimes) {
 							calTimesNow = 0;
+							useIMU = false;
 							patternCalibration = 1;
 						} else {
 							patternCalibration = 3;
 						}
 					}
 					break;
-				
+			
 				default:
 					break;
 				}
 			break;
-
 		//------------------------------------------------------------------
-		// ゲイン調整(角速度)
+		// ゲイン調整(直線トレース)
 		//------------------------------------------------------------------
-		case 0x7:
+		case HEX_PID_TRACE:
 			lcdRowPrintf(UPPER, "kp ki kd");
 			
-			targetAngularVelocity = 0;
-			targetSpeed = 0;
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawRateCtrl.pwm, veloCtrl.pwm );
+				motorPwmOutSynth( lineTraceCtrl.pwm, 0, 0, 0);
+				powerLinesensors(1);
 			} else {
-				motorPwmOutSynth( 0, 0 );
+				motorPwmOutSynth( 0, 0, 0, 0);
+				powerLinesensors(0);
+			}
+			
+			dataTuningLR( &patternGain, 1, 1, 3);
+			
+			switch( patternGain ) {
+				case 1:
+					// kp
+					dataTuningUD ( &lineTraceCtrl.kp, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "   %2d %2d", lineTraceCtrl.ki, lineTraceCtrl.kd);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
+					}
+					break;
+				case 2:
+					// ki
+					dataTuningUD ( &lineTraceCtrl.ki, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "%2d    %2d", lineTraceCtrl.kp, lineTraceCtrl.kd);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
+					}
+					break;
+				case 3:
+					// kd
+					dataTuningUD ( &lineTraceCtrl.kd, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "%2d %2d   ", lineTraceCtrl.kp, lineTraceCtrl.ki);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", lineTraceCtrl.kp, lineTraceCtrl.ki, lineTraceCtrl.kd);
+					}
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// ゲイン調整(速度)
+		//------------------------------------------------------------------
+		case HEX_PID_SPEED:
+			lcdRowPrintf(UPPER, "kp ki kd");
+			
+			// data_select( &trace_test, SW_PUSH );
+			
+			dataTuningLR( &patternGain, 1, 1, 3);
+			
+			switch( patternGain ) {
+				case 1:
+					// kp
+					dataTuningUD ( &veloCtrl.kp, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "   %2d %2d", veloCtrl.ki, veloCtrl.kd);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
+					}
+					break;
+				case 2:
+					// ki
+					dataTuningUD ( &veloCtrl.ki, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "%2d    %2d", veloCtrl.kp, veloCtrl.kd);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
+					}
+					break;
+				case 3:
+					// kd
+					dataTuningUD ( &veloCtrl.kd, 1, 0, 99 );
+					//値を点滅
+					if ( (cntSetup1 / 250) % 2 == 0 ) {
+						lcdRowPrintf(LOWER, "%2d %2d   ", veloCtrl.kp, veloCtrl.ki);
+					} else {
+						lcdRowPrintf(LOWER, "%2d %2d %2d", veloCtrl.kp, veloCtrl.ki, veloCtrl.kd);
+					}
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// ゲイン調整(角速度)
+		//------------------------------------------------------------------
+		case HEX_PID_ANGULAR:
+			lcdRowPrintf(UPPER, "kp ki kd");
+			
+			setTargetAngularVelocity(0);
+			setTargetSpeed(0);
+			data_select( &trace_test, SW_PUSH );
+			// PUSHでトレースON/OFF
+			if ( trace_test == 1 ) {
+				useIMU = true;
+				motorPwmOutSynth( 0, veloCtrl.pwm, yawRateCtrl.pwm, 0 );
+			} else {
+				useIMU = false;
+				motorPwmOutSynth( 0, 0, 0, 0 );
 			}
 			
 			dataTuningLR( &patternGain, 1, 1, 3 );
@@ -579,19 +613,26 @@ void setup( void )
 		//------------------------------------------------------------------
 		// ゲイン調整(角度)
 		//------------------------------------------------------------------
-		case 0x8:
-			lcdRowPrintf(UPPER, "kp ki kd");
+		case HEX_PID_ANGLE:
+			// lcdRowPrintf(UPPER, "kp ki kd");
+			lcdRowPrintf(UPPER, "   %3.2f",BNO055val.angle.z);
 			
-			if (cntSetup2 < 1000) 	targetAngle = 45.0;
-			else 					targetAngle = -45.0;
-			if (cntSetup2 > 2000)	cntSetup2 = 0;
-			targetSpeed = 0;
+			if (cntSetup2 < 5000) {
+				setTargetAngle(0.78);
+			} else {
+				setTargetAngle(-0.78);
+			} 					
+			if (cntSetup2 > 10000)	cntSetup2 = 0;
+			setTargetSpeed(0);
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {
-				motorPwmOutSynth( yawCtrl.pwm, veloCtrl.pwm );
+				useIMU = true;
+				motorPwmOutSynth( 0, veloCtrl.pwm, yawRateCtrl.pwm, yawCtrl.pwm );
 			} else {
-				motorPwmOutSynth( 0, 0 );
+				BNO055val.angle.z = 0;
+				useIMU = false;
+				motorPwmOutSynth( 0, 0, 0, 0 );
 			}
 			
 			dataTuningLR( &patternGain, 1, 1, 3 );
@@ -735,6 +776,44 @@ void dataTuningLR ( int16_t *data, int16_t add, int16_t min, int16_t max) {
 			*data = max;
 		}
 	}
+}
+///////////////////////////////////////////////////////////////////////////////////////
+// モジュール名 dataTuningUDF
+// 処理概要     タクトスイッチでdataを加減する
+// 引数         data: 加減させる変数 add: 0: 変化量 dir: 0:上下 1:左右
+// 戻り値       なし
+///////////////////////////////////////////////////////////////////////////////////////
+void dataTuningUDF ( float *data, float add, float min, float max) {
+	if ( cntSwitchUD >= 50 ) {
+		if ( swValTact == SW_UP || swValTact == SW_DOWN ) {
+			cntSwitchUDLong++; // 長押し時間計測
+			if ( swValTact == SW_UP  ) {
+				// インクリメント
+				if ( cntSwitchUDLong >= 20 ) {	// 長押し処理
+					*data += add;
+				} else if (pushUD == 0) {	// 1回押し処理
+					pushUD = 1;
+					*data += add;
+				}
+			} else if ( swValTact == SW_DOWN  ) {
+				// デクリメント
+				if ( cntSwitchUDLong >= 20 ) {	// 長押し処理
+					*data -= add;
+				} else if (pushUD == 0) {	// 1回押し処理
+					pushUD = 1;
+					*data -= add;
+				}
+			}
+		} else {
+			pushUD = 0;
+			cntSwitchUDLong = 0;
+		}
+		cntSwitchUD = 0;
 
-	
+		if ( *data > max) {
+			*data = min;
+		} else if ( *data < min ) {
+			*data = max;
+		}
+	}
 }

@@ -7,14 +7,11 @@
 //====================================//
 
 // ラインセンサ関連
-uint32_t		lSensorBrightInt[NUM_SENSORS] = {0};	// ラインセンサの立ち上がりエッジAD値積算用
-uint32_t		lSensorUnbrightInt[NUM_SENSORS] = {0};	// ラインセンサの立ち下がりエッジAD値積算用
+uint32_t		lSensorInt[NUM_SENSORS] = {0};	// ラインセンサの立ち上がりエッジAD値積算用
 uint16_t		lSensor[NUM_SENSORS] = {0};		// ラインセンサの平均AD値
-float			lSensorf[NUM_SENSORS] = {0};	// 正規化したラインセンサのAD値
-uint16_t		cntlsBright = 0;		// ラインセンサの立ち上がりエッジ積算回数カウント用
-uint16_t		cntlsUnbright = 0;		// ラインセンサの立ち下がりエッジ積算回数カウント用
-bool         	IRLEDbright;	// true:PWM立ち上がりエッジ false:立ち下がりエッジ
-bool         	lsenState = false;
+uint16_t		lSensorCari[NUM_SENSORS] = {0};	// 正規化したラインセンサのAD値
+uint16_t		cntls = 0;		// ラインセンサの立ち上がりエッジ積算回数カウント用
+bool			lineSensorState = false;	// true:ラインセンサ点灯 false:ラインセンサ消灯
 // 仮想センサステア関連
 uint16_t		lineIndex = 0;
 float        	angleSensor;
@@ -29,13 +26,11 @@ uint8_t			modeCalLinesensors = 0;
 /////////////////////////////////////////////////////////////////////
 void powerLinesensors(uint8_t onoff) {
 	if (onoff == 0) {
-		lsenState = false;
+		lineSensorState = false;
 		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-		
 	} else if ( onoff == 1 ) {
-		lsenState = true;
+		lineSensorState = true;
 		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, ls_COUNTERPERIOD/2);
-		
 	}
 }
 /////////////////////////////////////////////////////////////////////
@@ -46,23 +41,26 @@ void powerLinesensors(uint8_t onoff) {
 /////////////////////////////////////////////////////////////////////
 void getLineSensor(void) {
 	uint8_t i;
-	static uint16_t lsenValBright, lsenValUnbright;
 	
-	// if (lsenState) {
-		for ( i=0;i<NUM_SENSORS;i++) {
-			lSensorBrightInt[i] += analogVal[i];
-			cntlsBright++;
-
-			if (cntlsBright > 16) {
-				lSensor[i] = lSensorBrightInt[i] >> 4;		// 平均値算出
-				// if (lSensorOffset[i] > 0 && modeCalLinesensors == 0) {
-				// 	lSensorf[i] = (float)lSensor[i] / lSensorOffset[i];
-				// }
-				lSensorBrightInt[i] = 0;					// 積算値リセット
-				cntlsBright = 0;
+	for ( i=0;i<NUM_SENSORS;i++) {
+		lSensorInt[i] += analogVal[i];
+		cntls++;
+		if (cntls > 16) {
+			lSensor[i] = lSensorInt[i] >> 4;		// 平均値算出
+			lSensorInt[i] = 0;					// 積算値リセット
+			cntls = 0;
+			// キャリブレーション済みの場合
+			if (lSensorOffset[i] > 0 && modeCalLinesensors == 0) {
+				lSensorCari[i] = (uint16_t)(BASEVAL * (float)lSensor[i] / (float)lSensorOffset[i]);
+			}
+			// キャリブレーション中
+			if(lineSensorState && modeCalLinesensors == 1) {
+				if (lSensor[i] > lSensorOffset[i]) {
+					lSensorOffset[i] = lSensor[i];
+				}
 			}
 		}
-	// }
+	}
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getAngleSensor
