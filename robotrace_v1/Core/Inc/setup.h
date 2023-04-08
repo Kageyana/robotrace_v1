@@ -11,7 +11,7 @@
 #define UD	0       // 5方向タクトスイッチの上下方向
 #define LR	1       // 5方向タクトスイッチの左右方向
 
-#define CALIBRATIONSPEED 1.5F   // ラインセンサのキャリブレーション時の角速度[rad/s]
+#define CALIBRATIONSPEED 1.8F   // ラインセンサのキャリブレーション時の角速度[rad/s]
 
 #define HEX_START       0x0
 #define HEX_SPEED_PARAM 0x1

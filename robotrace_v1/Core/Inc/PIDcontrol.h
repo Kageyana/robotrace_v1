@@ -12,10 +12,10 @@
 //====================================//
 #define KP1		10
 #define KI1		0
-#define KD1		65
+#define KD1		60
 
-#define KP2		30
-#define KI2		20
+#define KP2		40
+#define KI2		10
 #define KD2		0
 
 #define KP3		30
