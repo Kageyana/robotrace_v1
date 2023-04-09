@@ -206,7 +206,7 @@ uint16_t readLogDistance(int logNumber) {
                     analysisDistance[numD].distance = distance;
                     analysisDistance[numD].boostSpeed = asignVelocity(analysisDistance[numD].ROC);   // 曲率半径ごとの速度を計算する
 
-                    printf("%f\n",analysisDistance[numD].boostSpeed);
+                    printf("%f\n",analysisDistance[numD].ROC);
 
                     startEnc = distance;    // 距離計測開始位置を更新
                     numD++;          // インデックス更新

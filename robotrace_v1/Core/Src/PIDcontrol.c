@@ -48,15 +48,18 @@ void setTargetAngle (float angle) {
 // 戻り値       なし
 ///////////////////////////////////////////////////////////////////////////
 void motorControlTrace( void ) {
-	int32_t 		iP, iD, iI, iRet, Dev, Dif;
+	int32_t 		iP, iD, iI, iRet, Dev, Dif, senL, senR;
 	static int32_t 	traceBefore;
 	
 	//サーボモータ用PWM値計算
 	if (lSensorOffset[0] > 0)	{
-		Dev = ((lSensorCari[3]*0.5) + (lSensorCari[4]*0.8) + (lSensorCari[5])) - ((lSensorCari[6]) + (lSensorCari[7]*0.8) + (lSensorCari[8]*0.5));
+		senL = (lSensorCari[5]) + (lSensorCari[4]*0.6) + (lSensorCari[3]*0.2) + (lSensorCari[2]*0.2) + (lSensorCari[1]*0.1) + (lSensorCari[0]*0.2);
+		senR = (lSensorCari[6]) + (lSensorCari[7]*0.6) + (lSensorCari[8]*0.2) + (lSensorCari[9]*0.2) + (lSensorCari[10]*0.1) + (lSensorCari[11]*0.2);
 	} else {
-		Dev = ((lSensor[3]*0.5) + (lSensor[4]*0.8) + (lSensor[5])) - ((lSensor[6]) + (lSensor[7]*0.8) + (lSensor[8]*0.5));
+		senL = (lSensor[3]*0.5) + (lSensor[4]*0.8) + (lSensor[5]);
+		senR = (lSensor[8]*0.5) + (lSensor[7]*0.8) + (lSensor[6]);
 	}
+	Dev = senL - senR;
 		
 	// I成分積算
 	lineTraceCtrl.Int += (float)Dev * 0.001;

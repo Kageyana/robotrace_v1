@@ -33,6 +33,7 @@ void Interrupt1ms(void) {
         courseMarker = checkMarker();   // マーカー検知
         checkGoalMarker();              // ゴールマーカー処理
 
+        // if (courseMarker == 4 ) cntMarker += 2;
         if (courseMarker == 2 && beforeCourseMarker == 0) cntMarker++;    // マーカーカウント
         beforeCourseMarker = courseMarker;
         
@@ -108,7 +109,7 @@ void Interrupt1ms(void) {
                     // encCurrentL,
                     // encTotalR,
                     // encTotalL,
-                    (int32_t)(angleSensor*10),
+                    // (int32_t)(angleSensor*10),
                     // modeCurve,
                     motorpwmR,
                     motorpwmL,
@@ -135,7 +136,8 @@ void Interrupt1ms(void) {
                     // rawCurrentL,
                     // (int32_t)(calcROC((float)encCurrentN, BNO055val.gyro.z) * 100)
                     cntMarker,
-                    optimalIndex
+                    optimalIndex,
+                    (int32_t)calcROC( encCurrentN, BNO055val.gyro.z)
                 );
             }
             cnt10ms = 0;

@@ -312,7 +312,7 @@ void setup( void )
 
 					switch( patternSensorLine ) {
 						case 1:
-							lcdRowPrintf(UPPER, "L1  %4d",lSensorCari[0]);
+							lcdRowPrintf(UPPER, "L1  %4d",lSensorCari[4]+lSensorCari[5]+lSensorCari[6]+lSensorCari[7]);
 							lcdRowPrintf(LOWER, "L2  %4d",lSensorCari[1]);
 							break;
 
@@ -655,7 +655,7 @@ void setup( void )
 			
 			setTargetAngularVelocity(0);
 			setTargetSpeed(0);
-			
+
 			data_select( &trace_test, SW_PUSH );
 			// PUSHでトレースON/OFF
 			if ( trace_test == 1 ) {

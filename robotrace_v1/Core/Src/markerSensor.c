@@ -44,7 +44,7 @@ uint8_t checkMarker( void ) {
 	} else {
 		nowMarker = getMarkerSensor();	// マーカーセンサ値を取得
 
-		if (crossLine == 1 && encTotalN - encMarker >= encMM(180)) {
+		if (crossLine == 1 && encTotalN - encMarker >= encMM(120)) {
 			// クロスライン通過後180mm(ラインセンサからマーカーセンサまで80mm)以内はマーカー検知をしない
 			crossLine = 0;
 		} else {
@@ -57,7 +57,7 @@ uint8_t checkMarker( void ) {
 			// マーカー判定
 			if (checkStart == 1) {
 				if (encTotalN - encMarker <= encMM(40)) {
-					if (encTotalN - encMarker <= encMM(10)) {
+					if (encTotalN - encMarker <= encMM(4)) {
 						// 誤検出防止判定
 						if(nowMarker == 0) {
 							ret = 100;
@@ -95,9 +95,9 @@ bool checkCrossLine(void) {
 	int32_t valLine;
 	bool ret = false;
 
-	valLine = lSensor[5]+lSensor[6]+lSensor[7]+lSensor[8];
+	valLine = lSensorCari[0]+lSensorCari[1]+lSensorCari[10]+lSensorCari[11];
 
-	if (valLine < 1000) {
+	if (valLine < 8000) {
 		ret = true;
 	}
 

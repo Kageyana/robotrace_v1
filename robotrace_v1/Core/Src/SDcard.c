@@ -110,7 +110,7 @@ void initLog(void) {
   // setLogStr("encCurrentL",  "%d");  
   // setLogStr("encTotalR",    "%d");
   // setLogStr("encTotalL",    "%d");
-  setLogStr("angleSensor",  "%d");
+  // setLogStr("angleSensor",  "%d");
   // setLogStr("modeCurve",    "%d");
   setLogStr("motorpwmR",  "%d");
   setLogStr("motorpwmL",  "%d");
@@ -138,6 +138,7 @@ void initLog(void) {
   // setLogStr("CurvatureRadius",  "%d");
   setLogStr("cntMarker",  "%d");
   setLogStr("optimalIndex",  "%d");
+  setLogStr("ROC",  "%d");
 
   strcat(columnTitle,"\n");
   strcat(formatLog,"\n");
