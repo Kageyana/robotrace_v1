@@ -30,21 +30,24 @@ typedef struct {
 // 2次走行関係
 extern uint8_t  optimalTrace;
 extern uint16_t optimalIndex;
-extern uint16_t numOptimalArry;
+extern uint16_t numPPADarry;
+extern uint16_t numPPAMarry;
 extern float    boostSpeed;
-extern int32_t  distanceStart, distanceEnd; 
+extern int32_t  distanceStart, distanceEnd;
+extern int16_t  analizedNumber;
 
 // 解析関係
-extern AnalysisData analysisMarker[ANALYSISBUFFSIZE];
-extern AnalysisData analysisDistance[ANALYSISBUFFSIZE];
+extern AnalysisData PPAM[ANALYSISBUFFSIZE];
+extern AnalysisData PPAD[ANALYSISBUFFSIZE];
 extern float    ROCmarker[ANALYSISBUFFSIZE];
-extern float    ROCdistance[ANALYSISBUFFSIZE];
 //====================================//
 // プロトタイプ宣言
 //====================================//
 float       calcROC(float velo, float angvelo);
+void        saveLogNumber(int16_t fileNumber);
+void        getLogNumber(void);
 uint16_t    readLogMarker(int logNumber);
 uint16_t    readLogDistance(int logNumber);
-float     asignVelocity(float ROC);
+float       asignVelocity(float ROC);
 int         cmpfloat(const void * n1, const void * n2);
 #endif // COURSEANALYSIS_H_

@@ -6,16 +6,17 @@
 //====================================//
 // グローバル変数の宣
 //====================================//
-float       ROCmarker[ANALYSISBUFFSIZE] = {0}; // マーカー区間ごとの曲率半径 Radius Of Curvature
-float       ROCdistance[ANALYSISBUFFSIZE] = {0}; // 一定距離ごとの曲率半径 Radius Of Curvature
+float       ROCmarker[ANALYSISBUFFSIZE] = {0}; // マーカー区間ごとの曲率半径 ROC(Radius Of Curvature)
 uint8_t     optimalTrace = 0;
 uint16_t    optimalIndex;
-uint16_t    numOptimalArry;
+uint16_t    numPPADarry;                    // path palanning analysis distance (PPAD)
+uint16_t    numPPAMarry;                    // path palanning analysis marker (PPAM)
 float       boostSpeed;
 int32_t     distanceStart, distanceEnd; 
+int16_t     analizedNumber = 0;             // 前回解析したログ番号
 
-AnalysisData analysisMarker[ANALYSISBUFFSIZE];
-AnalysisData analysisDistance[ANALYSISBUFFSIZE];
+AnalysisData PPAM[ANALYSISBUFFSIZE];
+AnalysisData PPAD[ANALYSISBUFFSIZE];
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcROC
 // 処理概要     曲率半径の計算
@@ -33,6 +34,54 @@ float calcROC(float velo, float angvelo) {
     }
 
     return ret;
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 saveLogNumber
+// 処理概要     解析したログファイルの番号をファイルに保存する
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
+void saveLogNumber(int16_t fileNumber) {
+    FRESULT   fresult;
+    FATFS     fs_lognum;
+    FIL       fil;
+    uint8_t str[32] = "Hello";
+
+    f_chdir("/setting");    // settingフォルダに移動
+    fresult = f_open(&fil, "analiz.txt", FA_OPEN_ALWAYS | FA_WRITE);  // create file
+    f_printf(&fil, "%d",fileNumber);
+    f_close(&fil);
+    f_chdir("/");           // ルートディレクトリに移動
+}
+/////////////////////////////////////////////////////////////////////
+// モジュール名 getLogNumber
+// 処理概要     解析したログファイルの番号を取得する
+// 引数         なし
+// 戻り値       なし
+/////////////////////////////////////////////////////////////////////
+void getLogNumber(void) {
+    FRESULT   fresult;
+    FATFS     fs_lognum;
+    FIL       fil;
+    TCHAR     log[512];
+    uint8_t str[32] = "Hello";
+
+    f_chdir("/setting");    // settingフォルダに移動
+    fresult = f_open(&fil, "analiz.txt", FA_OPEN_ALWAYS | FA_READ);  // csvファイルを開く
+    if (fresult == FR_OK) {
+        f_gets(log,256,&fil);
+        sscanf(log,"%d",&analizedNumber);
+        f_close(&fil);
+    }
+
+    for (int16_t i = 0; i <= endFileIndex; i++) {
+        if (analizedNumber == fileNumbers[i]) {
+            fileIndexLog = i;
+            break;
+        }
+    }
+
+    f_chdir("/");           // ルートディレクトリに移動
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readLogMarker
@@ -88,20 +137,20 @@ uint16_t readLogMarker(int logNumber) {
                 // 曲率半径を記録する
                 if (cntCurR % 2 == 0) {
                     // 中央値を記録(配列要素数が偶数のとき) 中央2つの平均値
-                    analysisMarker[numM].ROC = (sortROC[cntCurR/2]+sortROC[cntCurR/2-1])/2;
+                    PPAM[numM].ROC = (sortROC[cntCurR/2]+sortROC[cntCurR/2-1])/2;
                 } else {
                     // 中央値を記録(配列要素数が奇数のとき)
-                    analysisMarker[numM].ROC = sortROC[cntCurR/2];
+                    PPAM[numM].ROC = sortROC[cntCurR/2];
                 }
-                // printf("%f\n",analysisMarker[numM].ROC);
+                // printf("%f\n",PPAM[numM].ROC);
                 cntCurR = 0;  // 曲率半径用配列のカウント初期化
 
-                analysisDistance[numM].time = time;
-                analysisDistance[numM].marker = marker;
-                analysisDistance[numM].velocity = (float)velo/PALSE_MILLIMETER;
-                analysisDistance[numM].angularVelocity = (float)angVelo/10000;
-                analysisDistance[numM].distance = distance;
-                analysisDistance[numM].boostSpeed = (float)asignVelocity(ROCmarker[numM])/10;   // 曲率半径ごとの速度を記録する
+                PPAD[numM].time = time;
+                PPAD[numM].marker = marker;
+                PPAD[numM].velocity = (float)velo/PALSE_MILLIMETER;
+                PPAD[numM].angularVelocity = (float)angVelo/10000;
+                PPAD[numM].distance = distance;
+                PPAD[numM].boostSpeed = (float)asignVelocity(ROCmarker[numM])/10;   // 曲率半径ごとの速度を記録する
                 numM++;     // マーカーカウント加算
             }
             beforeMarker = marker;  // 前回マーカーを記録
@@ -132,8 +181,8 @@ uint16_t readLogDistance(int logNumber) {
     FIL         fil_Read;
     FRESULT     fresult;
     uint8_t     fileName[10];
-    uint16_t     ret = 0;
-
+    uint16_t    ret = 0;
+    uint32_t    i;
 
     snprintf(fileName,sizeof(fileName),"%d",logNumber);   // 数値を文字列に変換
     strcat(fileName,".csv");                              // 拡張子を追加
@@ -158,25 +207,29 @@ uint16_t readLogDistance(int logNumber) {
         // ログデータの取得
         TCHAR     log[512];
         int32_t   time, marker,velo,angVelo,distance,null;
-        int32_t   i, startEnc=0, numD=0, cntCurR=0,beforeMarker=0;
+        int32_t   startEnc=0, numD=0, numM=0, cntCurR=0,beforeMarker=0;
         bool      analysis=false;
         float     ROCbuff[500] = {0};
         float*    sortROC;
 
         // 前処理
         // 配列初期化
-        for(i=0;i<ANALYSISBUFFSIZE;i++) {
-            ROCmarker[i] = 0.0F;
-        }
+        memset(&PPAD, 0, sizeof(AnalysisData) * ANALYSISBUFFSIZE);
+        memset(&PPAM, 0, sizeof(AnalysisData) * ANALYSISBUFFSIZE);
 
         // ログデータ取得開始
         while (f_gets(log,256,&fil_Read) != NULL) {
             sscanf(log,"%d,%d,%d,%d,%d",&time,&marker,&velo,&angVelo,&distance);
             // 解析処理
-            // ゴールマーカーを通過したときにフラグ反転
             if (marker == 1 && beforeMarker == 0) {
+                // ゴールマーカーを通過したときにフラグ反転
                 analysis = !analysis;
                 startEnc = distance;
+            } else if (marker == 0 && beforeMarker == 2) {
+                // カーブマーカーを通過したときにマーカー位置を記録
+                // PPAM[numM].marker = marker;
+                PPAM[numM].distance = distance;
+                numM++;     // マーカー解析インデックス更新
             }
             beforeMarker = marker;  // 前回マーカーを記録
             
@@ -191,25 +244,25 @@ uint16_t readLogDistance(int logNumber) {
                     // 曲率半径を記録する
                     if (cntCurR % 2 == 0) {
                         // 中央値を記録(配列要素数が偶数のとき) 中央2つの平均値
-                        analysisDistance[numD].ROC = (sortROC[cntCurR/2]+sortROC[cntCurR/2-1])/2;
+                        PPAD[numD].ROC = (sortROC[cntCurR/2]+sortROC[cntCurR/2-1])/2;
                     } else {
                         // 中央値を記録(配列要素数が奇数のとき)
-                        analysisDistance[numD].ROC = sortROC[cntCurR/2];
+                        PPAD[numD].ROC = sortROC[cntCurR/2];
                     }
-                    // printf("%f\n",analysisDistance[numD].ROC);
+                    // printf("%f\n",PPAD[numD].ROC);
                     cntCurR = 0;  // 曲率半径用配列のカウント初期化
 
-                    analysisDistance[numD].time = time;
-                    analysisDistance[numD].marker = marker;
-                    analysisDistance[numD].velocity = (float)velo/PALSE_MILLIMETER;
-                    analysisDistance[numD].angularVelocity = (float)angVelo/10000;
-                    analysisDistance[numD].distance = distance;
-                    analysisDistance[numD].boostSpeed = asignVelocity(analysisDistance[numD].ROC);   // 曲率半径ごとの速度を計算する
+                    PPAD[numD].time = time;
+                    PPAD[numD].marker = marker;
+                    PPAD[numD].velocity = (float)velo/PALSE_MILLIMETER;
+                    PPAD[numD].angularVelocity = (float)angVelo/10000;
+                    PPAD[numD].distance = distance;
+                    PPAD[numD].boostSpeed = asignVelocity(PPAD[numD].ROC);   // 曲率半径ごとの速度を計算する
 
-                    printf("%f\n",analysisDistance[numD].ROC);
+                    printf("%f\n",PPAD[numD].ROC);
 
                     startEnc = distance;    // 距離計測開始位置を更新
-                    numD++;          // インデックス更新
+                    numD++;          // 距離解析インデックス更新
                 }
                 // 曲率半径の計算
                 ROCbuff[cntCurR] = calcROC((float)velo, (float)angVelo/10000);
@@ -225,27 +278,27 @@ uint16_t readLogDistance(int logNumber) {
         // 最初の要素は調整しない
         dl = (float)CALCDISTANCE / 1000;
         for (i=2;i<=numD;i++) {
-            dv = (analysisDistance[i].boostSpeed - analysisDistance[i-1].boostSpeed);
+            dv = (PPAD[i].boostSpeed - PPAD[i-1].boostSpeed);
             elapsedTime = fabs(dl /dv);
             acceleration = dv / elapsedTime;
             if (acceleration > MACHINEACCELE) {
-                analysisDistance[i].boostSpeed = analysisDistance[i-1].boostSpeed + (MACHINEACCELE*dl);
+                PPAD[i].boostSpeed = PPAD[i-1].boostSpeed + (MACHINEACCELE*dl);
             }
-            // printf("%f\n",analysisDistance[i].boostSpeed);
+            // printf("%f\n",PPAD[i].boostSpeed);
         }
 
         for (i=numD-1;i>=1;i--) { 
-            dv = (analysisDistance[i].boostSpeed - analysisDistance[i+1].boostSpeed);
+            dv = (PPAD[i].boostSpeed - PPAD[i+1].boostSpeed);
             elapsedTime = fabs(dl /dv);
             acceleration = dv / elapsedTime;
             if (acceleration > MACHINEDECREACE) {
-                analysisDistance[i].boostSpeed = analysisDistance[i+1].boostSpeed + (MACHINEDECREACE*dl);
+                PPAD[i].boostSpeed = PPAD[i+1].boostSpeed + (MACHINEDECREACE*dl);
             }
-            // printf("%f\n",analysisDistance[i].boostSpeed);
+            // printf("%f\n",PPAD[i].boostSpeed);
         }
 
         for (i=0;i<=numD;i++) {
-            printf("%f\n",analysisDistance[i].boostSpeed);
+            printf("%f\n",PPAD[i].boostSpeed);
         }
         
         ret = numD;
@@ -253,6 +306,10 @@ uint16_t readLogDistance(int logNumber) {
     f_close(&fil_Read);
 
     printf("Analysis distance end\n");
+
+    // 解析済みのログ番号を保存
+    saveLogNumber(logNumber);
+    analizedNumber = logNumber;
 
     return ret;
 }

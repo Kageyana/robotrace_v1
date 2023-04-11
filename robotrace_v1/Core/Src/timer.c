@@ -33,8 +33,13 @@ void Interrupt1ms(void) {
         courseMarker = checkMarker();   // マーカー検知
         checkGoalMarker();              // ゴールマーカー処理
 
-        // if (courseMarker == 4 ) cntMarker += 2;
-        if (courseMarker == 2 && beforeCourseMarker == 0) cntMarker++;    // マーカーカウント
+        // マーカーを通過した時
+        if (courseMarker == 2 && beforeCourseMarker == 0) {
+            cntMarker++;    // マーカーカウント
+            if (optimalTrace == BOODT_DISTANCE) {
+                
+            }
+        }
         beforeCourseMarker = courseMarker;
         
     }

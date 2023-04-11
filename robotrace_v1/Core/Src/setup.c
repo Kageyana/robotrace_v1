@@ -75,13 +75,9 @@ void setup( void )
 					}
 					
 					if (swValTact == SW_PUSH) {
-						if (lSensorOffset[0] > 0) {
-							start = 1;
-						} else {
-							cntSetup1 = 0;
-							powerLinesensors(1);	// 先に点灯させて安定させる
-							patternCalibration = 2;
-						}
+						cntSetup1 = 0;
+						powerLinesensors(1);	// 先に点灯させて安定させる
+						patternCalibration = 2;
 					}
 					break;
 
@@ -149,14 +145,9 @@ void setup( void )
 					// 停止
 					motorPwmOutSynth( 0, veloCtrl.pwm, 0, 0);
 					if (abs(encCurrentN) == 0) {
-						calTimesNow++;
-						if (calTimesNow >= calTimes) {
-							calTimesNow = 0;
-							useIMU = false;
-							patternCalibration = 1;
-						} else {
-							patternCalibration = 3;
-						}
+						useIMU = false;
+						patternCalibration = 1;
+						start = 1;
 					}
 					break;
 			
@@ -423,41 +414,37 @@ void setup( void )
 		case HEX_LOG:
 			lcdRowPrintf(UPPER, "LOG     ");
 			if (initMSD) {
-				lcdRowPrintf(LOWER, "    %4d", fileNumbers[fileIndexLog]);
-
 				dataTuningLR( &fileIndexLog, 1, 0, endFileIndex );
+				if (fileNumbers[fileIndexLog] == analizedNumber) {
+					lcdRowPrintf(LOWER, "O   %4d", fileNumbers[fileIndexLog]);
+				} else {
+					lcdRowPrintf(LOWER, "    %4d", fileNumbers[fileIndexLog]);
+				}
 
-				switch (patternLog) {
-					case 1:
-						// ログ解析
-						if (swValTact == SW_UP) {
-							// マーカー基準解析
-							numOptimalArry = readLogMarker(fileNumbers[fileIndexLog]);
-							if (numOptimalArry > 0) {
-								lcdRowPrintf(UPPER, "Marker  ");
-								lcdRowPrintf(LOWER, " success");
-								optimalTrace = BOOST_MARKER;
-							} else {
-								lcdRowPrintf(LOWER, "   false");
-							}
-							HAL_Delay(1000);
-						} else if (swValTact == SW_DOWN) {
-							// 距離基準解析
-							numOptimalArry = readLogDistance(fileNumbers[fileIndexLog]);
-							if (numOptimalArry > 0) {
-								lcdRowPrintf(UPPER, "Distance");
-								lcdRowPrintf(LOWER, " success");
-								optimalTrace = BOODT_DISTANCE;
-								optimalIndex = 0;
-							} else {
-								lcdRowPrintf(LOWER, "   false");
-							}
-							HAL_Delay(1000);
-						}
-						break;
-				
-					default:
-						break;
+				// ログ解析
+				if (swValTact == SW_UP) {
+					// マーカー基準解析
+					numPPADarry = readLogMarker(fileNumbers[fileIndexLog]);
+					if (numPPADarry > 0) {
+						lcdRowPrintf(UPPER, "Marker  ");
+						lcdRowPrintf(LOWER, " success");
+						optimalTrace = BOOST_MARKER;
+					} else {
+						lcdRowPrintf(LOWER, "   false");
+					}
+					HAL_Delay(1000);
+				} else if (swValTact == SW_DOWN) {
+					// 距離基準解析
+					numPPADarry = readLogDistance(fileNumbers[fileIndexLog]);
+					if (numPPADarry > 0) {
+						lcdRowPrintf(UPPER, "Distance");
+						lcdRowPrintf(LOWER, " success");
+						optimalTrace = BOODT_DISTANCE;
+						optimalIndex = 0;
+					} else {
+						lcdRowPrintf(LOWER, "   false");
+					}
+					HAL_Delay(1000);
 				}
 			} else {
 				lcdRowPrintf(LOWER, "  no MSD");

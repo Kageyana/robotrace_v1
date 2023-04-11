@@ -80,6 +80,7 @@ void initSystem (void) {
 	initCurrent = initINA260();	// Current sensor initialize
 	initIMU = initBNO055();	// BNO055(IMU) initialize
 	initMSD = initMicroSD();  // microSD card initialize
+	getLogNumber();
 
 	printf("init done\n");
 	printf("initLCD %d initCurrent %d initIMU %d initMSD %d\n",initLCD, initCurrent, initIMU, initMSD);
@@ -176,9 +177,9 @@ void loopSystem (void) {
 				}
 			} else if (optimalTrace == BOOST_MARKER) {
 				// マーカー基準2次走行
-				boostSpeed = analysisMarker[cntMarker].boostSpeed;
+				boostSpeed = PPAM[cntMarker].boostSpeed;
                 // 次のマーカー区間の曲率半径が小さい時、速度を抑える
-                if ( cntMarker < numOptimalArry && fabs(ROCmarker[cntMarker+1]) <= 200.0F ) {
+                if ( cntMarker < numPPADarry && fabs(ROCmarker[cntMarker+1]) <= 200.0F ) {
                     boostSpeed = boostSpeed - 4;
                 }
                 // 最低速度
@@ -195,9 +196,9 @@ void loopSystem (void) {
 				// 一定区間ごとにインデックスを更新
 				if (distanceStart > 0) {
 					if (encTotalN - distanceStart >= encMM(CALCDISTANCE)) {
-						boostSpeed = analysisDistance[optimalIndex].boostSpeed;	// 目標速度を更新
+						boostSpeed = PPAD[optimalIndex].boostSpeed;	// 目標速度を更新
 						distanceStart = encTotalN;	// 距離計測位置を更新
-						if (optimalIndex+1 <= numOptimalArry) {
+						if (optimalIndex+1 <= numPPADarry) {
 							// 配列要素数を超えない範囲でインデックスを更新する
 							optimalIndex++;
 						}

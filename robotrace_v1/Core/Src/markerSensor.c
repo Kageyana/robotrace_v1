@@ -57,7 +57,7 @@ uint8_t checkMarker( void ) {
 			// マーカー判定
 			if (checkStart == 1) {
 				if (encTotalN - encMarker <= encMM(40)) {
-					if (encTotalN - encMarker <= encMM(4)) {
+					if (encTotalN - encMarker <= encMM(10)) {
 						// 誤検出防止判定
 						if(nowMarker == 0) {
 							ret = 100;
