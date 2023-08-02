@@ -38,8 +38,8 @@ int16_t patternCalibration = 1;
 // フラグ関連
 uint8_t motor_test = 0;
 uint8_t trace_test = 0;
-uint8_t	calTimes = 1;
-uint8_t	calTimesNow = 0;
+int16_t	calTimes = 1;
+int16_t	calTimesNow = 0;
 uint8_t bright = 0;
 
 // パラメータ関連
@@ -159,7 +159,7 @@ void setup( void )
 		// パラメータ調整(通常トレース)
 		//------------------------------------------------------------------
 		case HEX_SPEED_PARAM:
-			dataTuningLR( &patternParameter1, 1, 1, 9);
+			dataTuningLR( &patternParameter1, 1, 1, 13);
 			
 			switch( patternParameter1 ) {
 				case 1:
@@ -199,22 +199,46 @@ void setup( void )
 					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost800);
 					break;
 				case 7:
-					// 2次走行_R1600
+					// 2次走行_R700
+					dataTuningUDF( &targetParam.boost700, 0.1, 0.0, 10.0 );
+					lcdRowPrintf(UPPER, "BST  700");
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost700);
+					break;
+				case 8:
+					// 2次走行_R600
 					dataTuningUDF( &targetParam.boost600, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  600");
 					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost600);
 					break;
-				case 8:
+				case 9:
+					// 2次走行_R500
+					dataTuningUDF( &targetParam.boost500, 0.1, 0.0, 10.0 );
+					lcdRowPrintf(UPPER, "BST  500");
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost500);
+					break;
+				case 10:
 					// 2次走行_R400
 					dataTuningUDF( &targetParam.boost400, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  400");
 					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost400);
 					break;
-				case 9:
+				case 11:
+					// 2次走行_R300
+					dataTuningUDF( &targetParam.boost300, 0.1, 0.0, 10.0 );
+					lcdRowPrintf(UPPER, "BST  300");
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost300);
+					break;
+				case 12:
 					// 2次走行_R200
 					dataTuningUDF( &targetParam.boost200, 0.1, 0.0, 10.0 );
 					lcdRowPrintf(UPPER, "BST  200");
 					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost200);
+					break;
+				case 13:
+					// 2次走行_R100
+					dataTuningUDF( &targetParam.boost100, 0.1, 0.0, 10.0 );
+					lcdRowPrintf(UPPER, "BST  100");
+					lcdRowPrintf(LOWER, "  %3gm/s", targetParam.boost100);
 					break;
 			}
 			break;

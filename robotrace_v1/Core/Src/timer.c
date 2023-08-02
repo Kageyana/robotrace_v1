@@ -22,41 +22,6 @@ void Interrupt1ms(void) {
     cnt10ms++;
     cntLog++;
 
-    // 走行中に処理
-    if (patternTrace > 10 && patternTrace < 100) {
-        // 緊急停止処理
-        if (cntEmcStopAngleX()) emcStop = STOP_ANGLE_X;
-        if (cntEmcStopAngleY()) emcStop = STOP_ANGLE_Y;
-        if (cntEmcStopEncStop()) emcStop = STOP_ENCODER_STOP;
-        if (cntEmcStopLineSensor()) emcStop = STOP_LINESENSOR;
-        
-        courseMarker = checkMarker();   // マーカー検知
-        checkGoalMarker();              // ゴールマーカー処理
-
-        // マーカーを通過した時
-        if (courseMarker == 2 && beforeCourseMarker == 0) {
-            cntMarker++;    // マーカーカウント
-            if (optimalTrace == BOODT_DISTANCE) {
-                
-            }
-        }
-        beforeCourseMarker = courseMarker;
-        
-    }
-    
-    // 走行前に処理
-    if (patternTrace < 10 || patternTrace > 100) {
-        getSwitches();  // スイッチの入力を取得
-        countDown();
-        cntSetup1++;
-        cntSetup2++;
-        cntSwitchUD++;
-        cntSwitchLR++;
-
-        motorControlYawRate();
-        motorControlYaw();
-    }
-
     // LCD表示
     if (modeLCD && initLCD) lcdShowProcess();
 
@@ -78,11 +43,13 @@ void Interrupt1ms(void) {
                 calcDegrees();              // 角度計算
                 // motorControlYawRate();  // 角度制御
                 // motorControlYaw();
-                checkCurve();
+                if (!optimalTrace) checkCurve();
+                if (crossLine == 1) {
+                    BNO055val.gyro.z = 0.01;
+                }
             }
             break;
         case 2:
-            
             break;
         case 3:
             break;
@@ -93,6 +60,52 @@ void Interrupt1ms(void) {
             break;
         default:
             break;
+    }
+
+    // 走行中に処理
+    if (patternTrace > 10 && patternTrace < 100) {
+        // 緊急停止処理
+        if (cntEmcStopAngleX()) emcStop = STOP_ANGLE_X;
+        if (cntEmcStopAngleY()) emcStop = STOP_ANGLE_Y;
+        if (cntEmcStopEncStop()) emcStop = STOP_ENCODER_STOP;
+        if (cntEmcStopLineSensor()) emcStop = STOP_LINESENSOR;
+        
+        courseMarker = checkMarker();   // マーカー検知
+        checkGoalMarker();              // ゴールマーカー処理
+
+        // マーカーを通過した時
+        if (courseMarker == 2 && beforeCourseMarker == 0) {
+            cntMarker++;    // マーカーカウント
+            if (optimalTrace == BOODT_DISTANCE) {
+                int32_t i, j, errorDistance, upperLimit, lowerLimit;
+
+                for(i=0;i<=numPPAMarry;i++) {
+                    // 現在地から一番近いマーカーを探す
+                    if (abs(encTotalN - markerPos[i].distance) < encMM(50)) {
+                        errorDistance = encTotalN - distanceStart;  // 現在の差を計算
+                        encTotalN = markerPos[i].distance;               // 距離を補正
+                        distanceStart = encTotalN - errorDistance;  // 補正後の現在距離からの差分
+                        optimalIndex = markerPos[i].indexPPAD;      // インデックス更新
+                        break;
+                    }
+                }
+            }
+        }
+        beforeCourseMarker = courseMarker;
+        
+    }
+    
+    // 走行前に処理
+    if (patternTrace < 10 || patternTrace > 100) {
+        getSwitches();  // スイッチの入力を取得
+        countDown();
+        cntSetup1++;
+        cntSetup2++;
+        cntSwitchUD++;
+        cntSwitchLR++;
+
+        motorControlYawRate();
+        motorControlYaw();
     }
 
     switch(cnt10ms) {
@@ -142,7 +155,7 @@ void Interrupt1ms(void) {
                     // (int32_t)(calcROC((float)encCurrentN, BNO055val.gyro.z) * 100)
                     cntMarker,
                     optimalIndex,
-                    (int32_t)calcROC( encCurrentN, BNO055val.gyro.z)
+                    (int32_t)PPAD[optimalIndex].ROC
                 );
             }
             cnt10ms = 0;

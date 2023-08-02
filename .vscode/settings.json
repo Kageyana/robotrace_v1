@@ -3,5 +3,7 @@
         "*.cps": "javascript",
         "*.h": "c",
         "typeinfo": "c"
-    }
+    },
+    "cmake.configureOnOpen": true,
+    "cmake.sourceDirectory": "D:/robotrace_v1/robotrace_v1"
 }

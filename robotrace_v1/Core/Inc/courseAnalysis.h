@@ -8,12 +8,13 @@
 // シンボル定義
 //====================================//
 #define ANALYSISBUFFSIZE    256
-#define DELTATIME           0.01F
-#define CALCDISTANCE        50
-#define MACHINEACCELE       2.7F
-#define MACHINEDECREACE     3.3F
+#define DELTATIME           0.01F   // ログ保存周期[s]
+#define CALCDISTANCE        50      // 距離解析ステップ[mm]
+#define MACHINEACCELE       2.7F    // 加速度[m/s^2]
+#define MACHINEDECREACE     2.5F    // 減速度[m/s^2]
 #define BOOST_MARKER        1
 #define BOODT_DISTANCE      2
+#define SEARCHRANGE         150     // 距離補正時の距離検索範囲[mm]
 
 typedef struct {
     int32_t time;
@@ -24,6 +25,11 @@ typedef struct {
     float   ROC;
     float   boostSpeed;
 } AnalysisData;
+
+typedef struct {
+    int32_t distance;
+    int32_t indexPPAD;
+} EventPos;
 //====================================//
 // グローバル変数の宣言
 //====================================//
@@ -39,7 +45,8 @@ extern int16_t  analizedNumber;
 // 解析関係
 extern AnalysisData PPAM[ANALYSISBUFFSIZE];
 extern AnalysisData PPAD[ANALYSISBUFFSIZE];
-extern float    ROCmarker[ANALYSISBUFFSIZE];
+extern EventPos     markerPos[ANALYSISBUFFSIZE];
+extern float        ROCmarker[ANALYSISBUFFSIZE];
 //====================================//
 // プロトタイプ宣言
 //====================================//

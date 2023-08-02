@@ -153,7 +153,7 @@ void lcdShowProcess( void ) {
 // 戻り値       正常時：出力した文字列 異常時：負の数
 //////////////////////////////////////////////////////////////////////////
 int lcdPrintf(uint8_t *format, ...) {
-    volatile va_list argptr;
+    va_list argptr;
     volatile uint8_t    *p;
     volatile uint16_t     ret = 0;
 
@@ -193,7 +193,7 @@ void lcdPosition(uint8_t x ,uint8_t y) {
 // 戻り値       正常時：出力した文字列 異常時：負の数
 //////////////////////////////////////////////////////////////////////////
 int lcdRowPrintf(uint8_t step, char *format, ...) {
-    volatile va_list argptr;
+    va_list argptr;
     volatile uint8_t    *p;
     volatile uint16_t     ret = 0;
 

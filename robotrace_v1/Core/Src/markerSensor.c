@@ -6,6 +6,7 @@
 // グローバル変数の宣言
 //====================================//
 uint8_t     SGmarker = 0;
+uint8_t  	crossLine = 0;
 
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getMarksensor
@@ -32,7 +33,7 @@ uint8_t getMarkerSensor ( void ) {
 ///////////////////////////////////////////////////////////////////////////
 uint8_t checkMarker( void ) {
 	uint8_t ret = 0;
-	static uint8_t	checkStart, nowMarker, existMarker, crossLine;
+	static uint8_t	checkStart, nowMarker, existMarker;
 	static int32_t	encMarker;
 
 	// クロスライン判定

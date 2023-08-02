@@ -24,4 +24,5 @@ void endLog(void);
 void setLogStr(uint8_t* column, uint8_t* format);
 void writeLogBuffer (uint8_t valNum, ...);
 void writeLogPut(void);
+void getFileNumbers(void);
 #endif // SDCARD_H_

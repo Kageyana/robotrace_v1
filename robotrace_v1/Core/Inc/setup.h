@@ -41,7 +41,7 @@ extern uint16_t		cntSwitchLRLong;	// スイッチ長押し判定用左
 extern uint8_t      fixSpeed;
 
 // フラグ関連
-extern uint8_t trace_test;
+extern uint8_t      trace_test;
 
 //======================================//
 // プロトタイプ宣言

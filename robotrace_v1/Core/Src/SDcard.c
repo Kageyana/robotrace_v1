@@ -159,7 +159,7 @@ void writeLogBuffer (uint8_t valNum, ...) {
 
   va_start( args, valNum );
   for ( count = 0; count < valNum; count++ ) {
-    // set logdata to logbuffer(ring buffer)
+    // set logdata to logbuffer(ring buffer) ログデータをリングバッファに転送
     logBuffer[logIndex & BUFFER_SIZW_LOG - 1] = va_arg( args, int32_t );
     logIndex++;
   }
@@ -196,6 +196,8 @@ void endLog(void) {
   modeLOG = false;
   while (HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY );
   f_close(&fil_W);
+
+  if (!optimalTrace) saveLogNumber(fileNumbers[endFileIndex]+1); // 探索走行のとき最新ログ番号を保存する
 }
 /////////////////////////////////////////////////////////////////////
 // モジュール名 getFileNumbers

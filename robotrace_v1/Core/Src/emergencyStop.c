@@ -49,7 +49,7 @@ bool cntEmcStopEncStop(void) {
     static uint16_t cntEncStop;
 
     // 緊急停止条件
-    if (abs(encCurrentN) < 10) cntEncStop++;
+    if (abs(encCurrentN) < 1) cntEncStop++;
     else    cntEncStop = 0;
 
     if (cntEncStop > STOP_COUNT_ENCODER_STOP) return true;

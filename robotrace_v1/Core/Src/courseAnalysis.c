@@ -17,6 +17,7 @@ int16_t     analizedNumber = 0;             // 前回解析したログ番号
 
 AnalysisData PPAM[ANALYSISBUFFSIZE];
 AnalysisData PPAD[ANALYSISBUFFSIZE];
+EventPos     markerPos[ANALYSISBUFFSIZE];
 /////////////////////////////////////////////////////////////////////
 // モジュール名 calcROC
 // 処理概要     曲率半径の計算
@@ -25,6 +26,7 @@ AnalysisData PPAD[ANALYSISBUFFSIZE];
 /////////////////////////////////////////////////////////////////////
 float calcROC(float velo, float angvelo) {
     float dl, drad, ret;
+    
     dl = velo / PALSE_MILLIMETER * 1000 * DELTATIME; // [pilse] → [mm/s] → [mm] 
     drad = angvelo * DELTATIME;            // [rad/s] → [rad]
     ret = dl / drad;
@@ -86,7 +88,7 @@ void getLogNumber(void) {
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readLogMarker
 // 処理概要     マーカー基準2次走行
-// 引数         なし
+// 引数         ログ番号(ファイル名)
 // 戻り値       最適速度配列の最大要素数
 /////////////////////////////////////////////////////////////////////
 uint16_t readLogMarker(int logNumber) {
@@ -173,7 +175,7 @@ uint16_t readLogMarker(int logNumber) {
 /////////////////////////////////////////////////////////////////////
 // モジュール名 readLogDistance
 // 処理概要     距離基準2次走行の解析
-// 引数         なし
+// 引数         ログ番号(ファイル名)
 // 戻り値       最適速度配列の最大要素数
 /////////////////////////////////////////////////////////////////////
 uint16_t readLogDistance(int logNumber) {
@@ -213,7 +215,7 @@ uint16_t readLogDistance(int logNumber) {
         float*    sortROC;
 
         // 前処理
-        // 配列初期化
+        // 構造体配列の初期化
         memset(&PPAD, 0, sizeof(AnalysisData) * ANALYSISBUFFSIZE);
         memset(&PPAM, 0, sizeof(AnalysisData) * ANALYSISBUFFSIZE);
 
@@ -227,11 +229,10 @@ uint16_t readLogDistance(int logNumber) {
                 startEnc = distance;
             } else if (marker == 0 && beforeMarker == 2) {
                 // カーブマーカーを通過したときにマーカー位置を記録
-                // PPAM[numM].marker = marker;
-                PPAM[numM].distance = distance;
+                markerPos[numM].distance = distance;
+                markerPos[numM].indexPPAD = numD;
                 numM++;     // マーカー解析インデックス更新
             }
-            beforeMarker = marker;  // 前回マーカーを記録
             
             if (analysis == true) {
                 // スタートマーカー通過後から解析開始
@@ -268,8 +269,12 @@ uint16_t readLogDistance(int logNumber) {
                 ROCbuff[cntCurR] = calcROC((float)velo, (float)angVelo/10000);
                 cntCurR++;  // 曲率半径用配列のカウント
             }
+
+            beforeMarker = marker;  // 前回マーカーを記録
         }
-        numD--; // インデックスが1多くなるので調整
+        // インデックスが1多くなるので調整
+        numM--;
+        numD--; 
 
         printf("fix velocity\n");
         // 目標速度配列の整形 加減速が間に合うように距離を調整する
@@ -301,6 +306,9 @@ uint16_t readLogDistance(int logNumber) {
             printf("%f\n",PPAD[i].boostSpeed);
         }
         
+        numPPAMarry = numM;
+        numPPADarry = numD;
+        // printf("num %d\n",numPPAMarry);
         ret = numD;
     }
     f_close(&fil_Read);
@@ -327,9 +335,13 @@ float asignVelocity(float ROC) {
     if ( absROC > 1500.0F ) ret = targetParam.boostStraight;
     if ( absROC <= 1500.0F ) ret = targetParam.boost1500;
     if ( absROC <= 800.0F )  ret = targetParam.boost800;
+    if ( absROC <= 700.0F )  ret = targetParam.boost700;
     if ( absROC <= 600.0F )  ret = targetParam.boost600;
+    if ( absROC <= 500.0F )  ret = targetParam.boost500;
     if ( absROC <= 400.0F )  ret = targetParam.boost400;
+    if ( absROC <= 300.0F )  ret = targetParam.boost300;
     if ( absROC <= 200.0F )  ret = targetParam.boost200;
+    if ( absROC <= 100.0F )  ret = targetParam.boost100;
 
     return ret;
 }

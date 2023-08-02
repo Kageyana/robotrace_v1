@@ -23,12 +23,16 @@ speedParam targetParam = {	PARAM_STRAIGHT,
 							PARAM_BOOST_STRAIGHT,
 							PARAM_BOOST_1500,
 							PARAM_BOOST_800,
+							PARAM_BOOST_700,
 							PARAM_BOOST_600,
+							PARAM_BOOST_500,
 							PARAM_BOOST_400,
-							PARAM_BOOST_200
+							PARAM_BOOST_300,
+							PARAM_BOOST_200,
+							PARAM_BOOST_100
 							};
 
-uint16_t 	analogVal[12];		// ADC結果格納配列
+uint32_t 	analogVal[12];		// ADC結果格納配列
 
 // タイマ関連
 uint32_t 	cntRun = 0;
@@ -56,7 +60,7 @@ void initSystem (void) {
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_ALL);
 
 	// ADC
-	if (HAL_ADC_Start_DMA(&hadc1, (uint16_t *)analogVal, 12) != HAL_OK)	Error_Handler();
+	if (HAL_ADC_Start_DMA(&hadc1, analogVal, 12) != HAL_OK)	Error_Handler();
 
 	// PWM
 	if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK) Error_Handler();
@@ -140,6 +144,12 @@ void loopSystem (void) {
 			lcdRowPrintf(UPPER, "Ready   ");
 			lcdRowPrintf(LOWER, "       %d",countdown/1000);
 			motorPwmOutSynth( lineTraceCtrl.pwm, 0, 0, 0);
+			if ( countdown >= 5000 ) ledOut(0x5);
+			if ( countdown < 5000 && countdown >= 4000 ) ledOut(0x4);
+			if ( countdown < 4000 && countdown >= 3000 ) ledOut(0x3);
+			if ( countdown < 3000 && countdown >= 2000 ) ledOut(0x2);
+			if ( countdown < 2000 && countdown >= 1000 ) ledOut(0x1);
+
 			if ( countdown <= 1000 ) {
 				motorPwmOut(0,0);	// モータドライバICのスリープモードを解除
 				modeLCD = false;	// LCD OFF
@@ -148,6 +158,7 @@ void loopSystem (void) {
 				if (initMSD) initLog();
 
 				lcdClear();
+				ledOut(0x0); 
 				
 				// 変数初期化
 				encTotalN = 0;
